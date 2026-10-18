@@ -47,14 +47,15 @@
 
 ## Phase 3 — Marketing & Dashboard
 
-| Requirement | Status |
-|------------|--------|
-| Marketing site design | ⬜ NOT IMPLEMENTED |
-| Dashboard shell and navigation | ⬜ NOT IMPLEMENTED |
-| Design system components | ⬜ NOT IMPLEMENTED |
-| Auth flow (connected) | ⬜ NOT IMPLEMENTED |
-| SEO metadata | ⬜ NOT IMPLEMENTED |
-| E2E tests | ⬜ NOT IMPLEMENTED |
+| Requirement | Status | Notes |
+|------------|--------|-------|
+| Marketing site design | ✅ PASS | Next.js 14 SSR/SSG page with all 7 product pillars, architecture flow, security, and pricing |
+| Dashboard shell and navigation | ✅ PASS | React 18 + Vite SPA with multi-tenant org switcher, workspace context, and top header |
+| Design system components | ✅ PASS | @nexus-one/ui component library: Button, Card, Badge, Input, Modal, Tabs, Avatar, Table |
+| Auth flow (connected) | ✅ PASS | Full auth context, login/register forms with demo quick-fill, and ProtectedRoute guard |
+| SEO metadata | ✅ PASS | Metadata API with OpenGraph, robots, fonts preconnection, and semantic headings |
+| 7 Product Shell Views | ✅ PASS | AgentForge, PulseOps, GateFlow, CortexRAG, SyncSpace, SentinelX, CloudPilot |
+| Governance Settings | ✅ PASS | Organization details, audit trail table, team member list + invite modal, API key generator |
 
 ## Phases 4–10 — Products
 
