@@ -17,6 +17,7 @@ import tenantPlugin from './plugins/tenant.js';
 import { authRoutes } from './routes/auth.js';
 import { organizationRoutes } from './routes/organizations.js';
 import { workspaceRoutes } from './routes/workspaces.js';
+import { agentforgeRoutes } from './routes/agentforge.js';
 
 export async function buildApp() {
   const app = Fastify({
@@ -160,6 +161,7 @@ export async function buildApp() {
   await app.register(authRoutes, { prefix: '/api/v1/auth' });
   await app.register(organizationRoutes, { prefix: '/api/v1/organizations' });
   await app.register(workspaceRoutes, { prefix: '/api/v1/workspaces' });
+  await app.register(agentforgeRoutes, { prefix: '/api/v1/agentforge' });
 
   return app;
 }

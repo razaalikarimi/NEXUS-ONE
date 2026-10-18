@@ -6,6 +6,7 @@
 // ============================================================
 
 import { createLogger } from '@nexus-one/logger';
+import { createAgentForgeWorker } from './processors/agentforge.js';
 
 const logger = createLogger({ service: 'nexus-one-worker' });
 
@@ -15,13 +16,13 @@ async function start() {
   const redisUrl = process.env['REDIS_URL'] || 'redis://localhost:6379';
   logger.info({ redisUrl: redisUrl.replace(/\/\/.*@/, '//***@') }, 'Redis connection');
 
-  // Phase 2+: Register BullMQ workers for each queue
-  // - workflow-execution (AgentForge)
-  // - document-processing (CortexRAG)
-  // - telemetry-ingestion (PulseOps)
-  // - billing-import (CloudPilot)
-  // - notifications (Platform)
-  // - maintenance (Platform)
+  // Register BullMQ workers
+  try {
+    createAgentForgeWorker({ url: redisUrl });
+    logger.info('Registered AgentForge workflow-execution worker');
+  } catch (err: unknown) {
+    logger.warn({ error: err instanceof Error ? err.message : String(err) }, 'Redis offline, running in standalone worker mode');
+  }
 
   logger.info('Worker started. Waiting for jobs...');
 

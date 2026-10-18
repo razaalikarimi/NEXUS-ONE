@@ -994,6 +994,165 @@ code {
   font-size: 0.9rem;
 }
 
+/* ============================================================
+   AgentForge Visual DAG Builder & Simulator Styles
+   ============================================================ */
+.nx-wf-selector-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.nx-dag-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.nx-dag-canvas {
+  flex: 2;
+  background-color: #0b1120;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  min-height: 440px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+  background-size: 24px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.nx-dag-canvas__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+}
+
+.nx-dag-nodes-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 1rem 0;
+}
+
+.nx-dag-node {
+  background-color: #0f172a;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 170px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.nx-dag-node:hover {
+  transform: translateY(-2px);
+  border-color: #818cf8;
+}
+
+.nx-dag-node--selected {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.4) !important;
+}
+
+.nx-dag-node__type-pill {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.35rem;
+  color: #818cf8;
+}
+
+.nx-dag-node__title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.nx-dag-node__meta {
+  font-size: 0.7rem;
+  color: #64748b;
+  font-family: var(--nx-font-mono, monospace);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-dag-node--model { border-left: 4px solid #8b5cf6; }
+.nx-dag-node--tool { border-left: 4px solid #06b6d4; }
+.nx-dag-node--approval { border-left: 4px solid #f59e0b; }
+.nx-dag-node--input { border-left: 4px solid #22c55e; }
+.nx-dag-node--output { border-left: 4px solid #ec4899; }
+
+.nx-dag-arrow {
+  color: #6366f1;
+  font-size: 1.25rem;
+  margin: 0 0.25rem;
+}
+
+.nx-node-inspector {
+  flex: 1;
+  min-width: 320px;
+}
+
+/* Simulation Steps */
+.nx-sim-steps {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nx-sim-step {
+  background-color: rgba(2, 6, 23, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+}
+
+.nx-sim-step--running {
+  border-color: #6366f1;
+  background-color: rgba(99, 102, 241, 0.05);
+}
+
+.nx-sim-step--waiting_approval {
+  border-color: #f59e0b;
+  background-color: rgba(245, 158, 11, 0.05);
+}
+
+.nx-step-num {
+  font-size: 0.7rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.nx-approval-gate {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background-color: rgba(245, 158, 11, 0.1);
+  border-radius: 0.35rem;
+  border: 1px dashed rgba(245, 158, 11, 0.3);
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .nx-sidebar {

@@ -94,6 +94,8 @@ model Organization {
   apiKeys     ApiKey[]
   auditEvents AuditEvent[]
   notifications Notification[]
+  workflows   Workflow[]
+  workflowRuns WorkflowRun[]
 
   @@map("organizations")
 }
@@ -108,6 +110,8 @@ model Workspace {
   updatedAt   DateTime     @updatedAt
 
   organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workflows    Workflow[]
+  workflowRuns WorkflowRun[]
 
   @@unique([orgId, slug])
   @@index([orgId])
@@ -223,3 +227,183 @@ model ApiKey {
   @@index([prefix])
   @@map("api_keys")
 }
+
+// ------------------------------------------------------------
+// Phase 4: AgentForge — AI Agent Orchestration Platform
+// ------------------------------------------------------------
+
+enum WorkflowStatus {
+  draft
+  published
+  archived
+}
+
+enum WorkflowNodeType {
+  input
+  prompt
+  model
+  tool
+  condition
+  transform
+  approval
+  output
+}
+
+enum WorkflowRunStatus {
+  pending
+  running
+  completed
+  failed
+  cancelled
+  waiting_approval
+}
+
+enum StepStatus {
+  pending
+  running
+  completed
+  failed
+  skipped
+  waiting_approval
+}
+
+enum ApprovalStatus {
+  pending
+  approved
+  rejected
+}
+
+model Workflow {
+  id          String         @id @default(uuid())
+  orgId       String
+  workspaceId String
+  name        String
+  description String?
+  status      WorkflowStatus @default(draft)
+  createdById String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  organization Organization      @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  versions     WorkflowVersion[]
+  runs         WorkflowRun[]
+
+  @@index([orgId, workspaceId])
+  @@index([status])
+  @@map("agentforge_workflows")
+}
+
+model WorkflowVersion {
+  id         String   @id @default(uuid())
+  workflowId String
+  version    Int
+  definition Json     @default("{}")
+  changelog  String?
+  createdAt  DateTime @default(now())
+
+  workflow Workflow       @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  nodes    WorkflowNode[]
+  edges    WorkflowEdge[]
+  runs     WorkflowRun[]
+
+  @@unique([workflowId, version])
+  @@index([workflowId])
+  @@map("agentforge_workflow_versions")
+}
+
+model WorkflowNode {
+  id        String           @id @default(uuid())
+  versionId String
+  nodeType  WorkflowNodeType
+  label     String
+  config    Json             @default("{}")
+  positionX Float            @default(0)
+  positionY Float            @default(0)
+
+  version WorkflowVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+
+  @@index([versionId])
+  @@map("agentforge_workflow_nodes")
+}
+
+model WorkflowEdge {
+  id           String  @id @default(uuid())
+  versionId    String
+  sourceNodeId String
+  targetNodeId String
+  sourceHandle String?
+  targetHandle String?
+  condition    String?
+
+  version WorkflowVersion @relation(fields: [versionId], references: [id], onDelete: Cascade)
+
+  @@index([versionId])
+  @@map("agentforge_workflow_edges")
+}
+
+model WorkflowRun {
+  id          String            @id @default(uuid())
+  orgId       String
+  workspaceId String
+  workflowId  String
+  versionId   String
+  status      WorkflowRunStatus @default(pending)
+  triggeredBy String            @default("manual") // manual, api, schedule, webhook
+  inputs      Json              @default("{}")
+  outputs     Json              @default("{}")
+  startedAt   DateTime?
+  finishedAt  DateTime?
+  error       String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  organization Organization      @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workflow     Workflow          @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  version      WorkflowVersion   @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  steps        WorkflowRunStep[]
+
+  @@index([orgId, workspaceId])
+  @@index([workflowId])
+  @@index([status])
+  @@map("agentforge_workflow_runs")
+}
+
+model WorkflowRunStep {
+  id         String           @id @default(uuid())
+  runId      String
+  nodeId     String
+  nodeType   WorkflowNodeType
+  nodeLabel  String
+  status     StepStatus       @default(pending)
+  input      Json             @default("{}")
+  output     Json             @default("{}")
+  tokensUsed Int              @default(0)
+  latencyMs  Int              @default(0)
+  startedAt  DateTime?
+  finishedAt DateTime?
+  error      String?
+
+  run       WorkflowRun        @relation(fields: [runId], references: [id], onDelete: Cascade)
+  approvals WorkflowApproval[]
+
+  @@index([runId])
+  @@map("agentforge_run_steps")
+}
+
+model WorkflowApproval {
+  id             String         @id @default(uuid())
+  stepId         String
+  status         ApprovalStatus @default(pending)
+  reviewerId     String?
+  decisionReason String?
+  createdAt      DateTime       @default(now())
+  decidedAt      DateTime?
+
+  step WorkflowRunStep @relation(fields: [stepId], references: [id], onDelete: Cascade)
+
+  @@index([stepId])
+  @@map("agentforge_approvals")
+}
+
