@@ -100,6 +100,9 @@ model Organization {
   incidents   Incident[]
   errorGroups ErrorGroup[]
   alertRules  AlertRule[]
+  gatewayRoutes    GatewayRoute[]
+  gatewayConsumers GatewayConsumer[]
+  gatewayMetrics   GatewayMetric[]
 
   @@map("organizations")
 }
@@ -120,6 +123,8 @@ model Workspace {
   incidents    Incident[]
   errorGroups  ErrorGroup[]
   alertRules   AlertRule[]
+  gatewayRoutes    GatewayRoute[]
+  gatewayConsumers GatewayConsumer[]
 
   @@unique([orgId, slug])
   @@index([orgId])
@@ -579,5 +584,108 @@ model AlertRule {
   @@index([enabled])
   @@map("pulseops_alert_rules")
 }
+
+// ------------------------------------------------------------
+// Phase 6: GateFlow — API Gateway and Developer Platform
+// ------------------------------------------------------------
+
+enum RouteStatus {
+  active
+  inactive
+  deprecated
+}
+
+enum ConsumerTier {
+  free
+  pro
+  enterprise
+}
+
+model GatewayRoute {
+  id               String       @id @default(uuid())
+  orgId            String
+  workspaceId      String
+  name             String
+  pathPattern      String       // e.g. "/api/v1/payments/*", "/webhooks/stripe"
+  upstreamUrl      String       // e.g. "https://payments.internal.nexusone.dev:8443"
+  methods          String[]     @default(["GET", "POST", "PUT", "PATCH", "DELETE"])
+  stripPath        Boolean      @default(true)
+  rateLimitRps     Int          @default(100)
+  rateLimitBurst   Int          @default(200)
+  corsEnabled      Boolean      @default(true)
+  authRequired     Boolean      @default(true)
+  transformHeaders Json         @default("{}") // injected/mutated headers
+  timeoutMs        Int          @default(10000)
+  status           RouteStatus  @default(active)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  organization Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  metrics      GatewayMetric[]
+
+  @@unique([orgId, pathPattern])
+  @@index([orgId, workspaceId])
+  @@index([status])
+  @@map("gateflow_routes")
+}
+
+model GatewayConsumer {
+  id             String       @id @default(uuid())
+  orgId          String
+  workspaceId    String
+  name           String
+  tier           ConsumerTier @default(free)
+  customQuotaRps Int?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organization Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  apiKeys      GatewayApiKey[]
+  metrics      GatewayMetric[]
+
+  @@index([orgId, workspaceId])
+  @@map("gateflow_consumers")
+}
+
+model GatewayApiKey {
+  id          String    @id @default(uuid())
+  consumerId  String
+  keyPrefix   String    // e.g. "gf_live_..."
+  hashedKey   String    @unique
+  name        String?
+  status      String    @default("active") // active, revoked, expired
+  expiresAt   DateTime?
+  lastUsedAt  DateTime?
+  createdAt   DateTime  @default(now())
+
+  consumer GatewayConsumer @relation(fields: [consumerId], references: [id], onDelete: Cascade)
+
+  @@index([consumerId])
+  @@index([keyPrefix])
+  @@map("gateflow_api_keys")
+}
+
+model GatewayMetric {
+  id           String   @id @default(uuid())
+  orgId        String
+  routeId      String
+  consumerId   String?
+  statusCode   Int
+  latencyMs    Int
+  requestSize  Int      @default(0)
+  responseSize Int      @default(0)
+  timestamp    DateTime @default(now())
+
+  organization Organization     @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  route        GatewayRoute     @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  consumer     GatewayConsumer? @relation(fields: [consumerId], references: [id], onDelete: SetNull)
+
+  @@index([orgId, timestamp])
+  @@index([routeId, timestamp])
+  @@map("gateflow_metrics")
+}
+
 
 

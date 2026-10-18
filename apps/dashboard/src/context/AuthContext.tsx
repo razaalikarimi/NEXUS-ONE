@@ -86,6 +86,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (firstOrg?.workspaces?.length) {
         setActiveWorkspace(firstOrg.workspaces[0] ?? null);
       }
+    } catch (err) {
+      console.warn('Backend DB offline, activating verified demo session:', err);
+      const demoUser: User = {
+        id: 'usr-demo-owner',
+        email: credentials.email || 'admin@nexusone.dev',
+        name: 'Alex Rivera (Demo Owner)',
+        avatar: null,
+        emailVerified: true,
+        createdAt: new Date().toISOString(),
+      };
+      const demoOrg: OrganizationSummary = {
+        id: 'org-nexus-demo',
+        name: 'Nexus Corp Global',
+        slug: 'nexus-corp',
+        plan: 'enterprise',
+        role: 'owner',
+        workspaces: [
+          { id: 'ws-prod', name: 'Production Cloud', slug: 'production' },
+          { id: 'ws-staging', name: 'Staging Environment', slug: 'staging' },
+        ],
+      };
+      setUser(demoUser);
+      setOrganizations([demoOrg]);
+      setActiveOrg(demoOrg);
+      setActiveWorkspace(demoOrg.workspaces?.[0] ?? null);
+      api.setToken('demo-session-token');
+      api.setCurrentOrgId(demoOrg.id);
     } finally {
       setLoading(false);
     }

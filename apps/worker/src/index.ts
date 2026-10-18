@@ -8,6 +8,7 @@
 import { createLogger } from '@nexus-one/logger';
 import { createAgentForgeWorker } from './processors/agentforge.js';
 import { createPulseOpsWorker } from './processors/pulseops.js';
+import { createGateFlowWorker } from './processors/gateflow.js';
 
 const logger = createLogger({ service: 'nexus-one-worker' });
 
@@ -23,6 +24,8 @@ async function start() {
     logger.info('Registered AgentForge workflow-execution worker');
     createPulseOpsWorker({ url: redisUrl });
     logger.info('Registered PulseOps telemetry-ingestion worker');
+    createGateFlowWorker({ url: redisUrl });
+    logger.info('Registered GateFlow gateway-metrics worker');
   } catch (err: unknown) {
     logger.warn({ error: err instanceof Error ? err.message : String(err) }, 'Redis offline, running in standalone worker mode');
   }

@@ -161,12 +161,52 @@ export const createAlertRuleSchema = z.object({
   enabled: z.boolean().default(true),
 });
 
+// ---- GateFlow schemas ----
+
+export const httpMethodSchema = z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD']);
+
+export const createGatewayRouteSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(100),
+  pathPattern: z.string().min(1, 'Path pattern is required').max(200),
+  upstreamUrl: z.string().url('Invalid upstream URL'),
+  methods: z.array(httpMethodSchema).min(1, 'At least one HTTP method is required').default(['GET', 'POST']),
+  stripPath: z.boolean().default(true),
+  rateLimitRps: z.number().int().min(1).max(50000).default(100),
+  rateLimitBurst: z.number().int().min(1).max(100000).default(200),
+  corsEnabled: z.boolean().default(true),
+  authRequired: z.boolean().default(true),
+  transformHeaders: z.record(z.string()).default({}),
+  timeoutMs: z.number().int().min(100).max(60000).default(10000),
+});
+
+export const updateGatewayRouteSchema = createGatewayRouteSchema.partial().extend({
+  status: z.enum(['active', 'inactive', 'deprecated']).optional(),
+});
+
+export const createGatewayConsumerSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(100),
+  tier: z.enum(['free', 'pro', 'enterprise']).default('free'),
+  customQuotaRps: z.number().int().positive().optional(),
+});
+
+export const testProxyRequestSchema = z.object({
+  routeId: z.string().uuid('Invalid route ID'),
+  method: httpMethodSchema.default('GET'),
+  path: z.string().default('/'),
+  headers: z.record(z.string()).default({}),
+  body: z.unknown().optional(),
+});
+
 export type CreateServiceInput = z.infer<typeof createServiceSchema>;
 export type CreateTelemetryEventInput = z.infer<typeof createTelemetryEventSchema>;
 export type CreateIncidentInput = z.infer<typeof createIncidentSchema>;
 export type UpdateIncidentInput = z.infer<typeof updateIncidentSchema>;
 export type CreateIncidentEventInput = z.infer<typeof createIncidentEventSchema>;
 export type CreateAlertRuleInput = z.infer<typeof createAlertRuleSchema>;
+export type CreateGatewayRouteInput = z.infer<typeof createGatewayRouteSchema>;
+export type UpdateGatewayRouteInput = z.infer<typeof updateGatewayRouteSchema>;
+export type CreateGatewayConsumerInput = z.infer<typeof createGatewayConsumerSchema>;
+export type TestProxyRequestInput = z.infer<typeof testProxyRequestSchema>;
 
 // Re-export zod for convenience
 export { z };

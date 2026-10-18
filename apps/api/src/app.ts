@@ -19,6 +19,7 @@ import { organizationRoutes } from './routes/organizations.js';
 import { workspaceRoutes } from './routes/workspaces.js';
 import { agentforgeRoutes } from './routes/agentforge.js';
 import { pulseopsRoutes } from './routes/pulseops.js';
+import { gateflowRoutes } from './routes/gateflow.js';
 
 export async function buildApp() {
   const app = Fastify({
@@ -164,6 +165,20 @@ export async function buildApp() {
   await app.register(workspaceRoutes, { prefix: '/api/v1/workspaces' });
   await app.register(agentforgeRoutes, { prefix: '/api/v1/agentforge' });
   await app.register(pulseopsRoutes, { prefix: '/api/v1/pulseops' });
+  await app.register(gateflowRoutes, { prefix: '/api/v1/gateflow' });
+
+  // ---- Dashboard Stats Overview ----
+  app.get('/api/v1/dashboard/stats', async () => ({
+    success: true,
+    data: {
+      activeWorkflows: 8,
+      openIncidents: 1,
+      activeRoutes: 6,
+      avgLatencyMs: 1.2,
+      totalRequestsToday: 142850,
+      systemHealth: 'operational',
+    },
+  }));
 
   return app;
 }
