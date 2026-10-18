@@ -1,29 +1,58 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { DashboardLayout } from './components/Layout/DashboardLayout';
 
-/**
- * Dashboard application root.
- * Phase 3 adds full layout, auth, sidebar, and product routes.
- */
+import { LoginPage } from './pages/Login';
+import { RegisterPage } from './pages/Register';
+import { OverviewPage } from './pages/Overview';
+
+import { AgentForgePage } from './pages/products/AgentForgePage';
+import { PulseOpsPage } from './pages/products/PulseOpsPage';
+import { GateFlowPage } from './pages/products/GateFlowPage';
+import { CortexRAGPage } from './pages/products/CortexRAGPage';
+import { SyncSpacePage } from './pages/products/SyncSpacePage';
+import { SentinelXPage } from './pages/products/SentinelXPage';
+import { CloudPilotPage } from './pages/products/CloudPilotPage';
+
+import { OrganizationSettingsPage } from './pages/settings/OrganizationSettingsPage';
+import { MembersSettingsPage } from './pages/settings/MembersSettingsPage';
+import { ApiKeysPage } from './pages/settings/ApiKeysPage';
+
 export function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<DashboardHome />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public Auth Routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
 
-function DashboardHome() {
-  return (
-    <main style={{ fontFamily: 'var(--nx-font-sans)', padding: 'var(--nx-space-8)' }}>
-      <h1>NEXUS ONE Dashboard</h1>
-      <p style={{ color: 'var(--nx-text-secondary)' }}>
-        Build. Observe. Automate. Understand.
-      </p>
-      <p style={{ marginTop: 'var(--nx-space-4)', color: 'var(--nx-text-tertiary)' }}>
-        Phase 1 complete — monorepo foundation verified.
-      </p>
-    </main>
+          {/* Protected Product & Console Shell Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/" element={<OverviewPage />} />
+
+              {/* The Seven Products */}
+              <Route path="/agentforge" element={<AgentForgePage />} />
+              <Route path="/pulseops" element={<PulseOpsPage />} />
+              <Route path="/gateflow" element={<GateFlowPage />} />
+              <Route path="/cortexrag" element={<CortexRAGPage />} />
+              <Route path="/syncspace" element={<SyncSpacePage />} />
+              <Route path="/sentinelx" element={<SentinelXPage />} />
+              <Route path="/cloudpilot" element={<CloudPilotPage />} />
+
+              {/* Tenant Settings */}
+              <Route path="/settings/organization" element={<OrganizationSettingsPage />} />
+              <Route path="/settings/members" element={<MembersSettingsPage />} />
+              <Route path="/settings/api-keys" element={<ApiKeysPage />} />
+            </Route>
+          </Route>
+
+          {/* Catch-all */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }

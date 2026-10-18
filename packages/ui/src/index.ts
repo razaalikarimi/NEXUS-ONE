@@ -1,11 +1,12 @@
 // ============================================================
 // @nexus-one/ui — Shared React Component Library
 // ============================================================
-// Reusable, accessible, theme-aware components built on
-// the design token system. Expanded in Phase 3.
-// ============================================================
 
-// Phase 1: Minimal exports to validate build pipeline.
-// Phase 3: Full component library (Button, Input, Dialog, etc.)
-
-export { Button } from './components/Button.js';
+export * from './components/Button.js';
+export * from './components/Card.js';
+export * from './components/Badge.js';
+export * from './components/Input.js';
+export * from './components/Modal.js';
+export * from './components/Tabs.js';
+export * from './components/Avatar.js';
+export * from './components/Table.js';

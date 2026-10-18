@@ -1,4 +1,6 @@
-/* NEXUS ONE Dashboard — Global Styles */
+/* ============================================================
+   NEXUS ONE Dashboard — Stylesheet
+   ============================================================ */
 
 *,
 *::before,
@@ -9,24 +11,30 @@
 }
 
 html {
-  font-family: var(--nx-font-sans);
+  font-family: var(--nx-font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
   font-size: 16px;
   line-height: var(--nx-leading-normal);
-  color: var(--nx-text-primary);
-  background-color: var(--nx-bg-primary);
+  color: #f1f5f9;
+  background-color: #030712;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   min-height: 100vh;
+  background-color: #030712;
 }
 
-/* Focus visible for keyboard navigation */
-:focus-visible {
-  outline: none;
-  box-shadow: var(--nx-focus-ring);
-  border-radius: var(--nx-radius-sm);
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+code {
+  font-family: var(--nx-font-mono, monospace);
+  font-size: 0.85em;
+  background-color: rgba(255, 255, 255, 0.08);
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
 }
 
 /* Screen reader only utility */
@@ -42,14 +50,968 @@ body {
   border-width: 0;
 }
 
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+/* Loading Screen */
+.nx-loading-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.nx-spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 3px solid rgba(99, 102, 241, 0.2);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: nx-spin 0.8s linear infinite;
+}
+
+/* ============================================================
+   Auth Pages (Login & Register)
+   ============================================================ */
+.nx-auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: radial-gradient(circle at 50% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 60%);
+}
+
+.nx-auth-card-wrap {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nx-auth-logo {
+  width: 3rem;
+  height: 3rem;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+  margin-bottom: 1.25rem;
+}
+
+.nx-brand-logo__dot {
+  width: 0.8rem;
+  height: 0.8rem;
+  background-color: #ffffff;
+  border-radius: 50%;
+}
+
+.nx-auth-heading {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.nx-auth-subheading {
+  font-size: 0.875rem;
+  color: #94a3b8;
+  margin-top: 0.25rem;
+  margin-bottom: 2rem;
+}
+
+.nx-auth-card {
+  width: 100%;
+  background-color: #0b1120 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.7) !important;
+}
+
+.nx-auth-alert {
+  padding: 0.75rem 1rem;
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 0.375rem;
+  color: #f87171;
+  font-size: 0.825rem;
+  margin-bottom: 1rem;
+}
+
+.nx-auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: #475569;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nx-auth-divider::before,
+.nx-auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.nx-auth-divider span {
+  padding: 0 0.75rem;
+}
+
+.nx-quickfill-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.nx-quickfill-btn {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.nx-quickfill-btn:hover {
+  background-color: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.nx-quickfill-btn strong {
+  font-size: 0.8rem;
+  color: #f1f5f9;
+}
+
+.nx-quickfill-btn span {
+  font-size: 0.7rem;
+  color: #818cf8;
+}
+
+.nx-auth-footer-link {
+  text-align: center;
+  font-size: 0.825rem;
+  color: #94a3b8;
+}
+
+.nx-auth-footer-link a {
+  color: #818cf8;
+  font-weight: 500;
+}
+
+.nx-auth-footer-link a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   Dashboard Layout Shell
+   ============================================================ */
+.nx-dashboard-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.nx-sidebar {
+  width: 260px;
+  background-color: #080d1a;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.nx-sidebar__brand {
+  height: 4rem;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nx-brand-logo {
+  width: 1.75rem;
+  height: 1.75rem;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  border-radius: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nx-brand-logo__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #ffffff;
+  border-radius: 50%;
+}
+
+.nx-brand-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.nx-brand-badge {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.35rem;
+  background-color: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  border-radius: 0.25rem;
+  font-weight: 600;
+}
+
+/* Organization Switcher */
+.nx-org-switcher-wrapper {
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+.nx-org-switcher-btn {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+}
+
+.nx-org-switcher-btn:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.nx-org-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.nx-org-name {
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nx-org-meta {
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+.nx-org-chevron {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.nx-org-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 1rem;
+  right: 1rem;
+  background-color: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+  z-index: 50;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.nx-org-dropdown__title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #64748b;
+  padding: 0.25rem 0.5rem 0.5rem;
+  font-weight: 600;
+}
+
+.nx-org-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.6rem;
+  border: none;
+  background: transparent;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.nx-org-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nx-org-item--active {
+  background-color: rgba(99, 102, 241, 0.15);
+}
+
+.nx-org-item__name {
+  font-size: 0.8rem;
+  color: #f1f5f9;
+  font-weight: 500;
+}
+
+/* Sidebar Nav */
+.nx-sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.nx-nav-section-title {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #475569;
+  padding: 0.75rem 0.6rem 0.35rem;
+  font-weight: 700;
+}
+
+.nx-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.4rem;
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: #94a3b8;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.nx-nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+}
+
+.nx-nav-item--active {
+  background-color: rgba(99, 102, 241, 0.15);
+  color: #818cf8;
+  font-weight: 600;
+}
+
+.nx-nav-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.nx-nav-label {
+  flex: 1;
+}
+
+.nx-nav-indicator {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+/* Sidebar Footer */
+.nx-sidebar-footer {
+  padding: 0.75rem 0.875rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nx-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem;
+}
+
+.nx-user-details {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex: 1;
+}
+
+.nx-user-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nx-user-email {
+  font-size: 0.68rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nx-logout-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease;
+}
+
+.nx-logout-btn:hover {
+  color: #f87171;
+}
+
+/* Main Wrap */
+.nx-main-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Header */
+.nx-top-header {
+  height: 4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(3, 7, 18, 0.7);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.nx-header-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.nx-header-org {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.nx-header-sep {
+  color: #475569;
+}
+
+.nx-header-ws {
+  color: #818cf8;
+}
+
+.nx-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.nx-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: #4ade80;
+  background-color: rgba(34, 197, 94, 0.1);
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.nx-status-dot-pulse {
+  width: 0.4rem;
+  height: 0.4rem;
+  background-color: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #22c55e;
+}
+
+.nx-header-link {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.nx-header-link:hover {
+  color: #ffffff;
+}
+
+/* Page Content */
+.nx-page-content {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1300px;
+  width: 100%;
+}
+
+/* ============================================================
+   Overview & Product Shell Styling
+   ============================================================ */
+.nx-welcome-banner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 2rem;
+  gap: 1.5rem;
+}
+
+.nx-welcome-title {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.nx-welcome-desc {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin-top: 0.4rem;
+}
+
+.nx-text-highlight {
+  color: #818cf8;
+  font-weight: 600;
+}
+
+.nx-plan-tag {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.nx-welcome-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.nx-section-subhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.nx-section-subhead h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.nx-subhead-status {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* Pillar Grid */
+.nx-pillar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.nx-pillar-card-link {
+  display: block;
+}
+
+.nx-pillar-card {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.nx-pillar-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+.nx-pillar-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.nx-pillar-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.nx-pillar-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.nx-pillar-tagline {
+  font-size: 0.75rem;
+  color: #818cf8;
+  margin-bottom: 1.25rem;
+}
+
+.nx-pillar-metrics {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nx-pillar-metric-main {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.nx-pillar-metric-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.15rem;
+}
+
+.nx-pillar-accent-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+/* Dashboard Row */
+.nx-dashboard-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nx-dashboard-col-left {
+  flex: 2;
+}
+
+.nx-dashboard-col-right {
+  flex: 1;
+}
+
+/* Audit Stream */
+.nx-audit-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.nx-audit-row {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.825rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.nx-audit-badge {
+  font-family: var(--nx-font-mono, monospace);
+  font-size: 0.725rem;
+  padding: 0.15rem 0.4rem;
+  background-color: rgba(99, 102, 241, 0.1);
+  color: #818cf8;
+  border-radius: 0.25rem;
+}
+
+.nx-audit-user {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.nx-audit-desc {
+  color: #94a3b8;
+}
+
+.nx-audit-time {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* Telemetry List */
+.nx-telemetry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.nx-telemetry-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 0.85rem;
+}
+
+.nx-telemetry-label {
+  color: #94a3b8;
+}
+
+/* Product Shell General */
+.nx-product-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.nx-product-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.nx-product-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.825rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.nx-pill-tag {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.nx-product-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.nx-product-desc {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin-top: 0.35rem;
+  max-width: 700px;
+}
+
+.nx-product-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.nx-stat-title {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+
+.nx-stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.nx-stat-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.nx-table-wrap {
+  overflow-x: auto;
+}
+
+/* Tags & Badges */
+.nx-service-tag {
+  font-family: var(--nx-font-mono, monospace);
+  font-size: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.nx-method-badge {
+  font-family: var(--nx-font-mono, monospace);
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.25rem;
+}
+
+.nx-method--get { background-color: rgba(34, 197, 94, 0.15); color: #4ade80; }
+.nx-method--post { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+.nx-method--put { background-color: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+.nx-method--delete { background-color: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+.nx-provider-badge {
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nx-active-users {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.nx-presence-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  background-color: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #22c55e;
+}
+
+/* Query results in Cortex */
+.nx-query-results {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.nx-result-card {
+  background-color: rgba(2, 6, 23, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.nx-result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.nx-result-snippet {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.nx-collection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.nx-collection-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background-color: rgba(2, 6, 23, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+}
+
+.nx-collection-meta {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.25rem;
+}
+
+/* Settings details */
+.nx-detail-group {
+  margin-bottom: 1.25rem;
+}
+
+.nx-detail-group label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+
+.nx-detail-value {
+  font-size: 1rem;
+  color: #f1f5f9;
+  font-weight: 500;
+}
+
+.nx-audit-action {
+  font-family: var(--nx-font-mono, monospace);
+  font-size: 0.75rem;
+  background-color: rgba(99, 102, 241, 0.1);
+  color: #818cf8;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+}
+
+.nx-key-display {
+  background-color: rgba(2, 6, 23, 0.8);
+  border: 1px dashed rgba(99, 102, 241, 0.4);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  word-break: break-all;
+  margin-top: 1rem;
+}
+
+.nx-key-display code {
+  color: #4ade80;
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .nx-sidebar {
+    width: 70px;
+  }
+  .nx-brand-title,
+  .nx-brand-badge,
+  .nx-org-switcher-wrapper,
+  .nx-nav-section-title,
+  .nx-nav-label,
+  .nx-nav-indicator,
+  .nx-user-details {
+    display: none;
+  }
+  .nx-dashboard-row {
+    flex-direction: column;
+  }
+  .nx-page-content {
+    padding: 1rem;
   }
 }
