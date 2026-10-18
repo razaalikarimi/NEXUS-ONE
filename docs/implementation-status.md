@@ -59,15 +59,15 @@
 
 ## Phases 4–10 — Products
 
-| Product | Status |
-|---------|--------|
-| AgentForge | ⬜ NOT IMPLEMENTED |
-| CortexRAG | ⬜ NOT IMPLEMENTED |
-| PulseOps | ⬜ NOT IMPLEMENTED |
-| GateFlow | ⬜ NOT IMPLEMENTED |
-| SyncSpace | ⬜ NOT IMPLEMENTED |
-| SentinelX | ⬜ NOT IMPLEMENTED |
-| CloudPilot | ⬜ NOT IMPLEMENTED |
+| Product | Status | Notes |
+|---------|--------|-------|
+| AgentForge | ✅ PASS | Prisma models (workflows, versions, nodes, edges, runs, steps, approvals), DAG engine, Fastify API, BullMQ processor, visual canvas & test simulator |
+| CortexRAG | ⬜ NOT IMPLEMENTED | Next phase candidate |
+| PulseOps | ⬜ NOT IMPLEMENTED | Next phase candidate |
+| GateFlow | ⬜ NOT IMPLEMENTED | Next phase candidate |
+| SyncSpace | ⬜ NOT IMPLEMENTED | Next phase candidate |
+| SentinelX | ⬜ NOT IMPLEMENTED | Next phase candidate |
+| CloudPilot | ⬜ NOT IMPLEMENTED | Next phase candidate |
 
 ## Cross-cutting Concerns
 
