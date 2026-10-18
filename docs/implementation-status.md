@@ -64,7 +64,7 @@
 | AgentForge | ✅ PASS | Prisma models (workflows, versions, nodes, edges, runs, steps, approvals), DAG engine, Fastify API, BullMQ processor, visual canvas & test simulator |
 | PulseOps | ✅ PASS | Telemetry ingestion, error fingerprinting (SHA-256), ErrorGroup aggregation, live incident war room, AI root cause diagnosis, Fastify routes, BullMQ worker, interactive dashboard simulator |
 | GateFlow | ✅ PASS | Token bucket rate limiting, proxy route matcher, header sanitization/transforms, Fastify API routes, BullMQ metrics worker, interactive Live Gateway Tester & consumer key provisioning |
-| CortexRAG | ⬜ NOT IMPLEMENTED | Next phase candidate (Phase 7) |
+| CortexRAG | ✅ PASS | Semantic chunking, cosine dense retrieval, BM25 sparse ranking, Reciprocal Rank Fusion, grounded answer synthesis with clickable source citations, Fastify API routes, BullMQ ingest processor, interactive RAG playground & knowledge collections |
 | SyncSpace | ⬜ NOT IMPLEMENTED | Planned Phase 8 |
 | SentinelX | ⬜ NOT IMPLEMENTED | Planned Phase 9 |
 | CloudPilot | ⬜ NOT IMPLEMENTED | Planned Phase 10 |

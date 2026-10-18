@@ -20,6 +20,7 @@ import { workspaceRoutes } from './routes/workspaces.js';
 import { agentforgeRoutes } from './routes/agentforge.js';
 import { pulseopsRoutes } from './routes/pulseops.js';
 import { gateflowRoutes } from './routes/gateflow.js';
+import { cortexragRoutes } from './routes/cortexrag.js';
 
 export async function buildApp() {
   const app = Fastify({
@@ -166,6 +167,7 @@ export async function buildApp() {
   await app.register(agentforgeRoutes, { prefix: '/api/v1/agentforge' });
   await app.register(pulseopsRoutes, { prefix: '/api/v1/pulseops' });
   await app.register(gateflowRoutes, { prefix: '/api/v1/gateflow' });
+  await app.register(cortexragRoutes, { prefix: '/api/v1/cortexrag' });
 
   // ---- Dashboard Stats Overview ----
   app.get('/api/v1/dashboard/stats', async () => ({

@@ -103,6 +103,9 @@ model Organization {
   gatewayRoutes    GatewayRoute[]
   gatewayConsumers GatewayConsumer[]
   gatewayMetrics   GatewayMetric[]
+  knowledgeBases   KnowledgeBase[]
+  documents        KnowledgeDocument[]
+  ragQueries       RagQueryLog[]
 
   @@map("organizations")
 }
@@ -125,6 +128,8 @@ model Workspace {
   alertRules   AlertRule[]
   gatewayRoutes    GatewayRoute[]
   gatewayConsumers GatewayConsumer[]
+  knowledgeBases   KnowledgeBase[]
+  documents        KnowledgeDocument[]
 
   @@unique([orgId, slug])
   @@index([orgId])
@@ -686,6 +691,103 @@ model GatewayMetric {
   @@index([routeId, timestamp])
   @@map("gateflow_metrics")
 }
+
+// ------------------------------------------------------------
+// Phase 7: CortexRAG — Enterprise Knowledge Intelligence
+// ------------------------------------------------------------
+
+enum DocumentStatus {
+  pending
+  processing
+  indexed
+  failed
+}
+
+model KnowledgeBase {
+  id             String   @id @default(uuid())
+  orgId          String
+  workspaceId    String
+  name           String
+  description    String?
+  embeddingModel String   @default("text-embedding-3-small")
+  chunkSize      Int      @default(512)
+  chunkOverlap   Int      @default(64)
+  documentCount  Int      @default(0)
+  chunkCount     Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization        @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  documents    KnowledgeDocument[]
+  queries      RagQueryLog[]
+
+  @@unique([orgId, name])
+  @@index([orgId, workspaceId])
+  @@map("cortexrag_knowledge_bases")
+}
+
+model KnowledgeDocument {
+  id              String         @id @default(uuid())
+  knowledgeBaseId String
+  orgId           String
+  workspaceId     String
+  title           String
+  fileType        String         @default("markdown") // markdown, pdf, docx, json, txt
+  fileSize        Int            @default(0)
+  status          DocumentStatus @default(indexed)
+  rawContent      String
+  chunkCount      Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  organization  Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace     Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  knowledgeBase KnowledgeBase   @relation(fields: [knowledgeBaseId], references: [id], onDelete: Cascade)
+  chunks        DocumentChunk[]
+
+  @@index([knowledgeBaseId])
+  @@index([orgId, workspaceId])
+  @@map("cortexrag_documents")
+}
+
+model DocumentChunk {
+  id              String   @id @default(uuid())
+  documentId      String
+  knowledgeBaseId String
+  chunkIndex      Int
+  content         String
+  tokenCount      Int
+  metadata        Json     @default("{}") // section, page, headers
+  createdAt       DateTime @default(now())
+
+  document KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId, chunkIndex])
+  @@index([knowledgeBaseId])
+  @@map("cortexrag_document_chunks")
+}
+
+model RagQueryLog {
+  id                String   @id @default(uuid())
+  knowledgeBaseId   String
+  orgId             String
+  query             String
+  retrievedChunkIds String[]
+  hybridScore       Float
+  latencyMs         Int
+  synthesizedAnswer String
+  citationsCount    Int      @default(0)
+  createdAt         DateTime @default(now())
+
+  organization  Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  knowledgeBase KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id], onDelete: Cascade)
+
+  @@index([knowledgeBaseId, createdAt])
+  @@index([orgId])
+  @@map("cortexrag_query_logs")
+}
+
 
 
 

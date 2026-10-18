@@ -197,6 +197,29 @@ export const testProxyRequestSchema = z.object({
   body: z.unknown().optional(),
 });
 
+// ---- CortexRAG schemas ----
+
+export const createKnowledgeBaseSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(100),
+  description: z.string().max(500).optional(),
+  embeddingModel: z.string().default('text-embedding-3-small'),
+  chunkSize: z.number().int().min(64).max(2048).default(512),
+  chunkOverlap: z.number().int().min(0).max(256).default(64),
+});
+
+export const createKnowledgeDocumentSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(200),
+  fileType: z.enum(['markdown', 'pdf', 'docx', 'json', 'txt']).default('markdown'),
+  rawContent: z.string().min(1, 'Document content is required').max(500000),
+});
+
+export const queryRagSchema = z.object({
+  knowledgeBaseId: z.string().uuid('Invalid knowledge base ID'),
+  query: z.string().min(1, 'Query is required').max(1000),
+  topK: z.number().int().min(1).max(20).default(5),
+  hybridAlpha: z.number().min(0).max(1).default(0.6),
+});
+
 export type CreateServiceInput = z.infer<typeof createServiceSchema>;
 export type CreateTelemetryEventInput = z.infer<typeof createTelemetryEventSchema>;
 export type CreateIncidentInput = z.infer<typeof createIncidentSchema>;
@@ -207,6 +230,9 @@ export type CreateGatewayRouteInput = z.infer<typeof createGatewayRouteSchema>;
 export type UpdateGatewayRouteInput = z.infer<typeof updateGatewayRouteSchema>;
 export type CreateGatewayConsumerInput = z.infer<typeof createGatewayConsumerSchema>;
 export type TestProxyRequestInput = z.infer<typeof testProxyRequestSchema>;
+export type CreateKnowledgeBaseInput = z.infer<typeof createKnowledgeBaseSchema>;
+export type CreateKnowledgeDocumentInput = z.infer<typeof createKnowledgeDocumentSchema>;
+export type QueryRagInput = z.infer<typeof queryRagSchema>;
 
 // Re-export zod for convenience
 export { z };
