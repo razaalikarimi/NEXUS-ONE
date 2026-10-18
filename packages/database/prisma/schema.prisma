@@ -1,0 +1,28 @@
+// Prisma Schema — NEXUS ONE
+// Phase 1: Minimal schema to validate Prisma setup.
+// Phase 2: Full shared platform + product-specific entities.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---- Placeholder model for Phase 1 build validation ----
+// This will be replaced with the full schema in Phase 2.
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String
+  passwordHash  String
+  avatar        String?
+  emailVerified Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("users")
+}

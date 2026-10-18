@@ -1,0 +1,223 @@
+/* ============================================================
+   NEXUS ONE — Design Tokens
+   ============================================================
+   Centralized CSS custom properties for the entire platform.
+   Import this file once in each application's root stylesheet.
+   ============================================================ */
+
+:root {
+  /* ---- Color: Brand ---- */
+  --nx-brand-50: #eef2ff;
+  --nx-brand-100: #e0e7ff;
+  --nx-brand-200: #c7d2fe;
+  --nx-brand-300: #a5b4fc;
+  --nx-brand-400: #818cf8;
+  --nx-brand-500: #6366f1;
+  --nx-brand-600: #4f46e5;
+  --nx-brand-700: #4338ca;
+  --nx-brand-800: #3730a3;
+  --nx-brand-900: #312e81;
+  --nx-brand-950: #1e1b4b;
+
+  /* ---- Color: Neutral ---- */
+  --nx-neutral-0: #ffffff;
+  --nx-neutral-50: #f8fafc;
+  --nx-neutral-100: #f1f5f9;
+  --nx-neutral-200: #e2e8f0;
+  --nx-neutral-300: #cbd5e1;
+  --nx-neutral-400: #94a3b8;
+  --nx-neutral-500: #64748b;
+  --nx-neutral-600: #475569;
+  --nx-neutral-700: #334155;
+  --nx-neutral-800: #1e293b;
+  --nx-neutral-900: #0f172a;
+  --nx-neutral-950: #020617;
+
+  /* ---- Color: Semantic ---- */
+  --nx-success-50: #f0fdf4;
+  --nx-success-500: #22c55e;
+  --nx-success-600: #16a34a;
+  --nx-success-700: #15803d;
+
+  --nx-warning-50: #fffbeb;
+  --nx-warning-500: #f59e0b;
+  --nx-warning-600: #d97706;
+  --nx-warning-700: #b45309;
+
+  --nx-error-50: #fef2f2;
+  --nx-error-500: #ef4444;
+  --nx-error-600: #dc2626;
+  --nx-error-700: #b91c1c;
+
+  --nx-info-50: #eff6ff;
+  --nx-info-500: #3b82f6;
+  --nx-info-600: #2563eb;
+  --nx-info-700: #1d4ed8;
+
+  /* ---- Color: Product accents ---- */
+  --nx-agentforge: #8b5cf6;
+  --nx-pulseops: #ef4444;
+  --nx-gateflow: #06b6d4;
+  --nx-cortexrag: #f59e0b;
+  --nx-syncspace: #22c55e;
+  --nx-sentinelx: #f97316;
+  --nx-cloudpilot: #3b82f6;
+
+  /* ---- Typography ---- */
+  --nx-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --nx-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  --nx-text-xs: 0.75rem;     /* 12px */
+  --nx-text-sm: 0.875rem;    /* 14px */
+  --nx-text-base: 1rem;      /* 16px */
+  --nx-text-lg: 1.125rem;    /* 18px */
+  --nx-text-xl: 1.25rem;     /* 20px */
+  --nx-text-2xl: 1.5rem;     /* 24px */
+  --nx-text-3xl: 1.875rem;   /* 30px */
+  --nx-text-4xl: 2.25rem;    /* 36px */
+  --nx-text-5xl: 3rem;       /* 48px */
+  --nx-text-6xl: 3.75rem;    /* 60px */
+
+  --nx-leading-tight: 1.25;
+  --nx-leading-snug: 1.375;
+  --nx-leading-normal: 1.5;
+  --nx-leading-relaxed: 1.625;
+
+  --nx-weight-normal: 400;
+  --nx-weight-medium: 500;
+  --nx-weight-semibold: 600;
+  --nx-weight-bold: 700;
+
+  --nx-content-width: 72ch;
+
+  /* ---- Spacing ---- */
+  --nx-space-0: 0;
+  --nx-space-1: 0.25rem;   /* 4px */
+  --nx-space-2: 0.5rem;    /* 8px */
+  --nx-space-3: 0.75rem;   /* 12px */
+  --nx-space-4: 1rem;      /* 16px */
+  --nx-space-5: 1.25rem;   /* 20px */
+  --nx-space-6: 1.5rem;    /* 24px */
+  --nx-space-8: 2rem;      /* 32px */
+  --nx-space-10: 2.5rem;   /* 40px */
+  --nx-space-12: 3rem;     /* 48px */
+  --nx-space-16: 4rem;     /* 64px */
+  --nx-space-20: 5rem;     /* 80px */
+  --nx-space-24: 6rem;     /* 96px */
+
+  /* ---- Border radius ---- */
+  --nx-radius-sm: 0.25rem;
+  --nx-radius-md: 0.375rem;
+  --nx-radius-lg: 0.5rem;
+  --nx-radius-xl: 0.75rem;
+  --nx-radius-2xl: 1rem;
+  --nx-radius-full: 9999px;
+
+  /* ---- Borders ---- */
+  --nx-border-width: 1px;
+  --nx-border-color: var(--nx-neutral-200);
+
+  /* ---- Elevation / Shadows ---- */
+  --nx-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --nx-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --nx-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --nx-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --nx-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* ---- Motion ---- */
+  --nx-duration-fast: 100ms;
+  --nx-duration-normal: 200ms;
+  --nx-duration-slow: 300ms;
+  --nx-duration-slower: 500ms;
+  --nx-easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --nx-easing-in: cubic-bezier(0.4, 0, 1, 1);
+  --nx-easing-out: cubic-bezier(0, 0, 0.2, 1);
+  --nx-easing-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---- Z-index scale ---- */
+  --nx-z-dropdown: 100;
+  --nx-z-sticky: 200;
+  --nx-z-overlay: 300;
+  --nx-z-modal: 400;
+  --nx-z-popover: 500;
+  --nx-z-toast: 600;
+  --nx-z-tooltip: 700;
+
+  /* ---- Breakpoints (for reference — use in media queries) ---- */
+  /* Mobile: 0–639px */
+  /* Tablet: 640–1023px */
+  /* Laptop: 1024–1279px */
+  /* Desktop: 1280–1535px */
+  /* Wide: 1536px+ */
+
+  /* ---- Semantic theme tokens (Light mode defaults) ---- */
+  --nx-bg-primary: var(--nx-neutral-0);
+  --nx-bg-secondary: var(--nx-neutral-50);
+  --nx-bg-tertiary: var(--nx-neutral-100);
+  --nx-bg-inverse: var(--nx-neutral-900);
+  --nx-bg-brand: var(--nx-brand-600);
+  --nx-bg-brand-subtle: var(--nx-brand-50);
+
+  --nx-text-primary: var(--nx-neutral-900);
+  --nx-text-secondary: var(--nx-neutral-600);
+  --nx-text-tertiary: var(--nx-neutral-400);
+  --nx-text-inverse: var(--nx-neutral-0);
+  --nx-text-brand: var(--nx-brand-600);
+  --nx-text-link: var(--nx-brand-600);
+  --nx-text-link-hover: var(--nx-brand-700);
+
+  --nx-border-primary: var(--nx-neutral-200);
+  --nx-border-secondary: var(--nx-neutral-100);
+  --nx-border-focus: var(--nx-brand-500);
+  --nx-border-error: var(--nx-error-500);
+
+  --nx-surface-elevated: var(--nx-neutral-0);
+  --nx-surface-overlay: rgb(0 0 0 / 0.5);
+
+  /* ---- Focus ring ---- */
+  --nx-focus-ring: 0 0 0 2px var(--nx-bg-primary), 0 0 0 4px var(--nx-border-focus);
+}
+
+/* ---- Dark theme ---- */
+[data-theme='dark'] {
+  --nx-bg-primary: var(--nx-neutral-900);
+  --nx-bg-secondary: var(--nx-neutral-800);
+  --nx-bg-tertiary: var(--nx-neutral-700);
+  --nx-bg-inverse: var(--nx-neutral-0);
+  --nx-bg-brand: var(--nx-brand-500);
+  --nx-bg-brand-subtle: var(--nx-brand-950);
+
+  --nx-text-primary: var(--nx-neutral-50);
+  --nx-text-secondary: var(--nx-neutral-400);
+  --nx-text-tertiary: var(--nx-neutral-500);
+  --nx-text-inverse: var(--nx-neutral-900);
+  --nx-text-brand: var(--nx-brand-400);
+  --nx-text-link: var(--nx-brand-400);
+  --nx-text-link-hover: var(--nx-brand-300);
+
+  --nx-border-primary: var(--nx-neutral-700);
+  --nx-border-secondary: var(--nx-neutral-800);
+  --nx-border-focus: var(--nx-brand-400);
+  --nx-border-error: var(--nx-error-500);
+
+  --nx-surface-elevated: var(--nx-neutral-800);
+  --nx-surface-overlay: rgb(0 0 0 / 0.7);
+
+  --nx-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --nx-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+  --nx-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --nx-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  --nx-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+
+  --nx-focus-ring: 0 0 0 2px var(--nx-bg-primary), 0 0 0 4px var(--nx-border-focus);
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --nx-duration-fast: 0ms;
+    --nx-duration-normal: 0ms;
+    --nx-duration-slow: 0ms;
+    --nx-duration-slower: 0ms;
+  }
+}

@@ -1,0 +1,207 @@
+/* NEXUS ONE Marketing — Global Styles */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--nx-font-sans);
+  font-size: 16px;
+  line-height: var(--nx-leading-normal);
+  color: var(--nx-text-primary);
+  background-color: var(--nx-bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+}
+
+/* Hero */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: var(--nx-space-8);
+  text-align: center;
+  background: linear-gradient(
+    135deg,
+    var(--nx-brand-950) 0%,
+    var(--nx-brand-900) 50%,
+    var(--nx-neutral-900) 100%
+  );
+  color: var(--nx-neutral-50);
+}
+
+.hero h1 {
+  font-size: var(--nx-text-6xl);
+  font-weight: var(--nx-weight-bold);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--nx-space-4);
+}
+
+.hero .tagline {
+  font-size: var(--nx-text-2xl);
+  font-weight: var(--nx-weight-medium);
+  color: var(--nx-brand-300);
+  margin-bottom: var(--nx-space-6);
+}
+
+.hero .description {
+  font-size: var(--nx-text-lg);
+  color: var(--nx-neutral-300);
+  max-width: var(--nx-content-width);
+  margin: 0 auto var(--nx-space-8);
+}
+
+.cta-group {
+  display: flex;
+  gap: var(--nx-space-4);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--nx-space-3) var(--nx-space-6);
+  border-radius: var(--nx-radius-lg);
+  font-size: var(--nx-text-base);
+  font-weight: var(--nx-weight-semibold);
+  text-decoration: none;
+  transition: all var(--nx-duration-normal) var(--nx-easing-default);
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--nx-brand-600);
+  color: var(--nx-neutral-0);
+}
+
+.btn-primary:hover {
+  background: var(--nx-brand-500);
+  transform: translateY(-1px);
+  box-shadow: var(--nx-shadow-lg);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--nx-neutral-200);
+  border: var(--nx-border-width) solid var(--nx-neutral-600);
+}
+
+.btn-secondary:hover {
+  background: var(--nx-neutral-800);
+  border-color: var(--nx-neutral-500);
+}
+
+/* Products section */
+.products {
+  padding: var(--nx-space-24) var(--nx-space-8);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.products h2 {
+  font-size: var(--nx-text-4xl);
+  font-weight: var(--nx-weight-bold);
+  text-align: center;
+  margin-bottom: var(--nx-space-12);
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--nx-space-6);
+}
+
+.product-card {
+  padding: var(--nx-space-6);
+  border-radius: var(--nx-radius-xl);
+  border: var(--nx-border-width) solid var(--nx-border-primary);
+  background: var(--nx-bg-secondary);
+  transition: all var(--nx-duration-normal) var(--nx-easing-default);
+}
+
+.product-card:hover {
+  border-color: var(--nx-brand-400);
+  box-shadow: var(--nx-shadow-md);
+  transform: translateY(-2px);
+}
+
+.product-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--nx-radius-lg);
+  font-size: var(--nx-text-2xl);
+  margin-bottom: var(--nx-space-4);
+  background: color-mix(in srgb, var(--product-color) 15%, transparent);
+}
+
+.product-card h3 {
+  font-size: var(--nx-text-xl);
+  font-weight: var(--nx-weight-semibold);
+  margin-bottom: var(--nx-space-2);
+}
+
+.product-card p {
+  color: var(--nx-text-secondary);
+  font-size: var(--nx-text-sm);
+  line-height: var(--nx-leading-relaxed);
+}
+
+/* Focus visible */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--nx-focus-ring);
+  border-radius: var(--nx-radius-sm);
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Responsive */
+@media (max-width: 639px) {
+  .hero h1 {
+    font-size: var(--nx-text-4xl);
+  }
+  .hero .tagline {
+    font-size: var(--nx-text-xl);
+  }
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+}

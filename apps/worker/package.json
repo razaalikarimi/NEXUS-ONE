@@ -1,0 +1,32 @@
+{
+  "name": "@nexus-one/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist *.tsbuildinfo",
+    "lint": "eslint src/ --ext .ts",
+    "test": "vitest run",
+    "test:unit": "vitest run"
+  },
+  "dependencies": {
+    "@nexus-one/database": "*",
+    "@nexus-one/config": "*",
+    "@nexus-one/types": "*",
+    "@nexus-one/logger": "*",
+    "@nexus-one/integrations": "*",
+    "bullmq": "^5.12.0",
+    "ioredis": "^5.4.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "tsx": "^4.16.0",
+    "rimraf": "^6.0.1",
+    "vitest": "^1.6.0",
+    "@types/node": "^20.14.0"
+  }
+}
