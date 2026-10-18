@@ -113,5 +113,60 @@ export type InviteMemberInput = z.infer<typeof inviteMemberSchema>;
 export type UpdateMemberRoleInput = z.infer<typeof updateMemberRoleSchema>;
 export type PaginationInput = z.infer<typeof paginationSchema>;
 
+// ---- PulseOps schemas ----
+
+export const createServiceSchema = z.object({
+  name: nameSchema,
+  slug: slugSchema,
+  description: z.string().max(500).optional(),
+  environment: z.enum(['production', 'staging', 'development']).default('production'),
+});
+
+export const createTelemetryEventSchema = z.object({
+  serviceId: z.string().uuid('Invalid service ID'),
+  eventType: z.enum(['error', 'latency', 'crash', 'info']).default('error'),
+  message: z.string().min(1, 'Message is required').max(1000),
+  stackTrace: z.string().optional(),
+  severity: z.enum(['critical', 'high', 'medium', 'low', 'info']).default('medium'),
+  metadata: z.record(z.unknown()).default({}),
+});
+
+export const createIncidentSchema = z.object({
+  serviceId: z.string().uuid('Invalid service ID').optional(),
+  title: z.string().min(1, 'Title is required').max(200),
+  summary: z.string().max(2000).optional(),
+  severity: z.enum(['critical', 'high', 'medium', 'low', 'info']).default('medium'),
+});
+
+export const updateIncidentSchema = z.object({
+  status: z.enum(['open', 'investigating', 'resolved', 'closed']).optional(),
+  severity: z.enum(['critical', 'high', 'medium', 'low', 'info']).optional(),
+  rootCause: z.string().max(2000).optional(),
+  resolution: z.string().max(2000).optional(),
+});
+
+export const createIncidentEventSchema = z.object({
+  eventType: z.enum(['state_change', 'comment', 'ai_diagnosis', 'runbook_action']),
+  message: z.string().min(1, 'Message is required').max(2000),
+  metadata: z.record(z.unknown()).default({}),
+});
+
+export const createAlertRuleSchema = z.object({
+  serviceId: z.string().uuid('Invalid service ID').optional(),
+  name: z.string().min(1, 'Name is required').max(100),
+  conditionType: z.enum(['error_rate_spike', 'latency_p99', 'service_down']),
+  threshold: z.number().positive(),
+  timeWindowMinutes: z.number().int().min(1).max(60).default(5),
+  severity: z.enum(['critical', 'high', 'medium', 'low', 'info']).default('high'),
+  enabled: z.boolean().default(true),
+});
+
+export type CreateServiceInput = z.infer<typeof createServiceSchema>;
+export type CreateTelemetryEventInput = z.infer<typeof createTelemetryEventSchema>;
+export type CreateIncidentInput = z.infer<typeof createIncidentSchema>;
+export type UpdateIncidentInput = z.infer<typeof updateIncidentSchema>;
+export type CreateIncidentEventInput = z.infer<typeof createIncidentEventSchema>;
+export type CreateAlertRuleInput = z.infer<typeof createAlertRuleSchema>;
+
 // Re-export zod for convenience
 export { z };

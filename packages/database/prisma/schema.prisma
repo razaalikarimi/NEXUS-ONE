@@ -96,6 +96,10 @@ model Organization {
   notifications Notification[]
   workflows   Workflow[]
   workflowRuns WorkflowRun[]
+  services    Service[]
+  incidents   Incident[]
+  errorGroups ErrorGroup[]
+  alertRules  AlertRule[]
 
   @@map("organizations")
 }
@@ -112,6 +116,10 @@ model Workspace {
   organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
   workflows    Workflow[]
   workflowRuns WorkflowRun[]
+  services     Service[]
+  incidents    Incident[]
+  errorGroups  ErrorGroup[]
+  alertRules   AlertRule[]
 
   @@unique([orgId, slug])
   @@index([orgId])
@@ -406,4 +414,170 @@ model WorkflowApproval {
   @@index([stepId])
   @@map("agentforge_approvals")
 }
+
+// ------------------------------------------------------------
+// Phase 5: PulseOps — AI Incident Management & Observability
+// ------------------------------------------------------------
+
+enum ServiceHealth {
+  healthy
+  degraded
+  down
+}
+
+enum IncidentSeverity {
+  critical
+  high
+  medium
+  low
+  info
+}
+
+enum IncidentStatus {
+  open
+  investigating
+  resolved
+  closed
+}
+
+enum ErrorGroupStatus {
+  active
+  resolved
+  ignored
+}
+
+model Service {
+  id          String        @id @default(uuid())
+  orgId       String
+  workspaceId String
+  name        String
+  slug        String
+  description String?
+  environment String        @default("production")
+  status      ServiceHealth @default(healthy)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  organization    Organization     @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace       Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  telemetryEvents TelemetryEvent[]
+  errorGroups     ErrorGroup[]
+  incidents       Incident[]
+  alertRules      AlertRule[]
+
+  @@unique([orgId, slug])
+  @@index([orgId, workspaceId])
+  @@map("pulseops_services")
+}
+
+model TelemetryEvent {
+  id           String           @id @default(uuid())
+  orgId        String
+  workspaceId  String
+  serviceId    String
+  errorGroupId String?
+  eventType    String // error, latency, crash, info
+  message      String
+  stackTrace   String?
+  fingerprint  String
+  severity     IncidentSeverity @default(info)
+  metadata     Json             @default("{}")
+  timestamp    DateTime         @default(now())
+
+  service    Service     @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  errorGroup ErrorGroup? @relation(fields: [errorGroupId], references: [id], onDelete: SetNull)
+
+  @@index([serviceId, timestamp])
+  @@index([fingerprint])
+  @@map("pulseops_telemetry_events")
+}
+
+model ErrorGroup {
+  id          String           @id @default(uuid())
+  orgId       String
+  workspaceId String
+  serviceId   String
+  fingerprint String
+  title       String
+  firstSeen   DateTime         @default(now())
+  lastSeen    DateTime         @default(now())
+  count       Int              @default(1)
+  status      ErrorGroupStatus @default(active)
+
+  organization Organization     @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  service      Service          @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  events       TelemetryEvent[]
+
+  @@unique([serviceId, fingerprint])
+  @@index([orgId, workspaceId])
+  @@index([lastSeen])
+  @@map("pulseops_error_groups")
+}
+
+model Incident {
+  id           String           @id @default(uuid())
+  orgId        String
+  workspaceId  String
+  serviceId    String?
+  title        String
+  summary      String?
+  severity     IncidentSeverity @default(medium)
+  status       IncidentStatus   @default(open)
+  rootCause    String?
+  resolution   String?
+  declaredById String?
+  createdAt    DateTime         @default(now())
+  resolvedAt   DateTime?
+  updatedAt    DateTime         @updatedAt
+
+  organization Organization    @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  service      Service?        @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  events       IncidentEvent[]
+
+  @@index([orgId, workspaceId])
+  @@index([status])
+  @@index([severity])
+  @@map("pulseops_incidents")
+}
+
+model IncidentEvent {
+  id          String   @id @default(uuid())
+  incidentId  String
+  eventType   String // state_change, comment, ai_diagnosis, runbook_action
+  message     String
+  metadata    Json     @default("{}")
+  createdById String?
+  createdAt   DateTime @default(now())
+
+  incident Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  @@index([incidentId, createdAt])
+  @@map("pulseops_incident_events")
+}
+
+model AlertRule {
+  id                String           @id @default(uuid())
+  orgId             String
+  workspaceId       String
+  serviceId         String?
+  name              String
+  conditionType     String // error_rate_spike, latency_p99, service_down
+  threshold         Float
+  timeWindowMinutes Int              @default(5)
+  severity          IncidentSeverity @default(high)
+  enabled           Boolean          @default(true)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  service      Service?     @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+
+  @@index([orgId, workspaceId])
+  @@index([enabled])
+  @@map("pulseops_alert_rules")
+}
+
 
