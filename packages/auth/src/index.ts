@@ -2,8 +2,11 @@
 // @nexus-one/auth — Authentication & Session Management
 // ============================================================
 // Implements secure password hashing, session token generation,
-// and authentication helpers. Full implementation in Phase 2.
+// RBAC permissions, and API key management.
 // ============================================================
 
-export { hashPassword, verifyPassword } from './password.js';
-export { generateToken, generateSessionToken } from './tokens.js';
+export * from './password.js';
+export * from './tokens.js';
+export * from './rbac.js';
+export * from './api-key.js';
+export * from './session.js';

@@ -10,8 +10,8 @@
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist *.tsbuildinfo",
     "lint": "eslint src/ --ext .ts,.tsx",
-    "test": "vitest run",
-    "test:unit": "vitest run"
+    "test": "vitest run --passWithNoTests",
+    "test:unit": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@nexus-one/ui": "*",

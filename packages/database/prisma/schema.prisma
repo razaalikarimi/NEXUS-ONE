@@ -1,6 +1,5 @@
 // Prisma Schema — NEXUS ONE
-// Phase 1: Minimal schema to validate Prisma setup.
-// Phase 2: Full shared platform + product-specific entities.
+// Phase 2: Full Shared Platform Schema
 
 generator client {
   provider = "prisma-client-js"
@@ -11,8 +10,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ---- Placeholder model for Phase 1 build validation ----
-// This will be replaced with the full schema in Phase 2.
+enum Role {
+  owner
+  admin
+  member
+  viewer
+}
+
+enum MembershipStatus {
+  active
+  invited
+  suspended
+}
+
+enum InvitationStatus {
+  pending
+  accepted
+  expired
+  revoked
+}
+
+enum ApiKeyStatus {
+  active
+  revoked
+  expired
+}
+
+// ------------------------------------------------------------
+// Core User & Auth
+// ------------------------------------------------------------
 
 model User {
   id            String    @id @default(uuid())
@@ -24,5 +50,176 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  sessions      Session[]
+  memberships   Membership[]
+  auditEvents   AuditEvent[]
+  notifications Notification[]
+  invitationsCreated Invitation[] @relation("InvitedByUser")
+
   @@map("users")
+}
+
+model Session {
+  id           String    @id @default(uuid())
+  userId       String
+  token        String    @unique
+  ipAddress    String?
+  userAgent    String?
+  expiresAt    DateTime
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("sessions")
+}
+
+// ------------------------------------------------------------
+// Organizations & Workspaces (Multi-Tenancy)
+// ------------------------------------------------------------
+
+model Organization {
+  id          String       @id @default(uuid())
+  name        String
+  slug        String       @unique
+  plan        String       @default("team") // starter, team, enterprise
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  workspaces  Workspace[]
+  memberships Membership[]
+  invitations Invitation[]
+  apiKeys     ApiKey[]
+  auditEvents AuditEvent[]
+  notifications Notification[]
+
+  @@map("organizations")
+}
+
+model Workspace {
+  id          String       @id @default(uuid())
+  orgId       String
+  name        String
+  slug        String
+  settings    Json         @default("{}")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, slug])
+  @@index([orgId])
+  @@map("workspaces")
+}
+
+model Membership {
+  id        String           @id @default(uuid())
+  userId    String
+  orgId     String
+  role      Role             @default(member)
+  status    MembershipStatus @default(active)
+  joinedAt  DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, orgId])
+  @@index([orgId])
+  @@index([userId])
+  @@map("memberships")
+}
+
+model Invitation {
+  id          String           @id @default(uuid())
+  orgId       String
+  email       String
+  role        Role             @default(member)
+  token       String           @unique
+  status      InvitationStatus @default(pending)
+  invitedById String
+  expiresAt   DateTime
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  invitedBy    User         @relation("InvitedByUser", fields: [invitedById], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([token])
+  @@index([email])
+  @@map("invitations")
+}
+
+// ------------------------------------------------------------
+// Audit Trail & Compliance
+// ------------------------------------------------------------
+
+model AuditEvent {
+  id         String   @id @default(uuid())
+  orgId      String
+  userId     String?
+  action     String   // e.g., "auth.login", "org.update", "member.invite"
+  resource   String   // e.g., "organization", "api_key", "workspace"
+  resourceId String?
+  metadata   Json     @default("{}")
+  ipAddress  String?
+  timestamp  DateTime @default(now())
+
+  organization Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([orgId, timestamp])
+  @@index([userId])
+  @@index([action])
+  @@map("audit_events")
+}
+
+// ------------------------------------------------------------
+// Notifications
+// ------------------------------------------------------------
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  orgId     String
+  type      String   // "system", "incident", "billing", "collaboration"
+  title     String
+  body      String
+  read      Boolean  @default(false)
+  actionUrl String?
+  createdAt DateTime @default(now())
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@index([orgId])
+  @@map("notifications")
+}
+
+// ------------------------------------------------------------
+// API Keys
+// ------------------------------------------------------------
+
+model ApiKey {
+  id         String       @id @default(uuid())
+  orgId      String
+  name       String
+  hashedKey  String       @unique
+  prefix     String       // e.g. "nx_live_..."
+  scopes     String[]     @default(["*"])
+  status     ApiKeyStatus @default(active)
+  lastUsedAt DateTime?
+  revokedAt  DateTime?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([prefix])
+  @@map("api_keys")
 }

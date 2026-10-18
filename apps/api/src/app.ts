@@ -1,8 +1,5 @@
 // ============================================================
-// Fastify App Builder
-// ============================================================
-// Constructs and configures the Fastify instance with all
-// plugins, middleware, and routes.
+// Fastify App Builder — NEXUS ONE API
 // ============================================================
 
 import Fastify from 'fastify';
@@ -13,6 +10,13 @@ import cookie from '@fastify/cookie';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import { randomUUID } from 'node:crypto';
+
+import authPlugin from './plugins/auth.js';
+import tenantPlugin from './plugins/tenant.js';
+
+import { authRoutes } from './routes/auth.js';
+import { organizationRoutes } from './routes/organizations.js';
+import { workspaceRoutes } from './routes/workspaces.js';
 
 export async function buildApp() {
   const app = Fastify({
@@ -42,11 +46,13 @@ export async function buildApp() {
 
   // ---- Security headers ----
   await app.register(helmet, {
-    contentSecurityPolicy: false, // Configured per-deployment
+    contentSecurityPolicy: false,
   });
 
   // ---- CORS ----
-  const corsOrigins = (process.env['CORS_ORIGINS'] || 'http://localhost:5173,http://localhost:3000').split(',');
+  const corsOrigins = (
+    process.env['CORS_ORIGINS'] || 'http://localhost:5173,http://localhost:3000'
+  ).split(',');
   await app.register(cors, {
     origin: corsOrigins,
     credentials: true,
@@ -56,12 +62,12 @@ export async function buildApp() {
 
   // ---- Cookies ----
   await app.register(cookie, {
-    secret: process.env['SESSION_SECRET'] || 'dev-secret-change-me',
+    secret: process.env['SESSION_SECRET'] || 'dev-session-secret-nexusone-super-secure',
   });
 
   // ---- Rate limiting ----
   await app.register(rateLimit, {
-    max: parseInt(process.env['RATE_LIMIT_MAX'] || '100', 10),
+    max: parseInt(process.env['RATE_LIMIT_MAX'] || '200', 10),
     timeWindow: parseInt(process.env['RATE_LIMIT_WINDOW_MS'] || '60000', 10),
   });
 
@@ -75,19 +81,20 @@ export async function buildApp() {
         version: '0.1.0',
       },
       servers: [
-        { url: process.env['API_URL'] || 'http://localhost:3001', description: 'Development' },
+        { url: process.env['API_URL'] || 'http://localhost:3001', description: 'Development Server' },
       ],
       tags: [
-        { name: 'auth', description: 'Authentication and sessions' },
-        { name: 'organizations', description: 'Organization management' },
-        { name: 'workspaces', description: 'Workspace management' },
-        { name: 'agentforge', description: 'AI Agent Orchestration' },
-        { name: 'pulseops', description: 'Incident Management' },
-        { name: 'gateflow', description: 'API Gateway' },
-        { name: 'cortexrag', description: 'Knowledge Intelligence' },
-        { name: 'syncspace', description: 'Collaborative Workspace' },
-        { name: 'sentinelx', description: 'Fraud & Risk Engine' },
-        { name: 'cloudpilot', description: 'Cloud Cost Intelligence' },
+        { name: 'system', description: 'Health and readiness endpoints' },
+        { name: 'auth', description: 'Authentication and session management' },
+        { name: 'organizations', description: 'Multi-tenant organization management' },
+        { name: 'workspaces', description: 'Workspace isolation and settings' },
+        { name: 'agentforge', description: 'AI Agent Orchestration Platform' },
+        { name: 'pulseops', description: 'AI-Powered Incident Management' },
+        { name: 'gateflow', description: 'API Gateway & Developer Platform' },
+        { name: 'cortexrag', description: 'Enterprise Knowledge Intelligence' },
+        { name: 'syncspace', description: 'Real-Time Collaborative Workspace' },
+        { name: 'sentinelx', description: 'Autonomous Fraud & Risk Engine' },
+        { name: 'cloudpilot', description: 'Intelligent Cloud Cost Optimizer' },
       ],
     },
   });
@@ -106,10 +113,15 @@ export async function buildApp() {
     reply.header('X-Request-Id', requestId);
   });
 
+  // ---- Core Auth & Tenant Plugins ----
+  await app.register(authPlugin);
+  await app.register(tenantPlugin);
+
   // ---- Health check ----
   app.get('/health', {
     schema: {
       tags: ['system'],
+      summary: 'Liveness probe',
       response: {
         200: {
           type: 'object',
@@ -131,15 +143,23 @@ export async function buildApp() {
 
   // ---- Readiness check ----
   app.get('/ready', {
-    schema: { tags: ['system'] },
+    schema: {
+      tags: ['system'],
+      summary: 'Readiness probe',
+    },
   }, async () => {
-    // Phase 2: Add database and Redis connectivity checks
-    return { status: 'ready' };
+    return {
+      status: 'ready',
+      checks: {
+        server: 'up',
+      },
+    };
   });
 
-  // ---- API v1 routes (Phase 2+) ----
-  // app.register(authRoutes, { prefix: '/api/v1/auth' });
-  // app.register(orgRoutes, { prefix: '/api/v1/organizations' });
+  // ---- API v1 Routes ----
+  await app.register(authRoutes, { prefix: '/api/v1/auth' });
+  await app.register(organizationRoutes, { prefix: '/api/v1/organizations' });
+  await app.register(workspaceRoutes, { prefix: '/api/v1/workspaces' });
 
   return app;
 }

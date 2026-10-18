@@ -1,8 +1,7 @@
 // ============================================================
-// @nexus-one/database — Prisma Client Export
+// @nexus-one/database — Prisma Client & Model Exports
 // ============================================================
 // Singleton Prisma client for use across the API and workers.
-// Phase 2 will add the full schema and migrations.
 // ============================================================
 
 import { PrismaClient } from '@prisma/client';
@@ -24,5 +23,6 @@ if (process.env['NODE_ENV'] !== 'production') {
   globalForPrisma.prisma = prisma;
 }
 
+export * from '@prisma/client';
 export { PrismaClient };
 export default prisma;
