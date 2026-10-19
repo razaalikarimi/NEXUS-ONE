@@ -7,24 +7,25 @@
 
 :root {
   /* ---- Color: Brand ---- */
-  /* ---- Oceanic Brand Scale (Client Palette: #0A1931, #B3CFE5, #4A7FA7, #1A3D63, #F6FAFD) ---- */
-  --nx-ocean-deep: #0A1931;
-  --nx-ocean-navy: #1A3D63;
-  --nx-ocean-accent: #4A7FA7;
-  --nx-ocean-light: #B3CFE5;
-  --nx-ocean-white: #F6FAFD;
+  /* ---- Luxury Antique Brass, Coffee & Chinese Black Palette ---- */
+  --nx-color-chinese-black: #0C1519;
+  --nx-color-jungle-green: #162127;
+  --nx-color-jet: #3A3534;
+  --nx-color-coffee: #724B38;
+  --nx-color-brass: #CF9D7B;
+  --nx-color-pearl: #FAF7F2;
 
-  --nx-brand-50: #f6fafd;
-  --nx-brand-100: #e2edf6;
-  --nx-brand-200: #b3cfe5;
-  --nx-brand-300: #88b3d6;
-  --nx-brand-400: #649ac4;
-  --nx-brand-500: #4a7fa7;
-  --nx-brand-600: #366991;
-  --nx-brand-700: #265279;
-  --nx-brand-800: #1a3d63;
-  --nx-brand-900: #0f2845;
-  --nx-brand-950: #0a1931;
+  --nx-brand-50: #faf7f2;
+  --nx-brand-100: #f4ece2;
+  --nx-brand-200: #e7d6c4;
+  --nx-brand-300: #d9bca1;
+  --nx-brand-400: #cf9d7b;
+  --nx-brand-500: #a96f4e;
+  --nx-brand-600: #724b38;
+  --nx-brand-700: #543729;
+  --nx-brand-800: #3a3534;
+  --nx-brand-900: #162127;
+  --nx-brand-950: #0c1519;
 
   /* ---- Color: Neutral ---- */
   --nx-neutral-0: #ffffff;
@@ -187,34 +188,34 @@
 
 /* ---- Dark theme ---- */
 [data-theme='dark'] {
-  --nx-bg-primary: #0A1931;
-  --nx-bg-secondary: #1A3D63;
-  --nx-bg-tertiary: #132b47;
-  --nx-bg-inverse: #F6FAFD;
-  --nx-bg-brand: #4A7FA7;
-  --nx-bg-brand-subtle: #1A3D63;
+  --nx-bg-primary: #0C1519;
+  --nx-bg-secondary: #162127;
+  --nx-bg-tertiary: #3A3534;
+  --nx-bg-inverse: #FAF7F2;
+  --nx-bg-brand: #CF9D7B;
+  --nx-bg-brand-subtle: #724B38;
 
-  --nx-text-primary: #F6FAFD;
-  --nx-text-secondary: #B3CFE5;
-  --nx-text-tertiary: #88b3d6;
-  --nx-text-inverse: #0A1931;
-  --nx-text-brand: #B3CFE5;
-  --nx-text-link: #B3CFE5;
-  --nx-text-link-hover: #F6FAFD;
+  --nx-text-primary: #FAF7F2;
+  --nx-text-secondary: #CF9D7B;
+  --nx-text-tertiary: #d9bca1;
+  --nx-text-inverse: #0C1519;
+  --nx-text-brand: #CF9D7B;
+  --nx-text-link: #CF9D7B;
+  --nx-text-link-hover: #FAF7F2;
 
-  --nx-border-primary: rgba(179, 207, 229, 0.18);
-  --nx-border-secondary: rgba(179, 207, 229, 0.1);
-  --nx-border-focus: #4A7FA7;
+  --nx-border-primary: rgba(207, 157, 123, 0.2);
+  --nx-border-secondary: rgba(58, 53, 52, 0.4);
+  --nx-border-focus: #CF9D7B;
   --nx-border-error: var(--nx-error-500);
 
-  --nx-surface-elevated: #1A3D63;
-  --nx-surface-overlay: rgba(10, 25, 49, 0.85);
+  --nx-surface-elevated: #162127;
+  --nx-surface-overlay: rgba(12, 21, 25, 0.85);
 
-  --nx-shadow-xs: 0 1px 2px 0 rgba(10, 25, 49, 0.4);
-  --nx-shadow-sm: 0 1px 3px 0 rgba(10, 25, 49, 0.5), 0 1px 2px -1px rgba(10, 25, 49, 0.5);
-  --nx-shadow-md: 0 4px 6px -1px rgba(10, 25, 49, 0.5), 0 2px 4px -2px rgba(10, 25, 49, 0.5);
-  --nx-shadow-lg: 0 10px 15px -3px rgba(10, 25, 49, 0.6), 0 4px 6px -4px rgba(10, 25, 49, 0.6);
-  --nx-shadow-xl: 0 20px 25px -5px rgba(10, 25, 49, 0.7), 0 8px 10px -6px rgba(10, 25, 49, 0.7);
+  --nx-shadow-xs: 0 1px 2px 0 rgba(12, 21, 25, 0.4);
+  --nx-shadow-sm: 0 1px 3px 0 rgba(12, 21, 25, 0.5), 0 1px 2px -1px rgba(12, 21, 25, 0.5);
+  --nx-shadow-md: 0 4px 6px -1px rgba(12, 21, 25, 0.5), 0 2px 4px -2px rgba(12, 21, 25, 0.5);
+  --nx-shadow-lg: 0 10px 15px -3px rgba(12, 21, 25, 0.6), 0 4px 6px -4px rgba(12, 21, 25, 0.6);
+  --nx-shadow-xl: 0 20px 25px -5px rgba(12, 21, 25, 0.7), 0 8px 10px -6px rgba(12, 21, 25, 0.7);
 
   --nx-focus-ring: 0 0 0 2px var(--nx-bg-primary), 0 0 0 4px var(--nx-border-focus);
 }
