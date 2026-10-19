@@ -16,8 +16,8 @@
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist *.tsbuildinfo",
     "lint": "eslint src/ --ext .ts",
-    "test": "vitest run",
-    "test:unit": "vitest run"
+    "test": "vitest run --pool=forks",
+    "test:unit": "vitest run --pool=forks"
   },
   "dependencies": {
     "@nexus-one/database": "*",
