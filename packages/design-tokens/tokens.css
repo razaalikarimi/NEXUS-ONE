@@ -7,17 +7,24 @@
 
 :root {
   /* ---- Color: Brand ---- */
-  --nx-brand-50: #eef2ff;
-  --nx-brand-100: #e0e7ff;
-  --nx-brand-200: #c7d2fe;
-  --nx-brand-300: #a5b4fc;
-  --nx-brand-400: #818cf8;
-  --nx-brand-500: #6366f1;
-  --nx-brand-600: #4f46e5;
-  --nx-brand-700: #4338ca;
-  --nx-brand-800: #3730a3;
-  --nx-brand-900: #312e81;
-  --nx-brand-950: #1e1b4b;
+  /* ---- Oceanic Brand Scale (Client Palette: #0A1931, #B3CFE5, #4A7FA7, #1A3D63, #F6FAFD) ---- */
+  --nx-ocean-deep: #0A1931;
+  --nx-ocean-navy: #1A3D63;
+  --nx-ocean-accent: #4A7FA7;
+  --nx-ocean-light: #B3CFE5;
+  --nx-ocean-white: #F6FAFD;
+
+  --nx-brand-50: #f6fafd;
+  --nx-brand-100: #e2edf6;
+  --nx-brand-200: #b3cfe5;
+  --nx-brand-300: #88b3d6;
+  --nx-brand-400: #649ac4;
+  --nx-brand-500: #4a7fa7;
+  --nx-brand-600: #366991;
+  --nx-brand-700: #265279;
+  --nx-brand-800: #1a3d63;
+  --nx-brand-900: #0f2845;
+  --nx-brand-950: #0a1931;
 
   /* ---- Color: Neutral ---- */
   --nx-neutral-0: #ffffff;
@@ -180,34 +187,34 @@
 
 /* ---- Dark theme ---- */
 [data-theme='dark'] {
-  --nx-bg-primary: var(--nx-neutral-900);
-  --nx-bg-secondary: var(--nx-neutral-800);
-  --nx-bg-tertiary: var(--nx-neutral-700);
-  --nx-bg-inverse: var(--nx-neutral-0);
-  --nx-bg-brand: var(--nx-brand-500);
-  --nx-bg-brand-subtle: var(--nx-brand-950);
+  --nx-bg-primary: #0A1931;
+  --nx-bg-secondary: #1A3D63;
+  --nx-bg-tertiary: #132b47;
+  --nx-bg-inverse: #F6FAFD;
+  --nx-bg-brand: #4A7FA7;
+  --nx-bg-brand-subtle: #1A3D63;
 
-  --nx-text-primary: var(--nx-neutral-50);
-  --nx-text-secondary: var(--nx-neutral-400);
-  --nx-text-tertiary: var(--nx-neutral-500);
-  --nx-text-inverse: var(--nx-neutral-900);
-  --nx-text-brand: var(--nx-brand-400);
-  --nx-text-link: var(--nx-brand-400);
-  --nx-text-link-hover: var(--nx-brand-300);
+  --nx-text-primary: #F6FAFD;
+  --nx-text-secondary: #B3CFE5;
+  --nx-text-tertiary: #88b3d6;
+  --nx-text-inverse: #0A1931;
+  --nx-text-brand: #B3CFE5;
+  --nx-text-link: #B3CFE5;
+  --nx-text-link-hover: #F6FAFD;
 
-  --nx-border-primary: var(--nx-neutral-700);
-  --nx-border-secondary: var(--nx-neutral-800);
-  --nx-border-focus: var(--nx-brand-400);
+  --nx-border-primary: rgba(179, 207, 229, 0.18);
+  --nx-border-secondary: rgba(179, 207, 229, 0.1);
+  --nx-border-focus: #4A7FA7;
   --nx-border-error: var(--nx-error-500);
 
-  --nx-surface-elevated: var(--nx-neutral-800);
-  --nx-surface-overlay: rgb(0 0 0 / 0.7);
+  --nx-surface-elevated: #1A3D63;
+  --nx-surface-overlay: rgba(10, 25, 49, 0.85);
 
-  --nx-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --nx-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-  --nx-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-  --nx-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
-  --nx-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+  --nx-shadow-xs: 0 1px 2px 0 rgba(10, 25, 49, 0.4);
+  --nx-shadow-sm: 0 1px 3px 0 rgba(10, 25, 49, 0.5), 0 1px 2px -1px rgba(10, 25, 49, 0.5);
+  --nx-shadow-md: 0 4px 6px -1px rgba(10, 25, 49, 0.5), 0 2px 4px -2px rgba(10, 25, 49, 0.5);
+  --nx-shadow-lg: 0 10px 15px -3px rgba(10, 25, 49, 0.6), 0 4px 6px -4px rgba(10, 25, 49, 0.6);
+  --nx-shadow-xl: 0 20px 25px -5px rgba(10, 25, 49, 0.7), 0 8px 10px -6px rgba(10, 25, 49, 0.7);
 
   --nx-focus-ring: 0 0 0 2px var(--nx-bg-primary), 0 0 0 4px var(--nx-border-focus);
 }
