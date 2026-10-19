@@ -115,6 +115,9 @@ model Organization {
   riskRules        RiskRule[]
   riskEvents       RiskEvent[]
   riskCases        RiskCase[]
+  cloudAccounts    CloudAccount[]
+  cloudWorkloads   CloudWorkload[]
+  costRecommendations CostRecommendation[]
 
   @@map("organizations")
 }
@@ -143,6 +146,9 @@ model Workspace {
   riskRules        RiskRule[]
   riskEvents       RiskEvent[]
   riskCases        RiskCase[]
+  cloudAccounts    CloudAccount[]
+  cloudWorkloads   CloudWorkload[]
+  costRecommendations CostRecommendation[]
 
   @@unique([orgId, slug])
   @@index([orgId])
@@ -995,3 +1001,107 @@ model RiskCase {
   @@map("sentinelx_risk_cases")
 }
 
+// ------------------------------------------------------------
+// Phase 10: CloudPilot — Multi-Cloud Workload & Cost Optimizer
+// ------------------------------------------------------------
+
+enum CloudProvider {
+  aws
+  gcp
+  azure
+}
+
+enum WorkloadServiceType {
+  compute
+  kubernetes
+  database
+  storage
+}
+
+enum RecommendationType {
+  rightsizing
+  spot_migration
+  idle_shutdown
+  reservation
+}
+
+enum RecommendationStatus {
+  pending
+  applied
+  dismissed
+}
+
+model CloudAccount {
+  id           String        @id @default(uuid())
+  orgId        String
+  workspaceId  String
+  provider     CloudProvider
+  accountName  String
+  accountId    String
+  status       String        @default("connected")
+  monthlySpend Float         @default(0.0)
+  currency     String        @default("USD")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  organization Organization   @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workloads    CloudWorkload[]
+
+  @@unique([workspaceId, accountId])
+  @@index([orgId, provider])
+  @@map("cloudpilot_accounts")
+}
+
+model CloudWorkload {
+  id                   String              @id @default(uuid())
+  cloudAccountId       String
+  orgId                String
+  workspaceId          String
+  name                 String
+  serviceType          WorkloadServiceType @default(compute)
+  region               String              @default("us-east-1")
+  currentSku           String
+  currentCostMonthly   Float               @default(0.0)
+  utilizationCpuPct    Float               @default(0.0)
+  utilizationMemoryPct Float               @default(0.0)
+  status               String              @default("running")
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  cloudAccount        CloudAccount         @relation(fields: [cloudAccountId], references: [id], onDelete: Cascade)
+  organization        Organization         @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace           Workspace            @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  recommendations     CostRecommendation[]
+
+  @@index([orgId, serviceType])
+  @@index([cloudAccountId])
+  @@map("cloudpilot_workloads")
+}
+
+model CostRecommendation {
+  id                   String               @id @default(uuid())
+  workloadId           String
+  orgId                String
+  workspaceId          String
+  recommendationType   RecommendationType
+  title                String
+  description          String
+  recommendedSku       String?
+  currentMonthlyCost   Float
+  projectedMonthlyCost Float
+  savingsMonthly       Float
+  savingsPct           Float
+  status               RecommendationStatus @default(pending)
+  details              Json                 @default("{}")
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+
+  workload     CloudWorkload @relation(fields: [workloadId], references: [id], onDelete: Cascade)
+  organization Organization  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([orgId, status])
+  @@index([workloadId])
+  @@map("cloudpilot_recommendations")
+}

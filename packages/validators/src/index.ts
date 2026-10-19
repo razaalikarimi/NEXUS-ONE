@@ -335,6 +335,51 @@ export const simulateRiskSchema = z.object({
   hoursSincePriorEvent: z.number().default(0.5),
 });
 
+// ---- CloudPilot schemas ----
+
+export const cloudProviderSchema = z.enum(['aws', 'gcp', 'azure']);
+export const workloadServiceTypeSchema = z.enum(['compute', 'kubernetes', 'database', 'storage']);
+export const recommendationTypeSchema = z.enum(['rightsizing', 'spot_migration', 'idle_shutdown', 'reservation']);
+export const recommendationStatusSchema = z.enum(['pending', 'applied', 'dismissed']);
+
+export const createCloudAccountSchema = z.object({
+  provider: cloudProviderSchema,
+  accountName: z.string().min(1, 'Account name is required').max(100),
+  accountId: z.string().min(1, 'Account ID is required').max(100),
+  monthlySpend: z.number().nonnegative().default(0.0),
+  currency: z.string().default('USD'),
+});
+
+export const createCloudWorkloadSchema = z.object({
+  cloudAccountId: z.string().uuid('Invalid cloud account ID'),
+  name: z.string().min(1, 'Workload name is required').max(100),
+  serviceType: workloadServiceTypeSchema.default('compute'),
+  region: z.string().default('us-east-1'),
+  currentSku: z.string().min(1, 'Current SKU is required'),
+  currentCostMonthly: z.number().nonnegative().default(0.0),
+  utilizationCpuPct: z.number().min(0).max(100).default(0.0),
+  utilizationMemoryPct: z.number().min(0).max(100).default(0.0),
+  status: z.string().default('running'),
+});
+
+export const analyzeCostRecommendationsSchema = z.object({
+  cloudAccountId: z.string().uuid().optional(),
+  targetAggressiveness: z.enum(['conservative', 'balanced', 'aggressive']).default('balanced'),
+});
+
+export const applyCostRecommendationSchema = z.object({
+  recommendationId: z.string().uuid('Invalid recommendation ID'),
+});
+
+export const workloadPlacementCalculateSchema = z.object({
+  vCpu: z.number().int().min(1).max(128).default(8),
+  memoryGb: z.number().min(1).max(512).default(32),
+  gpuCount: z.number().int().min(0).max(8).default(0),
+  targetRegion: z.string().default('us-east'),
+  storageGb: z.number().min(10).max(10000).default(200),
+  workloadType: z.enum(['stateless_api', 'batch_training', 'transaction_db', 'background_queue']).default('stateless_api'),
+});
+
 export type CreateServiceInput = z.infer<typeof createServiceSchema>;
 export type CreateTelemetryEventInput = z.infer<typeof createTelemetryEventSchema>;
 export type CreateIncidentInput = z.infer<typeof createIncidentSchema>;
@@ -361,8 +406,14 @@ export type EvaluateRiskEventInput = z.infer<typeof evaluateRiskEventSchema>;
 export type CreateRiskCaseInput = z.infer<typeof createRiskCaseSchema>;
 export type ResolveRiskCaseInput = z.infer<typeof resolveRiskCaseSchema>;
 export type SimulateRiskInput = z.infer<typeof simulateRiskSchema>;
+export type CreateCloudAccountInput = z.infer<typeof createCloudAccountSchema>;
+export type CreateCloudWorkloadInput = z.infer<typeof createCloudWorkloadSchema>;
+export type AnalyzeCostRecommendationsInput = z.infer<typeof analyzeCostRecommendationsSchema>;
+export type ApplyCostRecommendationInput = z.infer<typeof applyCostRecommendationSchema>;
+export type WorkloadPlacementCalculateInput = z.infer<typeof workloadPlacementCalculateSchema>;
 
 // Re-export zod for convenience
 export { z };
+
 
 

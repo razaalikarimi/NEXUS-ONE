@@ -12,6 +12,7 @@ import { createGateFlowWorker } from './processors/gateflow.js';
 import { createCortexRagWorker } from './processors/cortexrag.js';
 import { createSyncSpaceWorker } from './processors/syncspace.js';
 import { createSentinelXWorker } from './processors/sentinelx.js';
+import { createCloudPilotWorker } from './processors/cloudpilot.js';
 
 const logger = createLogger({ service: 'nexus-one-worker' });
 
@@ -35,6 +36,8 @@ async function start() {
     logger.info('Registered SyncSpace maintenance worker');
     createSentinelXWorker({ url: redisUrl });
     logger.info('Registered SentinelX fraud-pipeline worker');
+    createCloudPilotWorker({ url: redisUrl });
+    logger.info('Registered CloudPilot cost-pipeline worker');
   } catch (err: unknown) {
     logger.warn({ error: err instanceof Error ? err.message : String(err) }, 'Redis offline, running in standalone worker mode');
   }

@@ -23,6 +23,7 @@ import { gateflowRoutes } from './routes/gateflow.js';
 import { cortexragRoutes } from './routes/cortexrag.js';
 import { syncspaceRoutes } from './routes/syncspace.js';
 import { sentinelxRoutes } from './routes/sentinelx.js';
+import { cloudpilotRoutes } from './routes/cloudpilot.js';
 
 export async function buildApp() {
   const app = Fastify({
@@ -172,6 +173,7 @@ export async function buildApp() {
   await app.register(cortexragRoutes, { prefix: '/api/v1/cortexrag' });
   await app.register(syncspaceRoutes, { prefix: '/api/v1/syncspace' });
   await app.register(sentinelxRoutes, { prefix: '/api/v1/sentinelx' });
+  await app.register(cloudpilotRoutes, { prefix: '/api/v1/cloudpilot' });
 
   // ---- Dashboard Stats Overview ----
   app.get('/api/v1/dashboard/stats', async () => ({
