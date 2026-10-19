@@ -3,7 +3,8 @@
 // ============================================================
 
 import { Worker, type Job, type ConnectionOptions } from 'bullmq';
-import { prisma, type WorkflowNodeType } from '@nexus-one/database';
+import { prisma } from '@nexus-one/database';
+import type { WorkflowNodeType } from '@prisma/client';
 import { createLogger } from '@nexus-one/logger';
 
 const logger = createLogger({ service: 'agentforge-worker' });

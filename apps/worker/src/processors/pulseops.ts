@@ -3,7 +3,8 @@
 // ============================================================
 
 import { Worker, type Job, type ConnectionOptions } from 'bullmq';
-import { prisma, type IncidentSeverity, type Prisma } from '@nexus-one/database';
+import { prisma } from '@nexus-one/database';
+import type { IncidentSeverity, Prisma } from '@prisma/client';
 import { createLogger } from '@nexus-one/logger';
 import { createHash } from 'node:crypto';
 
