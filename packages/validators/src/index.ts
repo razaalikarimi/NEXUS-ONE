@@ -273,6 +273,68 @@ export const rollbackSyncSnapshotSchema = z.object({
   snapshotId: z.string().uuid('Invalid snapshot ID'),
 });
 
+// ---- SentinelX schemas ----
+
+export const riskLevelSchema = z.enum(['low', 'medium', 'high', 'critical']);
+export const riskActionSchema = z.enum(['allow', 'flag_review', 'challenge_2fa', 'block']);
+export const caseStatusSchema = z.enum(['open', 'under_investigation', 'resolved_fraud', 'resolved_benign']);
+
+export const createRiskRuleSchema = z.object({
+  name: z.string().min(1, 'Rule name is required').max(100),
+  description: z.string().max(500).optional(),
+  ruleType: z.enum(['velocity', 'geovelocity', 'high_amount', 'ip_reputation', 'device_anomaly']),
+  conditions: z.record(z.unknown()),
+  scoreImpact: z.number().int().min(1).max(100),
+  actionTrigger: riskActionSchema.default('flag_review'),
+  isActive: z.boolean().default(true),
+});
+
+export const updateRiskRuleSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  description: z.string().max(500).optional(),
+  conditions: z.record(z.unknown()).optional(),
+  scoreImpact: z.number().int().min(1).max(100).optional(),
+  actionTrigger: riskActionSchema.optional(),
+  isActive: z.boolean().optional(),
+});
+
+export const evaluateRiskEventSchema = z.object({
+  eventType: z.enum(['transaction', 'auth_attempt', 'api_key_usage', 'payout']),
+  entityId: z.string().min(1, 'Entity ID is required'),
+  entityType: z.enum(['user', 'payment_method', 'api_consumer']),
+  ipAddress: z.string().default('127.0.0.1'),
+  geoCountry: z.string().default('US'),
+  amount: z.number().nonnegative().optional(),
+  currency: z.string().default('USD'),
+  deviceFingerprint: z.string().optional(),
+  metadata: z.record(z.unknown()).optional(),
+});
+
+export const createRiskCaseSchema = z.object({
+  title: z.string().min(1, 'Case title is required').max(200),
+  severity: riskLevelSchema.default('medium'),
+  entityId: z.string().min(1),
+  entityType: z.string().min(1),
+  riskEventIds: z.array(z.string()).default([]),
+  assignedToId: z.string().optional(),
+});
+
+export const resolveRiskCaseSchema = z.object({
+  status: caseStatusSchema,
+  resolutionNotes: z.string().min(1, 'Resolution notes are required').max(2000),
+});
+
+export const simulateRiskSchema = z.object({
+  eventType: z.enum(['transaction', 'auth_attempt', 'api_key_usage', 'payout']).default('transaction'),
+  amount: z.number().default(4999),
+  ipAddress: z.string().default('198.51.100.24'),
+  geoCountry: z.string().default('RO'),
+  isTorExitNode: z.boolean().default(false),
+  velocityCount10m: z.number().int().default(8),
+  priorCountry: z.string().default('US'),
+  hoursSincePriorEvent: z.number().default(0.5),
+});
+
 export type CreateServiceInput = z.infer<typeof createServiceSchema>;
 export type CreateTelemetryEventInput = z.infer<typeof createTelemetryEventSchema>;
 export type CreateIncidentInput = z.infer<typeof createIncidentSchema>;
@@ -293,7 +355,14 @@ export type CreateSyncCommentInput = z.infer<typeof createSyncCommentSchema>;
 export type ResolveSyncCommentInput = z.infer<typeof resolveSyncCommentSchema>;
 export type CreateSyncSnapshotInput = z.infer<typeof createSyncSnapshotSchema>;
 export type RollbackSyncSnapshotInput = z.infer<typeof rollbackSyncSnapshotSchema>;
+export type CreateRiskRuleInput = z.infer<typeof createRiskRuleSchema>;
+export type UpdateRiskRuleInput = z.infer<typeof updateRiskRuleSchema>;
+export type EvaluateRiskEventInput = z.infer<typeof evaluateRiskEventSchema>;
+export type CreateRiskCaseInput = z.infer<typeof createRiskCaseSchema>;
+export type ResolveRiskCaseInput = z.infer<typeof resolveRiskCaseSchema>;
+export type SimulateRiskInput = z.infer<typeof simulateRiskSchema>;
 
 // Re-export zod for convenience
 export { z };
+
 

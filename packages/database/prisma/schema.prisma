@@ -59,6 +59,7 @@ model User {
   syncPresences      SyncPresence[]
   syncComments       SyncComment[]
   syncSnapshots      SyncSnapshot[]
+  riskCasesAssigned  RiskCase[]     @relation("RiskCaseAssignee")
 
   @@map("users")
 }
@@ -111,6 +112,9 @@ model Organization {
   documents        KnowledgeDocument[]
   ragQueries       RagQueryLog[]
   syncDocuments    SyncDocument[]
+  riskRules        RiskRule[]
+  riskEvents       RiskEvent[]
+  riskCases        RiskCase[]
 
   @@map("organizations")
 }
@@ -136,6 +140,9 @@ model Workspace {
   knowledgeBases   KnowledgeBase[]
   documents        KnowledgeDocument[]
   syncDocuments    SyncDocument[]
+  riskRules        RiskRule[]
+  riskEvents       RiskEvent[]
+  riskCases        RiskCase[]
 
   @@unique([orgId, slug])
   @@index([orgId])
@@ -892,3 +899,99 @@ model SyncSnapshot {
   @@index([documentId])
   @@map("syncspace_snapshots")
 }
+
+// ------------------------------------------------------------
+// Phase 9: SentinelX — Autonomous Fraud & Risk Engine
+// ------------------------------------------------------------
+
+enum RiskLevel {
+  low
+  medium
+  high
+  critical
+}
+
+enum RiskAction {
+  allow
+  flag_review
+  challenge_2fa
+  block
+}
+
+enum CaseStatus {
+  open
+  under_investigation
+  resolved_fraud
+  resolved_benign
+}
+
+model RiskRule {
+  id            String      @id @default(uuid())
+  orgId         String
+  workspaceId   String
+  name          String
+  description   String?
+  ruleType      String      // "velocity", "geovelocity", "high_amount", "ip_reputation", "device_anomaly"
+  conditions    Json        // JSON configuration of thresholds & operators
+  scoreImpact   Int         // Added risk points (e.g. +35)
+  actionTrigger RiskAction  @default(flag_review)
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([orgId, workspaceId, isActive])
+  @@map("sentinelx_risk_rules")
+}
+
+model RiskEvent {
+  id               String     @id @default(uuid())
+  orgId            String
+  workspaceId      String
+  eventType        String     // "transaction", "auth_attempt", "api_key_usage", "payout"
+  entityId         String     // user id, account id, or transaction id
+  entityType       String     // "user", "payment_method", "api_consumer"
+  ipAddress        String
+  geoCountry       String     @default("US")
+  riskScore        Int        @default(0) // 0 - 100
+  riskLevel        RiskLevel  @default(low)
+  triggeredRuleIds String[]
+  actionTaken      RiskAction @default(allow)
+  metadata         Json       @default("{}")
+  timestamp        DateTime   @default(now())
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([orgId, timestamp])
+  @@index([entityId, eventType])
+  @@index([riskScore, riskLevel])
+  @@map("sentinelx_risk_events")
+}
+
+model RiskCase {
+  id              String     @id @default(uuid())
+  orgId           String
+  workspaceId     String
+  title           String
+  severity        RiskLevel  @default(medium)
+  status          CaseStatus @default(open)
+  entityId        String
+  entityType      String
+  assignedToId    String?
+  riskEventIds    String[]
+  resolutionNotes String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  assignee     User?        @relation("RiskCaseAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  @@index([orgId, status])
+  @@index([severity])
+  @@map("sentinelx_risk_cases")
+}
+
