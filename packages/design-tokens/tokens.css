@@ -7,25 +7,18 @@
 
 :root {
   /* ---- Color: Brand ---- */
-  /* ---- Luxury Antique Brass, Coffee & Chinese Black Palette ---- */
-  --nx-color-chinese-black: #0C1519;
-  --nx-color-jungle-green: #162127;
-  --nx-color-jet: #3A3534;
-  --nx-color-coffee: #724B38;
-  --nx-color-brass: #CF9D7B;
-  --nx-color-pearl: #FAF7F2;
-
-  --nx-brand-50: #faf7f2;
-  --nx-brand-100: #f4ece2;
-  --nx-brand-200: #e7d6c4;
-  --nx-brand-300: #d9bca1;
-  --nx-brand-400: #cf9d7b;
-  --nx-brand-500: #a96f4e;
-  --nx-brand-600: #724b38;
-  --nx-brand-700: #543729;
-  --nx-brand-800: #3a3534;
-  --nx-brand-900: #162127;
-  --nx-brand-950: #0c1519;
+  /* ---- Silicon Valley Enterprise Electric Indigo Scale ---- */
+  --nx-brand-50: #eef2ff;
+  --nx-brand-100: #e0e7ff;
+  --nx-brand-200: #c7d2fe;
+  --nx-brand-300: #a5b4fc;
+  --nx-brand-400: #818cf8;
+  --nx-brand-500: #6366f1;
+  --nx-brand-600: #4f46e5;
+  --nx-brand-700: #4338ca;
+  --nx-brand-800: #3730a3;
+  --nx-brand-900: #312e81;
+  --nx-brand-950: #1e1b4b;
 
   /* ---- Color: Neutral ---- */
   --nx-neutral-0: #ffffff;
@@ -186,36 +179,36 @@
   --nx-focus-ring: 0 0 0 2px var(--nx-bg-primary), 0 0 0 4px var(--nx-border-focus);
 }
 
-/* ---- Dark theme ---- */
+/* ---- Dark theme (Linear / OpenAI Enterprise Void) ---- */
 [data-theme='dark'] {
-  --nx-bg-primary: #0C1519;
-  --nx-bg-secondary: #162127;
-  --nx-bg-tertiary: #3A3534;
-  --nx-bg-inverse: #FAF7F2;
-  --nx-bg-brand: #CF9D7B;
-  --nx-bg-brand-subtle: #724B38;
+  --nx-bg-primary: #030712;
+  --nx-bg-secondary: #0b0f19;
+  --nx-bg-tertiary: #111827;
+  --nx-bg-inverse: #ffffff;
+  --nx-bg-brand: #6366f1;
+  --nx-bg-brand-subtle: rgba(99, 102, 241, 0.12);
 
-  --nx-text-primary: #FAF7F2;
-  --nx-text-secondary: #CF9D7B;
-  --nx-text-tertiary: #d9bca1;
-  --nx-text-inverse: #0C1519;
-  --nx-text-brand: #CF9D7B;
-  --nx-text-link: #CF9D7B;
-  --nx-text-link-hover: #FAF7F2;
+  --nx-text-primary: #ffffff;
+  --nx-text-secondary: #94a3b8;
+  --nx-text-tertiary: #64748b;
+  --nx-text-inverse: #030712;
+  --nx-text-brand: #818cf8;
+  --nx-text-link: #818cf8;
+  --nx-text-link-hover: #c7d2fe;
 
-  --nx-border-primary: rgba(207, 157, 123, 0.2);
-  --nx-border-secondary: rgba(58, 53, 52, 0.4);
-  --nx-border-focus: #CF9D7B;
+  --nx-border-primary: rgba(255, 255, 255, 0.08);
+  --nx-border-secondary: rgba(255, 255, 255, 0.04);
+  --nx-border-focus: #6366f1;
   --nx-border-error: var(--nx-error-500);
 
-  --nx-surface-elevated: #162127;
-  --nx-surface-overlay: rgba(12, 21, 25, 0.85);
+  --nx-surface-elevated: #0f172a;
+  --nx-surface-overlay: rgba(3, 7, 18, 0.85);
 
-  --nx-shadow-xs: 0 1px 2px 0 rgba(12, 21, 25, 0.4);
-  --nx-shadow-sm: 0 1px 3px 0 rgba(12, 21, 25, 0.5), 0 1px 2px -1px rgba(12, 21, 25, 0.5);
-  --nx-shadow-md: 0 4px 6px -1px rgba(12, 21, 25, 0.5), 0 2px 4px -2px rgba(12, 21, 25, 0.5);
-  --nx-shadow-lg: 0 10px 15px -3px rgba(12, 21, 25, 0.6), 0 4px 6px -4px rgba(12, 21, 25, 0.6);
-  --nx-shadow-xl: 0 20px 25px -5px rgba(12, 21, 25, 0.7), 0 8px 10px -6px rgba(12, 21, 25, 0.7);
+  --nx-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --nx-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px -1px rgba(0, 0, 0, 0.5);
+  --nx-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+  --nx-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.6);
+  --nx-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.7);
 
   --nx-focus-ring: 0 0 0 2px var(--nx-bg-primary), 0 0 0 4px var(--nx-border-focus);
 }

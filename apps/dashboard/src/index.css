@@ -14,14 +14,14 @@ html {
   font-family: var(--nx-font-sans, -apple-system, BlinkMacSystemFont, sans-serif);
   font-size: 16px;
   line-height: var(--nx-leading-normal);
-  color: #FAF7F2;
-  background-color: #0C1519;
+  color: #ffffff;
+  background-color: #030712;
   -webkit-font-smoothing: antialiased;
 }
 
 body {
   min-height: 100vh;
-  background-color: #0C1519;
+  background-color: #030712;
 }
 
 a {
@@ -80,7 +80,7 @@ code {
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  background: radial-gradient(circle at 50% 20%, rgba(207, 157, 123, 0.22) 0%, #0C1519 70%);
+  background: radial-gradient(circle at 50% 20%, rgba(99, 102, 241, 0.15) 0%, #030712 70%);
 }
 
 .nx-auth-card-wrap {
@@ -94,43 +94,43 @@ code {
 .nx-auth-logo {
   width: 3rem;
   height: 3rem;
-  background: linear-gradient(135deg, #CF9D7B, #724B38);
-  border: 1px solid rgba(207, 157, 123, 0.4);
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 20px rgba(207, 157, 123, 0.35);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.45);
   margin-bottom: 1.25rem;
 }
 
 .nx-brand-logo__dot {
   width: 0.8rem;
   height: 0.8rem;
-  background-color: #FAF7F2;
+  background-color: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 0 8px #CF9D7B;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
 }
 
 .nx-auth-heading {
   font-size: 1.75rem;
   font-weight: 800;
-  letter-spacing: -0.02em;
-  color: #FAF7F2;
+  letter-spacing: -0.025em;
+  color: #ffffff;
 }
 
 .nx-auth-subheading {
   font-size: 0.875rem;
-  color: #d9bca1;
+  color: #94a3b8;
   margin-top: 0.25rem;
   margin-bottom: 2rem;
 }
 
 .nx-auth-card {
   width: 100%;
-  background-color: #162127 !important;
-  border: 1px solid rgba(207, 157, 123, 0.25) !important;
-  box-shadow: 0 20px 30px -10px rgba(12, 21, 25, 0.9) !important;
+  background-color: rgba(15, 23, 42, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
 }
 
 .nx-auth-alert {
@@ -227,8 +227,8 @@ code {
 /* Sidebar */
 .nx-sidebar {
   width: 260px;
-  background-color: #080f12;
-  border-right: 1px solid rgba(207, 157, 123, 0.15);
+  background-color: #080d1a;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -243,14 +243,14 @@ code {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  border-bottom: 1px solid rgba(207, 157, 123, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .nx-brand-logo {
   width: 1.75rem;
   height: 1.75rem;
-  background: linear-gradient(135deg, #CF9D7B, #724B38);
-  border: 1px solid rgba(207, 157, 123, 0.35);
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 0.4rem;
   display: flex;
   align-items: center;
@@ -260,23 +260,23 @@ code {
 .nx-brand-logo__dot {
   width: 0.5rem;
   height: 0.5rem;
-  background-color: #FAF7F2;
+  background-color: #ffffff;
   border-radius: 50%;
 }
 
 .nx-brand-title {
   font-size: 1.05rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #FAF7F2;
+  letter-spacing: -0.025em;
+  color: #ffffff;
 }
 
 .nx-brand-badge {
   font-size: 0.65rem;
   padding: 0.1rem 0.35rem;
-  background-color: rgba(207, 157, 123, 0.2);
-  border: 1px solid rgba(207, 157, 123, 0.25);
-  color: #CF9D7B;
+  background-color: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #818cf8;
   border-radius: 0.25rem;
   font-weight: 600;
 }
@@ -417,9 +417,9 @@ code {
 }
 
 .nx-nav-item--active {
-  background-color: rgba(207, 157, 123, 0.18);
-  border: 1px solid rgba(207, 157, 123, 0.25);
-  color: #FAF7F2;
+  background-color: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #ffffff;
   font-weight: 600;
 }
 
