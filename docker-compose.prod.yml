@@ -1,0 +1,117 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: nexusone-postgres-prod
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nexusone}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nexusone_prod_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-nexusone_prod}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nexusone} -d ${POSTGRES_DB:-nexusone_prod}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nexusone-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: nexusone-redis-prod
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata_prod:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nexusone-net
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: nexusone-api-prod
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: postgresql://${POSTGRES_USER:-nexusone}:${POSTGRES_PASSWORD:-nexusone_prod_pass}@postgres:5432/${POSTGRES_DB:-nexusone_prod}?schema=public
+      REDIS_URL: redis://redis:6379
+      SESSION_SECRET: ${SESSION_SECRET:-nx_super_secret_session_key_production_32char}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:3000,http://localhost:80}
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    networks:
+      - nexusone-net
+
+  worker:
+    build:
+      context: .
+      dockerfile: apps/worker/Dockerfile
+    container_name: nexusone-worker-prod
+    restart: always
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${POSTGRES_USER:-nexusone}:${POSTGRES_PASSWORD:-nexusone_prod_pass}@postgres:5432/${POSTGRES_DB:-nexusone_prod}?schema=public
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - nexusone-net
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: apps/dashboard/Dockerfile
+    container_name: nexusone-dashboard-prod
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - nexusone-net
+
+  marketing:
+    build:
+      context: .
+      dockerfile: apps/marketing/Dockerfile
+    container_name: nexusone-marketing-prod
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    networks:
+      - nexusone-net
+
+networks:
+  nexusone-net:
+    driver: bridge
+
+volumes:
+  pgdata_prod:
+  redisdata_prod:
