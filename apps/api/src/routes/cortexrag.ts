@@ -6,7 +6,7 @@
 // ============================================================
 
 import type { FastifyPluginAsync } from 'fastify';
-import { prisma, type DocumentStatus } from '@nexus-one/database';
+import { prisma, type DocumentStatus, type Prisma } from '@nexus-one/database';
 import { cortexRagEngine } from '../services/cortexrag/engine.js';
 import { z } from 'zod';
 
@@ -193,7 +193,7 @@ export const cortexragRoutes: FastifyPluginAsync = async (app) => {
             chunkIndex: c.chunkIndex,
             content: c.content,
             tokenCount: c.tokenCount,
-            metadata: c.metadata as any,
+            metadata: (c.metadata || {}) as Prisma.InputJsonValue,
           })),
         },
       },

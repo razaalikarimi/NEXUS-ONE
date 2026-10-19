@@ -811,7 +811,7 @@ export function PulseOpsPage() {
           <FormField label="Severity Level" required>
             <Select
               value={newIncidentSeverity}
-              onChange={(e) => setNewIncidentSeverity(e.target.value as any)}
+              onChange={(e) => setNewIncidentSeverity(e.target.value as 'critical' | 'high' | 'medium' | 'low')}
             >
               <option value="critical">Critical (P0 - Service Down)</option>
               <option value="high">High (P1 - Degraded Service)</option>

@@ -6,7 +6,7 @@
 // ============================================================
 
 import { createHash } from 'node:crypto';
-import { prisma } from '@nexus-one/database';
+import { prisma, type Prisma } from '@nexus-one/database';
 
 export interface IngestTelemetryParams {
   orgId: string;
@@ -116,7 +116,7 @@ export class PulseOpsTelemetryService {
         stackTrace,
         fingerprint,
         severity,
-        metadata: (metadata || {}) as any,
+        metadata: (metadata || {}) as Prisma.InputJsonValue,
       },
     });
 
@@ -162,7 +162,7 @@ export class PulseOpsTelemetryService {
                 {
                   eventType: 'ai_diagnosis',
                   message: aiAnalysis.summary,
-                  metadata: aiAnalysis as any,
+                  metadata: aiAnalysis as unknown as Prisma.InputJsonValue,
                 },
               ],
             },

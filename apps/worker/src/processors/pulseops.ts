@@ -2,8 +2,8 @@
 // PulseOps Telemetry Queue Processor
 // ============================================================
 
-import { Worker, type Job } from 'bullmq';
-import { prisma, type IncidentSeverity } from '@nexus-one/database';
+import { Worker, type Job, type ConnectionOptions } from 'bullmq';
+import { prisma, type IncidentSeverity, type Prisma } from '@nexus-one/database';
 import { createLogger } from '@nexus-one/logger';
 import { createHash } from 'node:crypto';
 
@@ -20,7 +20,7 @@ export interface TelemetryJobData {
   metadata?: Record<string, unknown>;
 }
 
-export function createPulseOpsWorker(connection: { host?: string; port?: number; url?: string }) {
+export function createPulseOpsWorker(connection: ConnectionOptions) {
   const worker = new Worker<TelemetryJobData>(
     'telemetry-ingestion',
     async (job: Job<TelemetryJobData>) => {
@@ -96,14 +96,14 @@ export function createPulseOpsWorker(connection: { host?: string; port?: number;
           stackTrace,
           fingerprint,
           severity,
-          metadata: (metadata || {}) as any,
+          metadata: (metadata || {}) as Prisma.InputJsonValue,
         },
       });
 
       return { success: true, eventId: event.id, fingerprint };
     },
     {
-      connection: connection as any,
+      connection,
       concurrency: 10,
     },
   );

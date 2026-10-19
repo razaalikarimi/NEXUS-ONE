@@ -6,7 +6,7 @@
 // ============================================================
 
 import type { FastifyPluginAsync } from 'fastify';
-import { prisma, type RiskLevel, type RiskAction, type CaseStatus } from '@nexus-one/database';
+import { prisma, type RiskLevel, type RiskAction, type CaseStatus, type Prisma } from '@nexus-one/database';
 import { sentinelXEngine, type RuleDefinition } from '../services/sentinelx/engine.js';
 import { z } from 'zod';
 
@@ -120,7 +120,7 @@ export const sentinelxRoutes: FastifyPluginAsync = async (app) => {
           riskLevel: evalResult.riskLevel as RiskLevel,
           triggeredRuleIds: evalResult.triggeredRules.map((r) => r.ruleId),
           actionTaken: evalResult.actionTaken as RiskAction,
-          metadata: (body.metadata as any) ?? {},
+          metadata: (body.metadata ?? {}) as Prisma.InputJsonValue,
         },
       });
 
@@ -346,7 +346,7 @@ export const sentinelxRoutes: FastifyPluginAsync = async (app) => {
           name: body.name,
           description: body.description,
           ruleType: body.ruleType,
-          conditions: (body.conditions as any) ?? {},
+          conditions: (body.conditions ?? {}) as Prisma.InputJsonValue,
           scoreImpact: body.scoreImpact,
           actionTrigger: body.actionTrigger as RiskAction,
           isActive: body.isActive,

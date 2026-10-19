@@ -1041,7 +1041,7 @@ export function SentinelXPage() {
               </label>
               <select
                 value={newRuleType}
-                onChange={(e) => setNewRuleType(e.target.value as any)}
+                onChange={(e) => setNewRuleType(e.target.value as RiskRuleItem['ruleType'])}
                 style={{ width: '100%', backgroundColor: 'var(--nx-neutral-900)', color: 'var(--nx-neutral-100)', border: '1px solid var(--nx-neutral-700)', padding: '0.5rem', borderRadius: '6px' }}
               >
                 <option value="velocity">Transaction Velocity Spike</option>
@@ -1058,7 +1058,7 @@ export function SentinelXPage() {
               </label>
               <select
                 value={newRuleAction}
-                onChange={(e) => setNewRuleAction(e.target.value as any)}
+                onChange={(e) => setNewRuleAction(e.target.value as RiskRuleItem['actionTrigger'])}
                 style={{ width: '100%', backgroundColor: 'var(--nx-neutral-900)', color: 'var(--nx-neutral-100)', border: '1px solid var(--nx-neutral-700)', padding: '0.5rem', borderRadius: '6px' }}
               >
                 <option value="block">BLOCK (Immediate Rejection)</option>
@@ -1118,7 +1118,7 @@ export function SentinelXPage() {
               </label>
               <select
                 value={resolutionVerdict}
-                onChange={(e) => setResolutionVerdict(e.target.value as any)}
+                onChange={(e) => setResolutionVerdict(e.target.value as 'resolved_fraud' | 'resolved_benign')}
                 style={{ width: '100%', backgroundColor: 'var(--nx-neutral-900)', color: 'var(--nx-neutral-100)', border: '1px solid var(--nx-neutral-700)', padding: '0.5rem', borderRadius: '6px' }}
               >
                 <option value="resolved_fraud">CONFIRMED FRAUD (Add to Blocklist & Invalidate Credentials)</option>

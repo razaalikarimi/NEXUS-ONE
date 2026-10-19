@@ -670,7 +670,7 @@ export function CloudPilotPage() {
                   </label>
                   <select
                     value={calcWorkloadType}
-                    onChange={(e) => setCalcWorkloadType(e.target.value as any)}
+                    onChange={(e) => setCalcWorkloadType(e.target.value as 'stateless_api' | 'batch_training' | 'transaction_db' | 'background_queue')}
                     style={{
                       width: '100%',
                       backgroundColor: 'var(--nx-neutral-900)',
@@ -868,7 +868,7 @@ export function CloudPilotPage() {
             </label>
             <select
               value={newProvider}
-              onChange={(e) => setNewProvider(e.target.value as any)}
+              onChange={(e) => setNewProvider(e.target.value as 'aws' | 'gcp' | 'azure')}
               style={{
                 width: '100%',
                 backgroundColor: 'var(--nx-neutral-900)',

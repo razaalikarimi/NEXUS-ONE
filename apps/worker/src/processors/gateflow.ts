@@ -5,7 +5,7 @@
 // and consumer quota recalculations.
 // ============================================================
 
-import { Worker, type Job } from 'bullmq';
+import { Worker, type Job, type ConnectionOptions } from 'bullmq';
 import { prisma } from '@nexus-one/database';
 import { createLogger } from '@nexus-one/logger';
 
@@ -21,7 +21,7 @@ export interface GateFlowMetricJobData {
   responseSize?: number;
 }
 
-export function createGateFlowWorker(connection: { host?: string; port?: number; url?: string }) {
+export function createGateFlowWorker(connection: ConnectionOptions) {
   const worker = new Worker<GateFlowMetricJobData>(
     'gateway-metrics-aggregation',
     async (job: Job<GateFlowMetricJobData>) => {
@@ -43,7 +43,7 @@ export function createGateFlowWorker(connection: { host?: string; port?: number;
       return { success: true, metricId: metric.id };
     },
     {
-      connection: connection as any,
+      connection,
       concurrency: 10,
     },
   );

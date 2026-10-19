@@ -1160,7 +1160,7 @@ export function SyncSpacePage() {
             </label>
             <select
               value={newDocType}
-              onChange={(e) => setNewDocType(e.target.value as any)}
+              onChange={(e) => setNewDocType(e.target.value as 'spec' | 'markdown' | 'canvas' | 'notebook')}
               style={{
                 width: '100%',
                 backgroundColor: 'var(--nx-neutral-900)',

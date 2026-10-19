@@ -625,7 +625,7 @@ export function CortexRAGPage() {
           </FormField>
 
           <FormField label="Document Format">
-            <Select value={newDocType} onChange={(e) => setNewDocType(e.target.value as any)}>
+            <Select value={newDocType} onChange={(e) => setNewDocType(e.target.value as 'markdown' | 'pdf' | 'docx' | 'json' | 'txt')}>
               <option value="markdown">Markdown (.md)</option>
               <option value="pdf">PDF Document (.pdf)</option>
               <option value="docx">Word Document (.docx)</option>

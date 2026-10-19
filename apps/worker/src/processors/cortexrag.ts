@@ -5,7 +5,7 @@
 // vector embeddings for fast hybrid search.
 // ============================================================
 
-import { Worker, type Job } from 'bullmq';
+import { Worker, type Job, type ConnectionOptions } from 'bullmq';
 import { prisma } from '@nexus-one/database';
 import { createLogger } from '@nexus-one/logger';
 
@@ -19,7 +19,7 @@ export interface DocumentIngestionJobData {
   chunkOverlap?: number;
 }
 
-export function createCortexRagWorker(connection: { host?: string; port?: number; url?: string }) {
+export function createCortexRagWorker(connection: ConnectionOptions) {
   const worker = new Worker<DocumentIngestionJobData>(
     'document-chunking-indexing',
     async (job: Job<DocumentIngestionJobData>) => {
@@ -63,7 +63,7 @@ export function createCortexRagWorker(connection: { host?: string; port?: number
       return { success: true, documentId, chunksCreated: chunkIndex };
     },
     {
-      connection: connection as any,
+      connection,
       concurrency: 5,
     },
   );

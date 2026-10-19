@@ -2,7 +2,7 @@
 // AgentForge Workflow Execution Queue Processor
 // ============================================================
 
-import { Worker, type Job } from 'bullmq';
+import { Worker, type Job, type ConnectionOptions } from 'bullmq';
 import { prisma, type WorkflowNodeType } from '@nexus-one/database';
 import { createLogger } from '@nexus-one/logger';
 
@@ -15,7 +15,7 @@ export interface WorkflowJobData {
   inputs: Record<string, unknown>;
 }
 
-export function createAgentForgeWorker(connection: { host?: string; port?: number; url?: string }) {
+export function createAgentForgeWorker(connection: ConnectionOptions) {
   const worker = new Worker<WorkflowJobData>(
     'workflow-execution',
     async (job: Job<WorkflowJobData>) => {
@@ -73,7 +73,7 @@ export function createAgentForgeWorker(connection: { host?: string; port?: numbe
       return { success: true, runId };
     },
     {
-      connection: connection as any,
+      connection,
       concurrency: 5,
     },
   );

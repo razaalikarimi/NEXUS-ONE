@@ -6,7 +6,7 @@
 // ============================================================
 
 import type { FastifyPluginAsync } from 'fastify';
-import { prisma, type IncidentSeverity, type IncidentStatus, type ErrorGroupStatus } from '@nexus-one/database';
+import { prisma, type IncidentSeverity, type IncidentStatus, type ErrorGroupStatus, type Prisma } from '@nexus-one/database';
 import { PulseOpsTelemetryService } from '../services/pulseops/telemetry.js';
 import { z } from 'zod';
 
@@ -346,7 +346,7 @@ export const pulseopsRoutes: FastifyPluginAsync = async (app) => {
             {
               eventType: 'ai_diagnosis',
               message: aiDiagnosis.summary,
-              metadata: aiDiagnosis as any,
+              metadata: aiDiagnosis as unknown as Prisma.InputJsonValue,
             },
           ],
         },
@@ -488,7 +488,7 @@ export const pulseopsRoutes: FastifyPluginAsync = async (app) => {
         incidentId: id,
         eventType: body.eventType,
         message: body.message,
-        metadata: body.metadata as any,
+        metadata: (body.metadata || {}) as Prisma.InputJsonValue,
         createdById: userId,
       },
     });
