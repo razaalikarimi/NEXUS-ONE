@@ -10,6 +10,7 @@ import { createAgentForgeWorker } from './processors/agentforge.js';
 import { createPulseOpsWorker } from './processors/pulseops.js';
 import { createGateFlowWorker } from './processors/gateflow.js';
 import { createCortexRagWorker } from './processors/cortexrag.js';
+import { createSyncSpaceWorker } from './processors/syncspace.js';
 
 const logger = createLogger({ service: 'nexus-one-worker' });
 
@@ -29,6 +30,8 @@ async function start() {
     logger.info('Registered GateFlow gateway-metrics worker');
     createCortexRagWorker({ url: redisUrl });
     logger.info('Registered CortexRAG document-chunking worker');
+    createSyncSpaceWorker({ url: redisUrl });
+    logger.info('Registered SyncSpace maintenance worker');
   } catch (err: unknown) {
     logger.warn({ error: err instanceof Error ? err.message : String(err) }, 'Redis offline, running in standalone worker mode');
   }

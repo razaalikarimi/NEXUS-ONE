@@ -55,6 +55,10 @@ model User {
   auditEvents   AuditEvent[]
   notifications Notification[]
   invitationsCreated Invitation[] @relation("InvitedByUser")
+  syncDocsCreated    SyncDocument[] @relation("SyncDocCreator")
+  syncPresences      SyncPresence[]
+  syncComments       SyncComment[]
+  syncSnapshots      SyncSnapshot[]
 
   @@map("users")
 }
@@ -106,6 +110,7 @@ model Organization {
   knowledgeBases   KnowledgeBase[]
   documents        KnowledgeDocument[]
   ragQueries       RagQueryLog[]
+  syncDocuments    SyncDocument[]
 
   @@map("organizations")
 }
@@ -130,6 +135,7 @@ model Workspace {
   gatewayConsumers GatewayConsumer[]
   knowledgeBases   KnowledgeBase[]
   documents        KnowledgeDocument[]
+  syncDocuments    SyncDocument[]
 
   @@unique([orgId, slug])
   @@index([orgId])
@@ -788,6 +794,101 @@ model RagQueryLog {
   @@map("cortexrag_query_logs")
 }
 
+// ------------------------------------------------------------
+// Phase 8: SyncSpace — Real-Time Collaborative Workspace
+// ------------------------------------------------------------
 
+enum SyncDocType {
+  markdown
+  canvas
+  spec
+  notebook
+}
 
+enum SyncAccessRole {
+  viewer
+  editor
+  admin
+}
 
+model SyncDocument {
+  id          String       @id @default(uuid())
+  orgId       String
+  workspaceId String
+  title       String
+  slug        String
+  type        SyncDocType  @default(markdown)
+  content     String       @default("")
+  version     Int          @default(1)
+  isArchived  Boolean      @default(false)
+  createdById String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  organization Organization   @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  workspace    Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  creator      User           @relation("SyncDocCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  presence     SyncPresence[]
+  comments     SyncComment[]
+  snapshots    SyncSnapshot[]
+
+  @@unique([workspaceId, slug])
+  @@index([orgId, workspaceId])
+  @@map("syncspace_documents")
+}
+
+model SyncPresence {
+  id            String   @id @default(uuid())
+  documentId    String
+  userId        String
+  userName      String
+  userColor     String   @default("#6366f1")
+  cursorLine    Int      @default(1)
+  cursorCh      Int      @default(0)
+  activeBlockId String?
+  selection     String?  @default("")
+  lastHeartbeat DateTime @default(now())
+
+  document SyncDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, userId])
+  @@index([documentId, lastHeartbeat])
+  @@map("syncspace_presence")
+}
+
+model SyncComment {
+  id         String   @id @default(uuid())
+  documentId String
+  authorId   String
+  authorName String
+  blockId    String?
+  content    String
+  resolved   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  document SyncDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  author   User         @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([documentId, resolved])
+  @@map("syncspace_comments")
+}
+
+model SyncSnapshot {
+  id            String   @id @default(uuid())
+  documentId    String
+  version       Int
+  title         String
+  content       String
+  changeSummary String?
+  createdById   String
+  createdAt     DateTime @default(now())
+
+  document SyncDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  creator  User         @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, version])
+  @@index([documentId])
+  @@map("syncspace_snapshots")
+}

@@ -220,6 +220,59 @@ export const queryRagSchema = z.object({
   hybridAlpha: z.number().min(0).max(1).default(0.6),
 });
 
+// ---- SyncSpace schemas ----
+
+export const syncDocTypeSchema = z.enum(['markdown', 'canvas', 'spec', 'notebook']);
+
+export const createSyncDocumentSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(200),
+  type: syncDocTypeSchema.default('markdown'),
+  content: z.string().default(''),
+});
+
+export const updateSyncDocumentSchema = z.object({
+  title: z.string().min(1).max(200).optional(),
+  content: z.string().optional(),
+  baseVersion: z.number().int().min(1).optional(),
+  clientChanges: z
+    .array(
+      z.object({
+        op: z.enum(['insert', 'delete', 'replace']),
+        position: z.number().int().min(0),
+        text: z.string().optional(),
+        length: z.number().int().min(0).optional(),
+      })
+    )
+    .optional(),
+});
+
+export const syncPresenceHeartbeatSchema = z.object({
+  cursorLine: z.number().int().min(1).default(1),
+  cursorCh: z.number().int().min(0).default(0),
+  activeBlockId: z.string().optional(),
+  selection: z.string().optional(),
+  userName: z.string().optional(),
+  userColor: z.string().optional(),
+});
+
+export const createSyncCommentSchema = z.object({
+  blockId: z.string().optional(),
+  content: z.string().min(1, 'Comment text is required').max(2000),
+});
+
+export const resolveSyncCommentSchema = z.object({
+  resolved: z.boolean().default(true),
+});
+
+export const createSyncSnapshotSchema = z.object({
+  title: z.string().min(1, 'Snapshot title required').max(100),
+  changeSummary: z.string().max(500).optional(),
+});
+
+export const rollbackSyncSnapshotSchema = z.object({
+  snapshotId: z.string().uuid('Invalid snapshot ID'),
+});
+
 export type CreateServiceInput = z.infer<typeof createServiceSchema>;
 export type CreateTelemetryEventInput = z.infer<typeof createTelemetryEventSchema>;
 export type CreateIncidentInput = z.infer<typeof createIncidentSchema>;
@@ -233,6 +286,14 @@ export type TestProxyRequestInput = z.infer<typeof testProxyRequestSchema>;
 export type CreateKnowledgeBaseInput = z.infer<typeof createKnowledgeBaseSchema>;
 export type CreateKnowledgeDocumentInput = z.infer<typeof createKnowledgeDocumentSchema>;
 export type QueryRagInput = z.infer<typeof queryRagSchema>;
+export type CreateSyncDocumentInput = z.infer<typeof createSyncDocumentSchema>;
+export type UpdateSyncDocumentInput = z.infer<typeof updateSyncDocumentSchema>;
+export type SyncPresenceHeartbeatInput = z.infer<typeof syncPresenceHeartbeatSchema>;
+export type CreateSyncCommentInput = z.infer<typeof createSyncCommentSchema>;
+export type ResolveSyncCommentInput = z.infer<typeof resolveSyncCommentSchema>;
+export type CreateSyncSnapshotInput = z.infer<typeof createSyncSnapshotSchema>;
+export type RollbackSyncSnapshotInput = z.infer<typeof rollbackSyncSnapshotSchema>;
 
 // Re-export zod for convenience
 export { z };
+
