@@ -26,3 +26,29 @@ if (process.env['NODE_ENV'] !== 'production') {
 export * from '@prisma/client';
 export { PrismaClient };
 export default prisma;
+
+export type {
+  Role,
+  MembershipStatus,
+  InvitationStatus,
+  ApiKeyStatus,
+  WorkflowStatus,
+  WorkflowNodeType,
+  WorkflowRunStatus,
+  StepStatus,
+  ApprovalStatus,
+  ServiceHealth,
+  IncidentSeverity,
+  IncidentStatus,
+  ErrorGroupStatus,
+  DocumentStatus,
+  RiskLevel,
+  RiskAction,
+  CaseStatus,
+  CloudProvider,
+  WorkloadServiceType,
+  RecommendationType,
+  RecommendationStatus,
+  Prisma,
+} from '@prisma/client';
+

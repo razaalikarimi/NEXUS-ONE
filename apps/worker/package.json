@@ -19,6 +19,7 @@
     "@nexus-one/types": "*",
     "@nexus-one/logger": "*",
     "@nexus-one/integrations": "*",
+    "@prisma/client": "^5.18.0",
     "bullmq": "^5.12.0",
     "ioredis": "^5.4.1"
   },
