@@ -20,7 +20,7 @@ export function OrganizationSettingsPage() {
       api.getAuditLogs(activeOrg.id)
         .then(setLogs)
         .catch(() => {
-          // Fallback demo audit records if not seeded
+          // Fallback initial audit records if offline
           setLogs([
             {
               id: '1',

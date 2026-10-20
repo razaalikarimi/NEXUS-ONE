@@ -15,13 +15,13 @@ html {
   font-size: 16px;
   line-height: var(--nx-leading-normal);
   color: #0f172a;
-  background-color: #f8fafc;
+  background-color: #eceff1;
   -webkit-font-smoothing: antialiased;
 }
 
 body {
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: #eceff1;
   color: #0f172a;
 }
 
@@ -33,7 +33,7 @@ a {
 code {
   font-family: var(--nx-font-mono, monospace);
   font-size: 0.85em;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(15, 23, 42, 0.06);
   padding: 0.15rem 0.35rem;
   border-radius: 0.25rem;
 }
@@ -59,15 +59,15 @@ code {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  color: #94a3b8;
+  color: #475569;
   font-size: 0.9rem;
 }
 
 .nx-spinner {
   width: 2.5rem;
   height: 2.5rem;
-  border: 3px solid rgba(99, 102, 241, 0.2);
-  border-top-color: #6366f1;
+  border: 3px solid rgba(37, 99, 235, 0.2);
+  border-top-color: #2563eb;
   border-radius: 50%;
   animation: nx-spin 0.8s linear infinite;
 }
@@ -81,7 +81,7 @@ code {
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  background: radial-gradient(circle at 50% 20%, rgba(99, 102, 241, 0.1) 0%, #f8fafc 70%);
+  background: radial-gradient(circle at 50% 20%, rgba(37, 99, 235, 0.08) 0%, #eceff1 70%);
 }
 
 .nx-auth-card-wrap {
@@ -95,13 +95,13 @@ code {
 .nx-auth-logo {
   width: 3rem;
   height: 3rem;
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
-  border: 1px solid #c7d2fe;
+  background: linear-gradient(135deg, #0f172a, #2563eb);
+  border: 1px solid rgba(15, 23, 42, 0.1);
   border-radius: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.15);
   margin-bottom: 1.25rem;
 }
 
@@ -110,7 +110,7 @@ code {
   height: 0.8rem;
   background-color: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 8px #38bdf8;
 }
 
 .nx-auth-heading {
@@ -122,7 +122,7 @@ code {
 
 .nx-auth-subheading {
   font-size: 0.875rem;
-  color: #64748b;
+  color: #475569;
   margin-top: 0.25rem;
   margin-bottom: 2rem;
 }
@@ -130,8 +130,8 @@ code {
 .nx-auth-card {
   width: 100%;
   background-color: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.1) !important;
   color: #0f172a !important;
 }
 
@@ -145,7 +145,7 @@ code {
 .nx-auth-card p,
 .nx-auth-card [class*="card__description"],
 .nx-auth-card [class*="CardDescription"] {
-  color: #64748b !important;
+  color: #475569 !important;
 }
 
 .nx-auth-card label {
@@ -154,14 +154,14 @@ code {
 }
 
 .nx-auth-card input {
-  background-color: #ffffff !important;
+  background-color: #f8fafc !important;
   border: 1px solid #cbd5e1 !important;
   color: #0f172a !important;
 }
 
 .nx-auth-card input:focus {
-  border-color: #4f46e5 !important;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
 }
 
 .nx-auth-alert {
@@ -259,7 +259,7 @@ code {
 .nx-sidebar {
   width: 260px;
   background-color: #ffffff;
-  border-right: 1px solid #e2e8f0;
+  border-right: 1px solid #cbd5e1;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -274,13 +274,13 @@ code {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .nx-brand-logo {
   width: 1.75rem;
   height: 1.75rem;
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  background: linear-gradient(135deg, #0f172a, #2563eb);
   border-radius: 0.4rem;
   display: flex;
   align-items: center;
@@ -304,9 +304,9 @@ code {
 .nx-brand-badge {
   font-size: 0.65rem;
   padding: 0.1rem 0.35rem;
-  background-color: #eef2ff;
-  border: 1px solid #c7d2fe;
-  color: #4f46e5;
+  background-color: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: #2563eb;
   border-radius: 0.25rem;
   font-weight: 600;
 }
@@ -314,14 +314,14 @@ code {
 /* Organization Switcher */
 .nx-org-switcher-wrapper {
   padding: 0.875rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid #e2e8f0;
   position: relative;
 }
 
 .nx-org-switcher-btn {
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
   border-radius: 0.5rem;
   padding: 0.5rem 0.75rem;
   display: flex;
@@ -332,7 +332,7 @@ code {
 }
 
 .nx-org-switcher-btn:hover {
-  background-color: rgba(255, 255, 255, 0.06);
+  background-color: #f1f5f9;
 }
 
 .nx-org-info {
@@ -344,7 +344,7 @@ code {
 .nx-org-name {
   font-size: 0.825rem;
   font-weight: 600;
-  color: #f1f5f9;
+  color: #0f172a;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -356,7 +356,7 @@ code {
 }
 
 .nx-org-chevron {
-  color: #94a3b8;
+  color: #64748b;
   font-size: 0.75rem;
 }
 
@@ -365,10 +365,10 @@ code {
   top: 100%;
   left: 1rem;
   right: 1rem;
-  background-color: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
   border-radius: 0.5rem;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.1);
   z-index: 50;
   padding: 0.5rem;
   margin-top: 0.25rem;
@@ -396,16 +396,16 @@ code {
 }
 
 .nx-org-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: #f1f5f9;
 }
 
 .nx-org-item--active {
-  background-color: rgba(99, 102, 241, 0.15);
+  background-color: rgba(37, 99, 235, 0.08);
 }
 
 .nx-org-item__name {
   font-size: 0.8rem;
-  color: #f1f5f9;
+  color: #0f172a;
   font-weight: 500;
 }
 
@@ -423,7 +423,7 @@ code {
   font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #475569;
+  color: #64748b;
   padding: 0.75rem 0.6rem 0.35rem;
   font-weight: 700;
 }
@@ -436,7 +436,7 @@ code {
   border-radius: 0.4rem;
   font-size: 0.825rem;
   font-weight: 500;
-  color: #64748b;
+  color: #475569;
   transition: all 0.15s ease;
   position: relative;
 }
@@ -447,9 +447,9 @@ code {
 }
 
 .nx-nav-item--active {
-  background-color: #eef2ff;
-  border: 1px solid #c7d2fe;
-  color: #4f46e5;
+  background-color: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  color: #1d4ed8;
   font-weight: 600;
 }
 
@@ -466,13 +466,13 @@ code {
   width: 0.35rem;
   height: 0.35rem;
   border-radius: 50%;
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 /* Sidebar Footer */
 .nx-sidebar-footer {
   padding: 0.75rem 0.875rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid #e2e8f0;
 }
 
 .nx-user-pill {
@@ -492,7 +492,7 @@ code {
 .nx-user-name {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #f1f5f9;
+  color: #0f172a;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -509,7 +509,7 @@ code {
 .nx-logout-btn {
   background: transparent;
   border: none;
-  color: #94a3b8;
+  color: #64748b;
   font-size: 1.1rem;
   cursor: pointer;
   padding: 0.25rem;
@@ -518,7 +518,7 @@ code {
 }
 
 .nx-logout-btn:hover {
-  color: #f87171;
+  color: #dc2626;
 }
 
 /* Main Wrap */
@@ -527,17 +527,18 @@ code {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  background-color: #eceff1;
 }
 
 /* Header */
 .nx-top-header {
   height: 4rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #cbd5e1;
   padding: 0 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(236, 239, 241, 0.9);
   backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
@@ -557,12 +558,12 @@ code {
 }
 
 .nx-header-sep {
-  color: #94a3b8;
+  color: #64748b;
 }
 
 .nx-header-ws {
-  color: #4f46e5;
-  font-weight: 500;
+  color: #2563eb;
+  font-weight: 600;
 }
 
 .nx-header-actions {
@@ -576,30 +577,30 @@ code {
   align-items: center;
   gap: 0.4rem;
   font-size: 0.75rem;
-  color: #4ade80;
-  background-color: rgba(34, 197, 94, 0.1);
+  color: #15803d;
+  background-color: rgba(34, 197, 94, 0.12);
   padding: 0.25rem 0.6rem;
   border-radius: 9999px;
-  border: 1px solid rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 .nx-status-dot-pulse {
   width: 0.4rem;
   height: 0.4rem;
-  background-color: #22c55e;
+  background-color: #16a34a;
   border-radius: 50%;
-  box-shadow: 0 0 6px #22c55e;
+  box-shadow: 0 0 6px #16a34a;
 }
 
 .nx-header-link {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: #475569;
   font-weight: 500;
   transition: color 0.15s ease;
 }
 
 .nx-header-link:hover {
-  color: #ffffff;
+  color: #0f172a;
 }
 
 /* Page Content */
@@ -618,7 +619,7 @@ code {
   align-items: flex-start;
   justify-content: space-between;
   padding-bottom: 2rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #cbd5e1;
   margin-bottom: 2rem;
   gap: 1.5rem;
 }
@@ -631,20 +632,20 @@ code {
 
 .nx-welcome-desc {
   font-size: 0.9rem;
-  color: #64748b;
+  color: #475569;
   margin-top: 0.4rem;
 }
 
 .nx-text-highlight {
-  color: #4f46e5;
+  color: #2563eb;
   font-weight: 600;
 }
 
 .nx-plan-tag {
   text-transform: uppercase;
   font-size: 0.75rem;
-  color: #d97706;
-  font-weight: 600;
+  color: #b45309;
+  font-weight: 700;
 }
 
 .nx-welcome-actions {
@@ -689,15 +690,15 @@ code {
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cbd5e1;
   border-radius: 0.75rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
 }
 
 .nx-pillar-card:hover {
   transform: translateY(-2px);
-  border-color: #818cf8 !important;
-  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.08);
+  border-color: #2563eb !important;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.14);
 }
 
 .nx-pillar-card__top {
@@ -720,7 +721,7 @@ code {
 
 .nx-pillar-tagline {
   font-size: 0.75rem;
-  color: #4f46e5;
+  color: #2563eb;
   margin-bottom: 1.25rem;
   font-weight: 600;
 }
@@ -728,7 +729,7 @@ code {
 .nx-pillar-metrics {
   margin-top: auto;
   padding-top: 0.75rem;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid #e2e8f0;
 }
 
 .nx-pillar-metric-main {
@@ -779,25 +780,25 @@ code {
   gap: 1rem;
   font-size: 0.825rem;
   padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .nx-audit-badge {
   font-family: var(--nx-font-mono, monospace);
   font-size: 0.725rem;
   padding: 0.15rem 0.4rem;
-  background-color: rgba(99, 102, 241, 0.1);
-  color: #818cf8;
+  background-color: rgba(37, 99, 235, 0.08);
+  color: #1d4ed8;
   border-radius: 0.25rem;
 }
 
 .nx-audit-user {
   font-weight: 600;
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .nx-audit-desc {
-  color: #94a3b8;
+  color: #475569;
 }
 
 .nx-audit-time {
@@ -817,12 +818,12 @@ code {
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid #e2e8f0;
   font-size: 0.85rem;
 }
 
 .nx-telemetry-label {
-  color: #94a3b8;
+  color: #475569;
 }
 
 /* Product Shell General */
@@ -837,7 +838,7 @@ code {
   align-items: flex-start;
   justify-content: space-between;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid #cbd5e1;
 }
 
 .nx-product-pill {
@@ -858,12 +859,12 @@ code {
 .nx-product-title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .nx-product-desc {
   font-size: 0.9rem;
-  color: #94a3b8;
+  color: #475569;
   margin-top: 0.35rem;
   max-width: 700px;
 }
@@ -876,7 +877,7 @@ code {
 
 .nx-stat-title {
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   margin-bottom: 0.5rem;
@@ -885,7 +886,7 @@ code {
 .nx-stat-value {
   font-size: 2rem;
   font-weight: 800;
-  color: #ffffff;
+  color: #0f172a;
   margin-bottom: 0.25rem;
 }
 

@@ -26,12 +26,6 @@ export function LoginPage() {
     }
   }
 
-  function handleQuickFill(demoEmail: string, demoPass: string) {
-    setEmail(demoEmail);
-    setPassword(demoPass);
-    setError(null);
-  }
-
   return (
     <div className="nx-auth-container">
       <div className="nx-auth-card-wrap">
@@ -39,7 +33,7 @@ export function LoginPage() {
           <span className="nx-brand-logo__dot" />
         </div>
         <h1 className="nx-auth-heading">NEXUS ONE</h1>
-        <p className="nx-auth-subheading">Unified Enterprise AI & Developer Platform</p>
+        <p className="nx-auth-subheading">Enterprise Cloud & Developer Console</p>
 
         <Card className="nx-auth-card">
           <CardHeader>
@@ -77,36 +71,13 @@ export function LoginPage() {
                 type="submit"
                 variant="primary"
                 loading={submitting}
-                style={{ width: '100%', marginTop: '1rem' }}
+                style={{ width: '100%', marginTop: '1.25rem' }}
               >
                 Sign In →
               </Button>
             </form>
 
-            <div className="nx-auth-divider">
-              <span>Or sign in with seeded demo user</span>
-            </div>
-
-            <div className="nx-quickfill-grid">
-              <button
-                type="button"
-                className="nx-quickfill-btn"
-                onClick={() => handleQuickFill('admin@nexusone.dev', 'NexusAdmin!2026')}
-              >
-                <strong>System Admin</strong>
-                <span>admin@nexusone.dev (Owner)</span>
-              </button>
-              <button
-                type="button"
-                className="nx-quickfill-btn"
-                onClick={() => handleQuickFill('developer@nexusone.dev', 'NexusDev!2026')}
-              >
-                <strong>Sarah Chen</strong>
-                <span>developer@nexusone.dev (Admin)</span>
-              </button>
-            </div>
-
-            <div className="nx-auth-footer-link">
+            <div className="nx-auth-footer-link" style={{ marginTop: '2rem' }}>
               Don't have an account? <Link to="/register">Create workspace</Link>
             </div>
           </CardContent>

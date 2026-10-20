@@ -2,15 +2,28 @@ import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Avatar, Badge } from '@nexus-one/ui';
+import {
+  WorkflowIcon,
+  ActivityPulseIcon,
+  GatewayIcon,
+  KnowledgeDatabaseIcon,
+  CollabDocIcon,
+  ShieldSecurityIcon,
+  CloudServerIcon,
+  CommandCenterIcon,
+  BuildingOrgIcon,
+  UsersGroupIcon,
+  KeyPassIcon,
+} from '../Icons';
 
 const PRODUCTS = [
-  { id: 'agentforge', name: 'AgentForge', path: '/agentforge', icon: '⚡', color: 'var(--nx-agentforge)' },
-  { id: 'pulseops', name: 'PulseOps', path: '/pulseops', icon: '🚨', color: 'var(--nx-pulseops)' },
-  { id: 'gateflow', name: 'GateFlow', path: '/gateflow', icon: '🚪', color: 'var(--nx-gateflow)' },
-  { id: 'cortexrag', name: 'CortexRAG', path: '/cortexrag', icon: '🧠', color: 'var(--nx-cortexrag)' },
-  { id: 'syncspace', name: 'SyncSpace', path: '/syncspace', icon: '✨', color: 'var(--nx-syncspace)' },
-  { id: 'sentinelx', name: 'SentinelX', path: '/sentinelx', icon: '🛡️', color: 'var(--nx-sentinelx)' },
-  { id: 'cloudpilot', name: 'CloudPilot', path: '/cloudpilot', icon: '☁️', color: 'var(--nx-cloudpilot)' },
+  { id: 'agentforge', name: 'AgentForge', path: '/agentforge', Icon: WorkflowIcon, color: '#4f46e5' },
+  { id: 'pulseops', name: 'PulseOps', path: '/pulseops', Icon: ActivityPulseIcon, color: '#2563eb' },
+  { id: 'gateflow', name: 'GateFlow', path: '/gateflow', Icon: GatewayIcon, color: '#0891b2' },
+  { id: 'cortexrag', name: 'CortexRAG', path: '/cortexrag', Icon: KnowledgeDatabaseIcon, color: '#4338ca' },
+  { id: 'syncspace', name: 'SyncSpace', path: '/syncspace', Icon: CollabDocIcon, color: '#059669' },
+  { id: 'sentinelx', name: 'SentinelX', path: '/sentinelx', Icon: ShieldSecurityIcon, color: '#d97706' },
+  { id: 'cloudpilot', name: 'CloudPilot', path: '/cloudpilot', Icon: CloudServerIcon, color: '#2563eb' },
 ];
 
 export function DashboardLayout() {
@@ -85,36 +98,39 @@ export function DashboardLayout() {
               `nx-nav-item ${isActive ? 'nx-nav-item--active' : ''}`
             }
           >
-            <span className="nx-nav-icon">📊</span>
+            <span className="nx-nav-icon"><CommandCenterIcon size={16} /></span>
             <span>Command Center</span>
           </NavLink>
 
-          <div className="nx-nav-section-title">The Seven Pillars</div>
-          {PRODUCTS.map((prod) => (
-            <NavLink
-              key={prod.id}
-              to={prod.path}
-              className={({ isActive }) =>
-                `nx-nav-item ${isActive ? 'nx-nav-item--active' : ''}`
-              }
-            >
-              <span className="nx-nav-icon">{prod.icon}</span>
-              <span className="nx-nav-label">{prod.name}</span>
-              <span
-                className="nx-nav-indicator"
-                style={{ backgroundColor: prod.color }}
-              />
-            </NavLink>
-          ))}
+          <div className="nx-nav-section-title">Core Services</div>
+          {PRODUCTS.map((prod) => {
+            const IconComponent = prod.Icon;
+            return (
+              <NavLink
+                key={prod.id}
+                to={prod.path}
+                className={({ isActive }) =>
+                  `nx-nav-item ${isActive ? 'nx-nav-item--active' : ''}`
+                }
+              >
+                <span className="nx-nav-icon"><IconComponent size={16} /></span>
+                <span className="nx-nav-label">{prod.name}</span>
+                <span
+                  className="nx-nav-indicator"
+                  style={{ backgroundColor: prod.color }}
+                />
+              </NavLink>
+            );
+          })}
 
-          <div className="nx-nav-section-title">Governance</div>
+          <div className="nx-nav-section-title">Governance & Access</div>
           <NavLink
             to="/settings/organization"
             className={({ isActive }) =>
               `nx-nav-item ${isActive ? 'nx-nav-item--active' : ''}`
             }
           >
-            <span className="nx-nav-icon">🏢</span>
+            <span className="nx-nav-icon"><BuildingOrgIcon size={16} /></span>
             <span>Organization & Audit</span>
           </NavLink>
           <NavLink
@@ -123,7 +139,7 @@ export function DashboardLayout() {
               `nx-nav-item ${isActive ? 'nx-nav-item--active' : ''}`
             }
           >
-            <span className="nx-nav-icon">👥</span>
+            <span className="nx-nav-icon"><UsersGroupIcon size={16} /></span>
             <span>Team Members</span>
           </NavLink>
           <NavLink
@@ -132,7 +148,7 @@ export function DashboardLayout() {
               `nx-nav-item ${isActive ? 'nx-nav-item--active' : ''}`
             }
           >
-            <span className="nx-nav-icon">🔑</span>
+            <span className="nx-nav-icon"><KeyPassIcon size={16} /></span>
             <span>API Keys</span>
           </NavLink>
         </nav>

@@ -4,19 +4,19 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'NEXUS ONE — Build. Observe. Automate. Understand.',
+    default: 'NEXUS ONE — Enterprise Cloud & Developer Infrastructure',
     template: '%s | NEXUS ONE',
   },
   description:
-    'NEXUS ONE is a unified enterprise AI and developer platform with seven integrated products: AgentForge, PulseOps, GateFlow, CortexRAG, SyncSpace, SentinelX, and CloudPilot.',
+    'NEXUS ONE is a unified cloud and developer infrastructure platform integrating workflow orchestration, observability, API gateway, knowledge intelligence, and real-time collaboration.',
   metadataBase: new URL(process.env['MARKETING_URL'] || 'http://localhost:3000'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
     siteName: 'NEXUS ONE',
-    title: 'NEXUS ONE — Build. Observe. Automate. Understand.',
+    title: 'NEXUS ONE — Enterprise Cloud & Developer Infrastructure',
     description:
-      'Unified enterprise AI and developer platform with seven integrated products.',
+      'Unified enterprise developer platform integrating workflow orchestration, observability, API gateway, knowledge intelligence, and real-time collaboration.',
   },
   robots: {
     index: true,

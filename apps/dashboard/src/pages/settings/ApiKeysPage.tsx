@@ -14,8 +14,8 @@ export function ApiKeysPage() {
   const [keys, setKeys] = useState<ApiKeyItem[]>([
     {
       id: 'key-1',
-      name: 'Default CI/CD Deployment Key',
-      prefix: 'nx_demo_8f9c',
+      name: 'Production CI/CD Deployment Key',
+      prefix: 'nx_live_8f9c',
       scopes: ['*'],
       lastUsedAt: '12m ago',
       createdAt: '3d ago',

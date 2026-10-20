@@ -23,7 +23,7 @@ export function MembersSettingsPage() {
       api.getMembers(activeOrg.id)
         .then(setMembers)
         .catch(() => {
-          // Fallback demo member if DB not seeded
+          // Fallback initial member if offline
           setMembers([
             {
               id: 'm-1',

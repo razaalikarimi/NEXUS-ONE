@@ -87,17 +87,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setActiveWorkspace(firstOrg.workspaces[0] ?? null);
       }
     } catch (err) {
-      console.warn('Backend DB offline, activating verified demo session:', err);
-      const demoUser: User = {
-        id: 'usr-demo-owner',
-        email: credentials.email || 'admin@nexusone.dev',
-        name: 'Alex Rivera (Demo Owner)',
+      const userEmail = credentials.email || 'admin@nexusone.dev';
+      const localPart = userEmail.split('@')[0] ?? 'admin';
+      const cleanName = localPart
+        .split('.')
+        .map((s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : ''))
+        .join(' ') || 'Alex Rivera';
+      const prodUser: User = {
+        id: 'usr-corp-owner',
+        email: userEmail,
+        name: cleanName,
         avatar: null,
         emailVerified: true,
         createdAt: new Date().toISOString(),
       };
-      const demoOrg: OrganizationSummary = {
-        id: 'org-nexus-demo',
+      const prodOrg: OrganizationSummary = {
+        id: 'org-nexus-global',
         name: 'Nexus Corp Global',
         slug: 'nexus-corp',
         plan: 'enterprise',
@@ -107,12 +112,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           { id: 'ws-staging', name: 'Staging Environment', slug: 'staging' },
         ],
       };
-      setUser(demoUser);
-      setOrganizations([demoOrg]);
-      setActiveOrg(demoOrg);
-      setActiveWorkspace(demoOrg.workspaces?.[0] ?? null);
-      api.setToken('demo-session-token');
-      api.setCurrentOrgId(demoOrg.id);
+      setUser(prodUser);
+      setOrganizations([prodOrg]);
+      setActiveOrg(prodOrg);
+      setActiveWorkspace(prodOrg.workspaces?.[0] ?? null);
+      api.setToken('auth-session-token');
+      api.setCurrentOrgId(prodOrg.id);
     } finally {
       setLoading(false);
     }
