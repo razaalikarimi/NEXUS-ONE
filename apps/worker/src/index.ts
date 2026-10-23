@@ -5,6 +5,7 @@
 // Product-specific processors are added in their phases.
 // ============================================================
 
+import { type ConnectionOptions } from 'bullmq';
 import { createLogger } from '@nexus-one/logger';
 import { createAgentForgeWorker } from './processors/agentforge.js';
 import { createPulseOpsWorker } from './processors/pulseops.js';
@@ -22,21 +23,35 @@ async function start() {
   const redisUrl = process.env['REDIS_URL'] || 'redis://localhost:6379';
   logger.info({ redisUrl: redisUrl.replace(/\/\/.*@/, '//***@') }, 'Redis connection');
 
+  let connectionOptions: ConnectionOptions;
+  try {
+    const parsed = new URL(redisUrl);
+    connectionOptions = {
+      host: parsed.hostname || 'localhost',
+      port: parseInt(parsed.port || '6379', 10),
+      ...(parsed.username ? { username: parsed.username } : {}),
+      ...(parsed.password ? { password: parsed.password } : {}),
+      maxRetriesPerRequest: null,
+    };
+  } catch {
+    connectionOptions = { host: 'localhost', port: 6379, maxRetriesPerRequest: null };
+  }
+
   // Register BullMQ workers
   try {
-    createAgentForgeWorker({ url: redisUrl });
+    createAgentForgeWorker(connectionOptions);
     logger.info('Registered AgentForge workflow-execution worker');
-    createPulseOpsWorker({ url: redisUrl });
+    createPulseOpsWorker(connectionOptions);
     logger.info('Registered PulseOps telemetry-ingestion worker');
-    createGateFlowWorker({ url: redisUrl });
+    createGateFlowWorker(connectionOptions);
     logger.info('Registered GateFlow gateway-metrics worker');
-    createCortexRagWorker({ url: redisUrl });
+    createCortexRagWorker(connectionOptions);
     logger.info('Registered CortexRAG document-chunking worker');
-    createSyncSpaceWorker({ url: redisUrl });
+    createSyncSpaceWorker(connectionOptions);
     logger.info('Registered SyncSpace maintenance worker');
-    createSentinelXWorker({ url: redisUrl });
+    createSentinelXWorker(connectionOptions);
     logger.info('Registered SentinelX fraud-pipeline worker');
-    createCloudPilotWorker({ url: redisUrl });
+    createCloudPilotWorker(connectionOptions);
     logger.info('Registered CloudPilot cost-pipeline worker');
   } catch (err: unknown) {
     logger.warn({ error: err instanceof Error ? err.message : String(err) }, 'Redis offline, running in standalone worker mode');

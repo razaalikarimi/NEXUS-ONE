@@ -36,7 +36,7 @@ export function createPulseOpsWorker(connection: ConnectionOptions) {
 
       let topFrame = '';
       if (stackTrace) {
-        const frames = stackTrace.split('\n').map((l) => l.trim()).filter((l) => l.startsWith('at '));
+        const frames = stackTrace.split('\n').map((l: string) => l.trim()).filter((l: string) => l.startsWith('at '));
         const firstFrame = frames[0];
         if (firstFrame) {
           topFrame = firstFrame.replace(/:\d+:\d+/g, '');
@@ -108,7 +108,7 @@ export function createPulseOpsWorker(connection: ConnectionOptions) {
     },
   );
 
-  worker.on('failed', (job, err) => {
+  worker.on('failed', (job: Job | undefined, err: Error) => {
     logger.error({ jobId: job?.id, error: err.message }, 'Telemetry ingestion job failed');
   });
 

@@ -2,7 +2,7 @@
 // CloudPilot Worker Processor — Cost Analysis & Rightsizing Poll
 // ============================================================
 
-import { Worker, type Job } from 'bullmq';
+import { Worker, type Job, type ConnectionOptions } from 'bullmq';
 import { prisma } from '@nexus-one/database';
 import { createLogger } from '@nexus-one/logger';
 
@@ -15,7 +15,7 @@ export interface CloudPilotJobData {
   orgId?: string;
 }
 
-export function createCloudPilotWorker(connection: { url: string }) {
+export function createCloudPilotWorker(connection: ConnectionOptions) {
   const worker = new Worker(
     'cloudpilot-cost-pipeline',
     async (job: Job<CloudPilotJobData>) => {
@@ -46,7 +46,7 @@ export function createCloudPilotWorker(connection: { url: string }) {
       return { status: 'completed' };
     },
     {
-      connection: { url: connection.url },
+      connection,
       concurrency: 5,
     }
   );

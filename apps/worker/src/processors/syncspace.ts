@@ -2,7 +2,7 @@
 // SyncSpace Worker Processor — Document Snapshots & Presence GC
 // ============================================================
 
-import { Worker, type Job } from 'bullmq';
+import { Worker, type Job, type ConnectionOptions } from 'bullmq';
 import { prisma } from '@nexus-one/database';
 import { createLogger } from '@nexus-one/logger';
 
@@ -14,7 +14,7 @@ export interface SyncSpaceJobData {
   olderThanMinutes?: number;
 }
 
-export function createSyncSpaceWorker(connection: { url: string }) {
+export function createSyncSpaceWorker(connection: ConnectionOptions) {
   const worker = new Worker(
     'syncspace-maintenance',
     async (job: Job<SyncSpaceJobData>) => {
@@ -42,7 +42,7 @@ export function createSyncSpaceWorker(connection: { url: string }) {
       return { status: 'completed' };
     },
     {
-      connection: { url: connection.url },
+      connection,
       concurrency: 5,
     }
   );

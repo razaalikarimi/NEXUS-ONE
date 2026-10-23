@@ -2,7 +2,7 @@
 // SentinelX Worker Processor — Fraud Enrichment & Case Escalation
 // ============================================================
 
-import { Worker, type Job } from 'bullmq';
+import { Worker, type Job, type ConnectionOptions } from 'bullmq';
 import { prisma } from '@nexus-one/database';
 import { createLogger } from '@nexus-one/logger';
 
@@ -14,7 +14,7 @@ export interface SentinelXJobData {
   orgId?: string;
 }
 
-export function createSentinelXWorker(connection: { url: string }) {
+export function createSentinelXWorker(connection: ConnectionOptions) {
   const worker = new Worker(
     'sentinelx-fraud-pipeline',
     async (job: Job<SentinelXJobData>) => {
@@ -52,7 +52,7 @@ export function createSentinelXWorker(connection: { url: string }) {
       return { status: 'completed' };
     },
     {
-      connection: { url: connection.url },
+      connection,
       concurrency: 5,
     }
   );
