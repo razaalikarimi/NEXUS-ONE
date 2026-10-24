@@ -190,7 +190,7 @@ export function DashboardLayout() {
               <span>Cluster Online</span>
             </div>
             <a
-              href="http://localhost:3000"
+              href={import.meta.env.VITE_MARKETING_URL || '/'}
               target="_blank"
               rel="noopener noreferrer"
               className="nx-header-link"
@@ -198,7 +198,7 @@ export function DashboardLayout() {
               Marketing Site ↗
             </a>
             <a
-              href="http://localhost:3001/docs"
+              href={`${import.meta.env.VITE_API_URL || ''}/docs`}
               target="_blank"
               rel="noopener noreferrer"
               className="nx-header-link"

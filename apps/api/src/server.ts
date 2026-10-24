@@ -9,6 +9,7 @@ const HOST = process.env['HOST'] || '0.0.0.0';
 
 async function start() {
   const app = await buildApp();
+  appInstance = app;
 
   try {
     await app.listen({ port: PORT, host: HOST });
@@ -20,12 +21,18 @@ async function start() {
   }
 }
 
-// Graceful shutdown
+// Graceful shutdown — close app before exit to drain connections/DB pool
+let appInstance: Awaited<ReturnType<typeof buildApp>> | null = null;
+
 const signals: NodeJS.Signals[] = ['SIGINT', 'SIGTERM'];
 signals.forEach((signal) => {
   process.on(signal, async () => {
-    console.warn(`Received ${signal}, shutting down...`);
-    process.exit(0);
+    appInstance?.log.warn(`Received ${signal}, shutting down gracefully...`);
+    try {
+      await appInstance?.close();
+    } finally {
+      process.exit(0);
+    }
   });
 });
 

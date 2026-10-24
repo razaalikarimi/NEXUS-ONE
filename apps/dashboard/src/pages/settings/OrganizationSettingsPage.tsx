@@ -14,9 +14,11 @@ interface AuditLog {
 export function OrganizationSettingsPage() {
   const { activeOrg } = useAuth();
   const [logs, setLogs] = useState<AuditLog[]>([]);
+  const [logsLoading, setLogsLoading] = useState(false);
 
   useEffect(() => {
     if (activeOrg?.id) {
+      setLogsLoading(true);
       api.getAuditLogs(activeOrg.id)
         .then(setLogs)
         .catch(() => {
@@ -30,7 +32,8 @@ export function OrganizationSettingsPage() {
               user: { name: 'System Admin', email: 'admin@nexusone.dev' },
             },
           ]);
-        });
+        })
+        .finally(() => setLogsLoading(false));
     }
   }, [activeOrg]);
 
@@ -92,7 +95,19 @@ export function OrganizationSettingsPage() {
                   </tr>
                 </thead>
                 <tbody className="nx-table__body">
-                  {logs.map((log) => (
+                  {logsLoading ? (
+                    <tr>
+                      <td colSpan={4} className="nx-table__cell" style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
+                        Loading audit events…
+                      </td>
+                    </tr>
+                  ) : logs.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="nx-table__cell" style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
+                        No audit events recorded yet.
+                      </td>
+                    </tr>
+                  ) : logs.map((log) => (
                     <tr key={log.id} className="nx-table__row">
                       <td className="nx-table__cell">
                         <span className="nx-audit-action">{log.action}</span>

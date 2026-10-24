@@ -83,41 +83,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setOrganizations(res.organizations);
       const firstOrg = res.organizations[0] || null;
       setActiveOrg(firstOrg);
+      if (firstOrg?.id) {
+        api.setCurrentOrgId(firstOrg.id);
+      }
       if (firstOrg?.workspaces?.length) {
         setActiveWorkspace(firstOrg.workspaces[0] ?? null);
       }
     } catch (err) {
-      const userEmail = credentials.email || 'admin@nexusone.dev';
-      const localPart = userEmail.split('@')[0] ?? 'admin';
-      const cleanName = localPart
-        .split('.')
-        .map((s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : ''))
-        .join(' ') || 'Alex Rivera';
-      const prodUser: User = {
-        id: 'usr-corp-owner',
-        email: userEmail,
-        name: cleanName,
-        avatar: null,
-        emailVerified: true,
-        createdAt: new Date().toISOString(),
-      };
-      const prodOrg: OrganizationSummary = {
-        id: 'org-nexus-global',
-        name: 'Nexus Corp Global',
-        slug: 'nexus-corp',
-        plan: 'enterprise',
-        role: 'owner',
-        workspaces: [
-          { id: 'ws-prod', name: 'Production Cloud', slug: 'production' },
-          { id: 'ws-staging', name: 'Staging Environment', slug: 'staging' },
-        ],
-      };
-      setUser(prodUser);
-      setOrganizations([prodOrg]);
-      setActiveOrg(prodOrg);
-      setActiveWorkspace(prodOrg.workspaces?.[0] ?? null);
-      api.setToken('auth-session-token');
-      api.setCurrentOrgId(prodOrg.id);
+      // Propagate the error so Login page can display it
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -131,9 +105,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setOrganizations(res.organizations);
       const firstOrg = res.organizations[0] || null;
       setActiveOrg(firstOrg);
+      if (firstOrg?.id) {
+        api.setCurrentOrgId(firstOrg.id);
+      }
       if (firstOrg?.workspaces?.length) {
         setActiveWorkspace(firstOrg.workspaces[0] ?? null);
       }
+    } catch (err) {
+      // Propagate error so RegisterPage can display it
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -174,8 +154,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await api.me();
       setUser(data.user);
       setOrganizations(data.organizations);
-    } catch (err) {
-      console.error('Error refreshing user data:', err);
+    } catch {
+      // Session may have expired — silently ignore, user will be redirected on next protected route access
     }
   }
 

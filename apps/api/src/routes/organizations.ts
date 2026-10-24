@@ -316,7 +316,7 @@ export const organizationRoutes: FastifyPluginAsync = async (app) => {
         email: invitation.email,
         role: invitation.role,
         expiresAt: invitation.expiresAt,
-        token: invitation.token,
+        // NOTE: token is intentionally omitted — it is sent via email only
       },
     });
   });

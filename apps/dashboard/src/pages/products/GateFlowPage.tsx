@@ -285,7 +285,7 @@ export function GateFlowPage() {
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <a href="http://localhost:3001/docs" target="_blank" rel="noopener noreferrer">
+          <a href={`${import.meta.env.VITE_API_URL || ''}/docs`} target="_blank" rel="noopener noreferrer">
             <Button variant="secondary">OpenAPI Docs ↗</Button>
           </a>
           <Button variant="primary" onClick={() => setIsNewRouteModalOpen(true)}>

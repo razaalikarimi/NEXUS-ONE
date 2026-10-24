@@ -17,6 +17,8 @@ export function MembersSettingsPage() {
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<'admin' | 'member' | 'viewer'>('member');
   const [inviteSuccess, setInviteSuccess] = useState<string | null>(null);
+  const [inviteError, setInviteError] = useState<string | null>(null);
+  const [inviteSubmitting, setInviteSubmitting] = useState(false);
 
   useEffect(() => {
     if (activeOrg?.id) {
@@ -59,6 +61,8 @@ export function MembersSettingsPage() {
   async function handleSendInvite(e: React.FormEvent) {
     e.preventDefault();
     if (!activeOrg?.id || !inviteEmail.trim()) return;
+    setInviteError(null);
+    setInviteSubmitting(true);
 
     try {
       await api.inviteMember(activeOrg.id, {
@@ -72,7 +76,9 @@ export function MembersSettingsPage() {
         setInviteModalOpen(false);
       }, 1500);
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Invitation failed');
+      setInviteError(err instanceof Error ? err.message : 'Invitation failed. Please try again.');
+    } finally {
+      setInviteSubmitting(false);
     }
   }
 
@@ -157,6 +163,7 @@ export function MembersSettingsPage() {
           </div>
         ) : (
           <form onSubmit={handleSendInvite}>
+            {inviteError && <div className="nx-auth-alert">{inviteError}</div>}
             <FormField label="Email Address" required>
               <Input
                 type="email"
@@ -182,7 +189,7 @@ export function MembersSettingsPage() {
               <Button type="button" variant="ghost" onClick={() => setInviteModalOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" variant="primary">
+              <Button type="submit" variant="primary" loading={inviteSubmitting}>
                 Send Invitation
               </Button>
             </div>

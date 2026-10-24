@@ -2,6 +2,10 @@
 
 import React, { useState } from 'react';
 
+// ---- Env-driven base URLs (set in production via env vars) ----
+const DASHBOARD_URL = process.env.NEXT_PUBLIC_DASHBOARD_URL || 'http://localhost:5173';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
 // Enterprise Vector Icons
 function WorkflowIcon({ className = '', size = 20, color = 'currentColor' }: { className?: string; size?: number; color?: string }) {
   return (
@@ -288,12 +292,12 @@ export default function HomePage() {
             <a href="#architecture" className="nx-nav__link">Architecture</a>
             <a href="#security" className="nx-nav__link">Security</a>
             <a href="#pricing" className="nx-nav__link">Pricing</a>
-            <a href="http://localhost:3001/docs" target="_blank" rel="noopener noreferrer" className="nx-nav__link">REST Docs</a>
+            <a href={`${API_URL}/docs`} target="_blank" rel="noopener noreferrer" className="nx-nav__link">REST Docs</a>
           </nav>
 
           <div className="nx-header__actions">
-            <a href="http://localhost:5173/login" className="nx-btn nx-btn--ghost">Sign In</a>
-            <a href="http://localhost:5173/register" className="nx-btn nx-btn--primary">Launch Platform</a>
+            <a href={`${DASHBOARD_URL}/login`} className="nx-btn nx-btn--ghost">Sign In</a>
+            <a href={`${DASHBOARD_URL}/register`} className="nx-btn nx-btn--primary">Launch Platform</a>
           </div>
         </div>
       </header>
@@ -316,8 +320,8 @@ export default function HomePage() {
           </p>
 
           <div className="nx-hero__cta-group">
-            <a href="http://localhost:5173/register" className="nx-btn nx-btn--primary nx-btn--lg">
-              Get Started with NEXUS ONE →
+            <a href={`${DASHBOARD_URL}/register`} className="nx-btn nx-btn--primary nx-btn--lg">
+              Get Started with NEXUS ONE &rarr;
             </a>
             <a href="#console" className="nx-btn nx-btn--secondary nx-btn--lg">
               Interactive Product Console
@@ -362,28 +366,28 @@ export default function HomePage() {
                   className={`nx-console-tab ${consoleTab === 'workflow' ? 'nx-console-tab--active' : ''}`}
                   onClick={() => setConsoleTab('workflow')}
                 >
-                  ⚡ AgentForge DAG
+                  âš¡ AgentForge DAG
                 </button>
                 <button
                   type="button"
                   className={`nx-console-tab ${consoleTab === 'telemetry' ? 'nx-console-tab--active' : ''}`}
                   onClick={() => setConsoleTab('telemetry')}
                 >
-                  📡 PulseOps Telemetry
+                  ðŸ“¡ PulseOps Telemetry
                 </button>
                 <button
                   type="button"
                   className={`nx-console-tab ${consoleTab === 'gateway' ? 'nx-console-tab--active' : ''}`}
                   onClick={() => setConsoleTab('gateway')}
                 >
-                  🛡️ GateFlow Ingress
+                  ðŸ›¡ï¸ GateFlow Ingress
                 </button>
                 <button
                   type="button"
                   className={`nx-console-tab ${consoleTab === 'cortex' ? 'nx-console-tab--active' : ''}`}
                   onClick={() => setConsoleTab('cortex')}
                 >
-                  🔍 CortexRAG Search
+                  ðŸ” CortexRAG Search
                 </button>
               </div>
 
@@ -399,7 +403,7 @@ export default function HomePage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem', borderBottom: '1px solid #1e293b', paddingBottom: '0.75rem' }}>
                     <div>
                       <strong style={{ fontSize: '0.95rem', color: '#f8fafc' }}>Active Workflow: prod-deploy-pipeline-v4</strong>
-                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.2rem' }}>State Checkpoint ID: chk_9918a20 · Runner: BullMQ Worker #04</div>
+                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.2rem' }}>State Checkpoint ID: chk_9918a20 Â· Runner: BullMQ Worker #04</div>
                     </div>
                     <span style={{ fontSize: '0.75rem', backgroundColor: 'rgba(34, 197, 94, 0.15)', color: '#4ade80', padding: '0.25rem 0.6rem', borderRadius: '4px', height: 'fit-content', fontWeight: 600 }}>
                       RUNNING (Step 3/4)
@@ -410,17 +414,17 @@ export default function HomePage() {
                     <div style={{ padding: '1rem', backgroundColor: '#1e293b', borderRadius: '0.5rem', border: '1px solid #334155' }}>
                       <div style={{ fontSize: '0.7rem', color: '#94a3b8', textTransform: 'uppercase' }}>1. Ingress Trigger</div>
                       <div style={{ fontSize: '0.85rem', fontWeight: 600, marginTop: '0.35rem', color: '#f8fafc' }}>Webhook Payload</div>
-                      <div style={{ fontSize: '0.72rem', color: '#4ade80', marginTop: '0.4rem' }}>✓ Completed in 14ms</div>
+                      <div style={{ fontSize: '0.72rem', color: '#4ade80', marginTop: '0.4rem' }}>âœ“ Completed in 14ms</div>
                     </div>
                     <div style={{ padding: '1rem', backgroundColor: '#1e293b', borderRadius: '0.5rem', border: '1px solid #334155' }}>
                       <div style={{ fontSize: '0.7rem', color: '#94a3b8', textTransform: 'uppercase' }}>2. Model Evaluation</div>
                       <div style={{ fontSize: '0.85rem', fontWeight: 600, marginTop: '0.35rem', color: '#f8fafc' }}>Fastify Worker</div>
-                      <div style={{ fontSize: '0.72rem', color: '#4ade80', marginTop: '0.4rem' }}>✓ Passed (Score: 0.98)</div>
+                      <div style={{ fontSize: '0.72rem', color: '#4ade80', marginTop: '0.4rem' }}>âœ“ Passed (Score: 0.98)</div>
                     </div>
                     <div style={{ padding: '1rem', backgroundColor: 'rgba(37, 99, 235, 0.15)', borderRadius: '0.5rem', border: '1px solid #2563eb' }}>
                       <div style={{ fontSize: '0.7rem', color: '#93c5fd', textTransform: 'uppercase' }}>3. Policy Gate</div>
                       <div style={{ fontSize: '0.85rem', fontWeight: 600, marginTop: '0.35rem', color: '#60a5fa' }}>Human Approval</div>
-                      <div style={{ fontSize: '0.72rem', color: '#f59e0b', marginTop: '0.4rem' }}>⏳ Awaiting SRE review</div>
+                      <div style={{ fontSize: '0.72rem', color: '#f59e0b', marginTop: '0.4rem' }}>â³ Awaiting SRE review</div>
                     </div>
                     <div style={{ padding: '1rem', backgroundColor: '#1e293b', borderRadius: '0.5rem', border: '1px solid #334155', opacity: 0.6 }}>
                       <div style={{ fontSize: '0.7rem', color: '#94a3b8', textTransform: 'uppercase' }}>4. Rollout</div>
@@ -444,7 +448,7 @@ export default function HomePage() {
                   <div style={{ fontFamily: 'var(--nx-font-mono, monospace)', fontSize: '0.8rem', lineHeight: 1.8 }}>
                     <div style={{ color: '#94a3b8' }}>[21:28:44] <span style={{ color: '#4ade80' }}>INFO</span> Ingested 12,450 telemetry packets via UDP ingress socket</div>
                     <div style={{ color: '#94a3b8' }}>[21:28:45] <span style={{ color: '#38bdf8' }}>TELEMETRY</span> Cluster p99 latency evaluated at 3.82ms (SLA target &lt;10ms)</div>
-                    <div style={{ color: '#94a3b8' }}>[21:28:46] <span style={{ color: '#f59e0b' }}>WARN</span> Redis memory usage at 18.2% · Buffer clean · Zero dropped packets</div>
+                    <div style={{ color: '#94a3b8' }}>[21:28:46] <span style={{ color: '#f59e0b' }}>WARN</span> Redis memory usage at 18.2% Â· Buffer clean Â· Zero dropped packets</div>
                     <div style={{ color: '#94a3b8' }}>[21:28:47] <span style={{ color: '#4ade80' }}>RESOLVED</span> Incident INC-402 automatically fingerprinted and closed (MTTR: 3.2m)</div>
                   </div>
                 </div>
@@ -455,7 +459,7 @@ export default function HomePage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', borderBottom: '1px solid #1e293b', paddingBottom: '0.75rem' }}>
                     <div>
                       <strong style={{ fontSize: '0.95rem', color: '#f8fafc' }}>GateFlow High-Performance Ingress Router</strong>
-                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.2rem' }}>Hashed SHA-256 Authentication · Sliding-Window Rate Limiter</div>
+                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.2rem' }}>Hashed SHA-256 Authentication Â· Sliding-Window Rate Limiter</div>
                     </div>
                     <span style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 600 }}>1.42M Ingested / 24h</span>
                   </div>
@@ -463,15 +467,15 @@ export default function HomePage() {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', fontSize: '0.8rem', fontFamily: 'var(--nx-font-mono, monospace)' }}>
                     <div style={{ padding: '0.75rem', backgroundColor: '#1e293b', borderRadius: '0.4rem' }}>
                       <span style={{ color: '#4ade80' }}>GET</span> /api/v1/health<br />
-                      <span style={{ color: '#94a3b8', fontSize: '0.72rem' }}>Latency: 1.8ms · 200 OK</span>
+                      <span style={{ color: '#94a3b8', fontSize: '0.72rem' }}>Latency: 1.8ms Â· 200 OK</span>
                     </div>
                     <div style={{ padding: '0.75rem', backgroundColor: '#1e293b', borderRadius: '0.4rem' }}>
                       <span style={{ color: '#38bdf8' }}>POST</span> /api/v1/auth/login<br />
-                      <span style={{ color: '#94a3b8', fontSize: '0.72rem' }}>Latency: 24ms · 200 OK</span>
+                      <span style={{ color: '#94a3b8', fontSize: '0.72rem' }}>Latency: 24ms Â· 200 OK</span>
                     </div>
                     <div style={{ padding: '0.75rem', backgroundColor: '#1e293b', borderRadius: '0.4rem' }}>
                       <span style={{ color: '#818cf8' }}>GET</span> /api/v1/cortex/search<br />
-                      <span style={{ color: '#94a3b8', fontSize: '0.72rem' }}>Latency: 12ms · 200 OK</span>
+                      <span style={{ color: '#94a3b8', fontSize: '0.72rem' }}>Latency: 12ms Â· 200 OK</span>
                     </div>
                   </div>
                 </div>
@@ -514,11 +518,11 @@ export default function HomePage() {
             Engineered for High-Reliability Teams &amp; Modern Cloud Infrastructure
           </div>
           <div className="nx-trust-strip__logos">
-            <span className="nx-trust-logo">◆ HYPERSCALE</span>
-            <span className="nx-trust-logo">▲ APOLLO CLOUD</span>
-            <span className="nx-trust-logo">● FINCORE TECH</span>
-            <span className="nx-trust-logo">■ VERTEX DATA</span>
-            <span className="nx-trust-logo">◈ SENTINEL GLOBAL</span>
+            <span className="nx-trust-logo">&diams; HYPERSCALE</span>
+            <span className="nx-trust-logo">&#9650; APOLLO CLOUD</span>
+            <span className="nx-trust-logo">&bull; FINCORE TECH</span>
+            <span className="nx-trust-logo">&#9632; VERTEX DATA</span>
+            <span className="nx-trust-logo">&#9670; SENTINEL GLOBAL</span>
           </div>
         </div>
       </section>
@@ -570,7 +574,7 @@ export default function HomePage() {
                   <ul className="nx-product-card__features">
                     {product.features.map((feat, idx) => (
                       <li key={idx} className="nx-feature-item">
-                        <span className="nx-check">✓</span>
+                        <span className="nx-check">âœ“</span>
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -578,7 +582,7 @@ export default function HomePage() {
 
                   <div className="nx-product-card__footer">
                     <a href={`http://localhost:5173/${product.id}`} className="nx-card-link">
-                      Open Service Console →
+                      Open Service Console â†’
                     </a>
                   </div>
                 </div>
@@ -603,27 +607,27 @@ export default function HomePage() {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: '#0f172a' }}>
-                  <span style={{ color: '#2563eb', fontWeight: 700 }}>✓</span>
+                  <span style={{ color: '#2563eb', fontWeight: 700 }}>âœ“</span>
                   <span>Full TypeScript strict typing and Zod schemas</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: '#0f172a' }}>
-                  <span style={{ color: '#2563eb', fontWeight: 700 }}>✓</span>
+                  <span style={{ color: '#2563eb', fontWeight: 700 }}>âœ“</span>
                   <span>Auto-generated OpenAPI 3.1 Swagger interactive documentation</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: '#0f172a' }}>
-                  <span style={{ color: '#2563eb', fontWeight: 700 }}>✓</span>
+                  <span style={{ color: '#2563eb', fontWeight: 700 }}>âœ“</span>
                   <span>Real-time WebSocket &amp; CRDT synchronization channels</span>
                 </div>
               </div>
 
               <div style={{ marginTop: '2.5rem' }}>
                 <a
-                  href="http://localhost:3001/docs"
+                  href={`${API_URL}/docs`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="nx-btn nx-btn--primary nx-btn--lg"
                 >
-                  Explore Interactive REST API Docs →
+                  Explore Interactive REST API Docs â†’
                 </a>
               </div>
             </div>
@@ -655,7 +659,7 @@ export default function HomePage() {
                 </div>
 
                 <button type="button" className="nx-code-copy-btn" onClick={handleCopy}>
-                  {copied ? '✓ Copied' : 'Copy'}
+                  {copied ? 'âœ“ Copied' : 'Copy'}
                 </button>
               </div>
 
@@ -697,7 +701,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="nx-arch-connector">↓ TLS 1.3 / HTTPS / WSS Ingress ↓</div>
+            <div className="nx-arch-connector">â†“ TLS 1.3 / HTTPS / WSS Ingress â†“</div>
 
             <div className="nx-arch-layer">
               <div className="nx-arch-layer__title">Unified API Gateway &amp; Control Plane (Fastify 4)</div>
@@ -717,7 +721,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="nx-arch-connector">↓ Async Job Queues &amp; Direct Data Plane ↓</div>
+            <div className="nx-arch-connector">â†“ Async Job Queues &amp; Direct Data Plane â†“</div>
 
             <div className="nx-arch-layer">
               <div className="nx-arch-layer__title">Worker Engine &amp; Enterprise Data Plane</div>
@@ -844,13 +848,13 @@ export default function HomePage() {
               <div className="nx-price">$0 <span>/ month</span></div>
               <p className="nx-pricing-desc">For individual developers and testing sandbox environments.</p>
               <ul className="nx-pricing-features">
-                <li>✓ Access to all 7 core services</li>
-                <li>✓ 3 Active AgentForge workflows</li>
-                <li>✓ Up to 100k GateFlow requests/mo</li>
-                <li>✓ 50MB CortexRAG document store</li>
-                <li>✓ Community forum support</li>
+                <li>âœ“ Access to all 7 core services</li>
+                <li>âœ“ 3 Active AgentForge workflows</li>
+                <li>âœ“ Up to 100k GateFlow requests/mo</li>
+                <li>âœ“ 50MB CortexRAG document store</li>
+                <li>âœ“ Community forum support</li>
               </ul>
-              <a href="http://localhost:5173/register" className="nx-btn nx-btn--secondary" style={{ width: '100%', marginTop: 'auto' }}>
+              <a href={`${DASHBOARD_URL}/register`} className="nx-btn nx-btn--secondary" style={{ width: '100%', marginTop: 'auto' }}>
                 Start Free Sandbox
               </a>
             </div>
@@ -861,14 +865,14 @@ export default function HomePage() {
               <div className="nx-price">$49 <span>/ user / month</span></div>
               <p className="nx-pricing-desc">For high-velocity engineering and operations teams.</p>
               <ul className="nx-pricing-features">
-                <li>✓ Everything in Starter</li>
-                <li>✓ Unlimited AgentForge workflows</li>
-                <li>✓ Full PulseOps incident timelines</li>
-                <li>✓ Real-time SyncSpace collaboration</li>
-                <li>✓ SentinelX DSL risk rules</li>
-                <li>✓ Standard 99.9% uptime SLA</li>
+                <li>âœ“ Everything in Starter</li>
+                <li>âœ“ Unlimited AgentForge workflows</li>
+                <li>âœ“ Full PulseOps incident timelines</li>
+                <li>âœ“ Real-time SyncSpace collaboration</li>
+                <li>âœ“ SentinelX DSL risk rules</li>
+                <li>âœ“ Standard 99.9% uptime SLA</li>
               </ul>
-              <a href="http://localhost:5173/register" className="nx-btn nx-btn--primary" style={{ width: '100%', marginTop: 'auto' }}>
+              <a href={`${DASHBOARD_URL}/register`} className="nx-btn nx-btn--primary" style={{ width: '100%', marginTop: 'auto' }}>
                 Start Team Trial
               </a>
             </div>
@@ -878,12 +882,12 @@ export default function HomePage() {
               <div className="nx-price">Custom</div>
               <p className="nx-pricing-desc">Dedicated infrastructure, SSO, compliance, and custom SLAs.</p>
               <ul className="nx-pricing-features">
-                <li>✓ Everything in Team</li>
-                <li>✓ SAML / Okta / Azure AD SSO</li>
-                <li>✓ Dedicated VPC &amp; On-prem deployment</li>
-                <li>✓ CloudPilot custom billing connectors</li>
-                <li>✓ Custom 99.99% uptime SLA</li>
-                <li>✓ 24/7 dedicated support engineering</li>
+                <li>âœ“ Everything in Team</li>
+                <li>âœ“ SAML / Okta / Azure AD SSO</li>
+                <li>âœ“ Dedicated VPC &amp; On-prem deployment</li>
+                <li>âœ“ CloudPilot custom billing connectors</li>
+                <li>âœ“ Custom 99.99% uptime SLA</li>
+                <li>âœ“ 24/7 dedicated support engineering</li>
               </ul>
               <a href="mailto:sales@nexusone.dev" className="nx-btn nx-btn--secondary" style={{ width: '100%', marginTop: 'auto' }}>
                 Contact Enterprise
@@ -929,7 +933,7 @@ export default function HomePage() {
                 >
                   <span>{faq.q}</span>
                   <span className="nx-faq-chevron" style={{ transform: openFaq === idx ? 'rotate(180deg)' : 'rotate(0deg)' }}>
-                    ▼
+                    &#9660;
                   </span>
                 </button>
                 {openFaq === idx && (
@@ -948,8 +952,8 @@ export default function HomePage() {
               Join forward-thinking platform teams building resilient, observable, and cost-efficient cloud infrastructure with NEXUS ONE.
             </p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-              <a href="http://localhost:5173/register" className="nx-btn nx-btn--primary nx-btn--lg" style={{ backgroundColor: '#2563eb', borderColor: '#2563eb' }}>
-                Create Free Account →
+              <a href={`${DASHBOARD_URL}/register`} className="nx-btn nx-btn--primary nx-btn--lg" style={{ backgroundColor: '#2563eb', borderColor: '#2563eb' }}>
+                Create Free Account &rarr;
               </a>
               <a href="mailto:sales@nexusone.dev" className="nx-btn nx-btn--secondary nx-btn--lg" style={{ backgroundColor: 'transparent', color: '#ffffff', borderColor: '#475569' }}>
                 Schedule Enterprise Demo
@@ -981,18 +985,18 @@ export default function HomePage() {
           <div className="nx-footer__links">
             <div className="nx-footer__group">
               <h4>Services</h4>
-              <a href="http://localhost:5173/agentforge">AgentForge</a>
-              <a href="http://localhost:5173/pulseops">PulseOps</a>
-              <a href="http://localhost:5173/gateflow">GateFlow</a>
-              <a href="http://localhost:5173/cortexrag">CortexRAG</a>
-              <a href="http://localhost:5173/syncspace">SyncSpace</a>
-              <a href="http://localhost:5173/sentinelx">SentinelX</a>
-              <a href="http://localhost:5173/cloudpilot">CloudPilot</a>
+              <a href={`${DASHBOARD_URL}/agentforge`}>AgentForge</a>
+              <a href={`${DASHBOARD_URL}/pulseops`}>PulseOps</a>
+              <a href={`${DASHBOARD_URL}/gateflow`}>GateFlow</a>
+              <a href={`${DASHBOARD_URL}/cortexrag`}>CortexRAG</a>
+              <a href={`${DASHBOARD_URL}/syncspace`}>SyncSpace</a>
+              <a href={`${DASHBOARD_URL}/sentinelx`}>SentinelX</a>
+              <a href={`${DASHBOARD_URL}/cloudpilot`}>CloudPilot</a>
             </div>
 
             <div className="nx-footer__group">
               <h4>Platform</h4>
-              <a href="http://localhost:3001/docs" target="_blank" rel="noopener noreferrer">REST API Docs</a>
+              <a href={`${API_URL}/docs`} target="_blank" rel="noopener noreferrer">REST API Docs</a>
               <a href="#architecture">Architecture</a>
               <a href="#security">Security Model</a>
               <a href="#pricing">Pricing</a>
@@ -1000,8 +1004,8 @@ export default function HomePage() {
 
             <div className="nx-footer__group">
               <h4>Organization</h4>
-              <a href="http://localhost:5173/login">Sign In</a>
-              <a href="http://localhost:5173/register">Register</a>
+              <a href={`${DASHBOARD_URL}/login`}>Sign In</a>
+              <a href={`${DASHBOARD_URL}/register`}>Register</a>
               <a href="mailto:contact@nexusone.dev">Contact</a>
             </div>
           </div>
@@ -1009,7 +1013,7 @@ export default function HomePage() {
 
         <div className="nx-footer__bottom">
           <div className="nx-container nx-footer__bottom-inner">
-            <span>© 2026 NEXUS ONE Inc. All rights reserved.</span>
+            <span>&copy; 2026 NEXUS ONE Inc. All rights reserved.</span>
             <span>Enterprise Cloud &amp; Developer Infrastructure</span>
           </div>
         </div>
@@ -1017,3 +1021,4 @@ export default function HomePage() {
     </div>
   );
 }
+

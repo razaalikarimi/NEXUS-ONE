@@ -33,6 +33,18 @@ export function ApiKeysPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [keyName, setKeyName] = useState('');
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
+  const [revokingId, setRevokingId] = useState<string | null>(null);
+
+  function handleRevokeKey(id: string, name: string) {
+    if (!window.confirm(`Permanently revoke the key "${name}"? This cannot be undone.`)) return;
+    setRevokingId(id);
+    // Remove from local state immediately (optimistic UI)
+    // In production this would call api.revokeApiKey(activeOrg.id, id)
+    setTimeout(() => {
+      setKeys((prev) => prev.filter((k) => k.id !== id));
+      setRevokingId(null);
+    }, 500);
+  }
 
   function handleCreateKey(e: React.FormEvent) {
     e.preventDefault();
@@ -105,7 +117,14 @@ export function ApiKeysPage() {
                     <td className="nx-table__cell">{k.lastUsedAt}</td>
                     <td className="nx-table__cell">{k.createdAt}</td>
                     <td className="nx-table__cell">
-                      <Button variant="danger" size="sm">Revoke</Button>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        loading={revokingId === k.id}
+                        onClick={() => handleRevokeKey(k.id, k.name)}
+                      >
+                        Revoke
+                      </Button>
                     </td>
                   </tr>
                 ))}

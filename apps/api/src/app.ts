@@ -68,8 +68,12 @@ export async function buildApp() {
   });
 
   // ---- Cookies ----
+  const sessionSecret = process.env['SESSION_SECRET'];
+  if (!sessionSecret && process.env['NODE_ENV'] === 'production') {
+    throw new Error('FATAL: SESSION_SECRET environment variable must be set in production.');
+  }
   await app.register(cookie, {
-    secret: process.env['SESSION_SECRET'] || 'dev-session-secret-nexusone-super-secure',
+    secret: sessionSecret || 'dev-session-secret-nexusone-change-in-production',
   });
 
   // ---- Rate limiting ----
@@ -176,17 +180,45 @@ export async function buildApp() {
   await app.register(cloudpilotRoutes, { prefix: '/api/v1/cloudpilot' });
 
   // ---- Dashboard Stats Overview ----
-  app.get('/api/v1/dashboard/stats', async () => ({
-    success: true,
-    data: {
-      activeWorkflows: 8,
-      openIncidents: 1,
-      activeRoutes: 6,
-      avgLatencyMs: 1.2,
-      totalRequestsToday: 142850,
-      systemHealth: 'operational',
+  app.get('/api/v1/dashboard/stats', {
+    preHandler: [app.authenticate],
+    schema: {
+      tags: ['system'],
+      summary: 'Aggregated real-time platform stats for current org',
     },
-  }));
+  }, async (request) => {
+    const orgId = (request.headers['x-org-id'] as string) || null;
+
+    if (!orgId) {
+      return {
+        success: true,
+        data: {
+          activeWorkflows: 0,
+          openIncidents: 0,
+          activeRoutes: 0,
+          systemHealth: 'operational',
+        },
+      };
+    }
+
+    const { prisma } = await import('@nexus-one/database');
+
+    const [activeWorkflows, openIncidents, activeRoutes] = await Promise.all([
+      prisma.workflow.count({ where: { orgId, status: 'published' } }),
+      prisma.incident.count({ where: { orgId, status: { in: ['open', 'investigating'] } } }),
+      prisma.gatewayRoute.count({ where: { orgId, status: 'active' } }),
+    ]);
+
+    return {
+      success: true,
+      data: {
+        activeWorkflows,
+        openIncidents,
+        activeRoutes,
+        systemHealth: openIncidents === 0 ? 'operational' : 'degraded',
+      },
+    };
+  });
 
   return app;
 }
