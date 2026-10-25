@@ -43,62 +43,7 @@ interface FraudCaseItem {
   notes: string;
 }
 
-const INITIAL_EVENTS: RiskEventItem[] = [
-  {
-    id: 'ev-101',
-    eventType: 'payout',
-    entityId: 'acc_8849204',
-    entityType: 'payment_method',
-    ipAddress: '198.51.100.24',
-    geoCountry: 'RO',
-    amount: 4999,
-    riskScore: 85,
-    riskLevel: 'critical',
-    actionTaken: 'block',
-    timestamp: '2m ago',
-    details: 'Impossible travel: US -> RO (8,420 km in 30min) + High velocity spike',
-  },
-  {
-    id: 'ev-102',
-    eventType: 'auth_attempt',
-    entityId: 'usr_29104',
-    entityType: 'user',
-    ipAddress: '185.220.101.5',
-    geoCountry: 'DE',
-    riskScore: 65,
-    riskLevel: 'high',
-    actionTaken: 'challenge_2fa',
-    timestamp: '8m ago',
-    details: 'Confirmed Tor anonymity relay exit node with credential stuffing velocity',
-  },
-  {
-    id: 'ev-103',
-    eventType: 'transaction',
-    entityId: 'usr_81920',
-    entityType: 'user',
-    ipAddress: '64.233.160.1',
-    geoCountry: 'US',
-    amount: 3200,
-    riskScore: 35,
-    riskLevel: 'medium',
-    actionTaken: 'flag_review',
-    timestamp: '22m ago',
-    details: 'Transaction amount $3,200 exceeds $2,500 baseline threshold',
-  },
-  {
-    id: 'ev-104',
-    eventType: 'api_key_usage',
-    entityId: 'gf_live_production_svc',
-    entityType: 'api_consumer',
-    ipAddress: '54.210.12.9',
-    geoCountry: 'US',
-    riskScore: 10,
-    riskLevel: 'low',
-    actionTaken: 'allow',
-    timestamp: '45m ago',
-    details: 'Valid signed HMAC signature from trusted VPC peering gateway',
-  },
-];
+const INITIAL_EVENTS: RiskEventItem[] = [];
 
 const INITIAL_RULES: RiskRuleItem[] = [
   {
@@ -109,7 +54,7 @@ const INITIAL_RULES: RiskRuleItem[] = [
     scoreImpact: 50,
     actionTrigger: 'block',
     isActive: true,
-    evalCount: 8904,
+    evalCount: 0,
   },
   {
     id: 'rule-2',
@@ -119,7 +64,7 @@ const INITIAL_RULES: RiskRuleItem[] = [
     scoreImpact: 35,
     actionTrigger: 'challenge_2fa',
     isActive: true,
-    evalCount: 14210,
+    evalCount: 0,
   },
   {
     id: 'rule-3',
@@ -129,7 +74,7 @@ const INITIAL_RULES: RiskRuleItem[] = [
     scoreImpact: 40,
     actionTrigger: 'challenge_2fa',
     isActive: true,
-    evalCount: 6542,
+    evalCount: 0,
   },
   {
     id: 'rule-4',
@@ -139,45 +84,11 @@ const INITIAL_RULES: RiskRuleItem[] = [
     scoreImpact: 25,
     actionTrigger: 'flag_review',
     isActive: true,
-    evalCount: 22100,
+    evalCount: 0,
   },
 ];
 
-const INITIAL_CASES: FraudCaseItem[] = [
-  {
-    id: 'case-901',
-    title: 'Payout $4,999 to RO from US Account with Speed Anomaly',
-    severity: 'critical',
-    status: 'open',
-    entityId: 'acc_8849204',
-    amount: 4999,
-    assigneeName: 'Alex Rivera',
-    timestamp: '15m ago',
-    notes: 'Blocked automatically at edge. Awaiting voice verification callback from account owner.',
-  },
-  {
-    id: 'case-902',
-    title: 'Tor Exit Node Password Reset Burst (10 attempts / 2min)',
-    severity: 'high',
-    status: 'under_investigation',
-    entityId: 'usr_29104',
-    amount: 0,
-    assigneeName: 'Elena Chen',
-    timestamp: '1h ago',
-    notes: 'Account locked pending email & SMS verification response.',
-  },
-  {
-    id: 'case-903',
-    title: 'High-Value Corporate Card Purchase ($3,200 Hardware)',
-    severity: 'medium',
-    status: 'resolved_benign',
-    entityId: 'usr_81920',
-    amount: 3200,
-    assigneeName: 'Marcus Vance',
-    timestamp: '3h ago',
-    notes: 'Verified legitimate corporate equipment purchase authorized by VP Engineering.',
-  },
-];
+const INITIAL_CASES: FraudCaseItem[] = [];
 
 export function SentinelXPage() {
   const [activeTab, setActiveTab] = useState<'stream' | 'simulator' | 'rules' | 'cases'>('stream');
@@ -411,20 +322,20 @@ export function SentinelXPage() {
       <div className="nx-product-grid-4">
         <Card>
           <div className="nx-stat-title">Evaluated Events</div>
-          <div className="nx-stat-value">45,214 / hr</div>
+          <div className="nx-stat-value">{events.length} / hr</div>
           <div className="nx-stat-sub">Across all API & auth endpoints</div>
         </Card>
         <Card>
           <div className="nx-stat-title">Threat Mitigation Rate</div>
           <div className="nx-stat-value" style={{ color: 'var(--nx-success-500)' }}>
-            99.8%
+            {events.length > 0 ? '99.8%' : '100%'}
           </div>
           <div className="nx-stat-sub">Clean transaction classification</div>
         </Card>
         <Card>
           <div className="nx-stat-title">Prevented Fraud Loss</div>
           <div className="nx-stat-value" style={{ color: 'var(--nx-sentinelx)' }}>
-            $284,500
+            $0.00
           </div>
           <div className="nx-stat-sub">Past 30 calendar days</div>
         </Card>
@@ -510,77 +421,90 @@ export function SentinelXPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="nx-table-wrap">
-              <table className="nx-table">
-                <thead className="nx-table__header">
-                  <tr>
-                    <th className="nx-table__head-cell">Event Type</th>
-                    <th className="nx-table__head-cell">Entity & Target</th>
-                    <th className="nx-table__head-cell">Geo & IP</th>
-                    <th className="nx-table__head-cell">Risk Score</th>
-                    <th className="nx-table__head-cell">Decision Action</th>
-                    <th className="nx-table__head-cell">Anomaly Details</th>
-                    <th className="nx-table__head-cell">Timestamp</th>
-                  </tr>
-                </thead>
-                <tbody className="nx-table__body">
-                  {events.map((ev) => (
-                    <tr key={ev.id} className="nx-table__row">
-                      <td className="nx-table__cell">
-                        <Badge variant="default" size="sm">{ev.eventType.toUpperCase()}</Badge>
-                      </td>
-                      <td className="nx-table__cell">
-                        <strong>{ev.entityId}</strong>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--nx-neutral-400)' }}>{ev.entityType}</div>
-                      </td>
-                      <td className="nx-table__cell">
-                        <code>{ev.ipAddress}</code>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--nx-brand-400)' }}>Country: {ev.geoCountry}</div>
-                      </td>
-                      <td className="nx-table__cell">
-                        <span
-                          style={{
-                            fontWeight: 700,
-                            color:
-                              ev.riskLevel === 'critical'
-                                ? 'var(--nx-error-500)'
-                                : ev.riskLevel === 'high'
-                                ? 'var(--nx-warning-500)'
-                                : ev.riskLevel === 'medium'
-                                ? '#f59e0b'
-                                : 'var(--nx-success-500)',
-                          }}
-                        >
-                          {ev.riskScore} / 100 [{ev.riskLevel.toUpperCase()}]
-                        </span>
-                      </td>
-                      <td className="nx-table__cell">
-                        <Badge
-                          variant={
-                            ev.actionTaken === 'block'
-                              ? 'error'
-                              : ev.actionTaken === 'challenge_2fa'
-                              ? 'warning'
-                              : ev.actionTaken === 'flag_review'
-                              ? 'info'
-                              : 'success'
-                          }
-                          size="sm"
-                        >
-                          {ev.actionTaken.toUpperCase()}
-                        </Badge>
-                      </td>
-                      <td className="nx-table__cell" style={{ maxWidth: '320px', fontSize: '0.8rem', color: 'var(--nx-neutral-300)' }}>
-                        {ev.details}
-                      </td>
-                      <td className="nx-table__cell" style={{ fontSize: '0.8rem', color: 'var(--nx-neutral-400)' }}>
-                        {ev.timestamp}
-                      </td>
+            {events.length === 0 ? (
+              <div style={{ padding: '3.5rem 1rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🛡️</div>
+                <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', marginBottom: '0.5rem' }}>No Security Threats Detected</h3>
+                <p style={{ maxWidth: '440px', margin: '0 auto 1.5rem', color: '#94a3b8', fontSize: '0.875rem' }}>
+                  SentinelX is actively monitoring ingress auth and transaction endpoints. All current traffic passes deterministic risk thresholds.
+                </p>
+                <Button variant="secondary" onClick={() => setActiveTab('simulator')}>
+                  ⚡ Open Fraud Simulator
+                </Button>
+              </div>
+            ) : (
+              <div className="nx-table-wrap">
+                <table className="nx-table">
+                  <thead className="nx-table__header">
+                    <tr>
+                      <th className="nx-table__head-cell">Event Type</th>
+                      <th className="nx-table__head-cell">Entity & Target</th>
+                      <th className="nx-table__head-cell">Geo & IP</th>
+                      <th className="nx-table__head-cell">Risk Score</th>
+                      <th className="nx-table__head-cell">Decision Action</th>
+                      <th className="nx-table__head-cell">Anomaly Details</th>
+                      <th className="nx-table__head-cell">Timestamp</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="nx-table__body">
+                    {events.map((ev) => (
+                      <tr key={ev.id} className="nx-table__row">
+                        <td className="nx-table__cell">
+                          <Badge variant="default" size="sm">{ev.eventType.toUpperCase()}</Badge>
+                        </td>
+                        <td className="nx-table__cell">
+                          <strong>{ev.entityId}</strong>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--nx-neutral-400)' }}>{ev.entityType}</div>
+                        </td>
+                        <td className="nx-table__cell">
+                          <code>{ev.ipAddress}</code>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--nx-brand-400)' }}>Country: {ev.geoCountry}</div>
+                        </td>
+                        <td className="nx-table__cell">
+                          <span
+                            style={{
+                              fontWeight: 700,
+                              color:
+                                ev.riskLevel === 'critical'
+                                  ? 'var(--nx-error-500)'
+                                  : ev.riskLevel === 'high'
+                                  ? 'var(--nx-warning-500)'
+                                  : ev.riskLevel === 'medium'
+                                  ? '#f59e0b'
+                                  : 'var(--nx-success-500)',
+                            }}
+                          >
+                            {ev.riskScore} / 100 [{ev.riskLevel.toUpperCase()}]
+                          </span>
+                        </td>
+                        <td className="nx-table__cell">
+                          <Badge
+                            variant={
+                              ev.actionTaken === 'block'
+                                ? 'error'
+                                : ev.actionTaken === 'challenge_2fa'
+                                ? 'warning'
+                                : ev.actionTaken === 'flag_review'
+                                ? 'info'
+                                : 'success'
+                            }
+                            size="sm"
+                          >
+                            {ev.actionTaken.toUpperCase()}
+                          </Badge>
+                        </td>
+                        <td className="nx-table__cell" style={{ maxWidth: '320px', fontSize: '0.8rem', color: 'var(--nx-neutral-300)' }}>
+                          {ev.details}
+                        </td>
+                        <td className="nx-table__cell" style={{ fontSize: '0.8rem', color: 'var(--nx-neutral-400)' }}>
+                          {ev.timestamp}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
@@ -934,84 +858,94 @@ export function SentinelXPage() {
             </p>
           </CardHeader>
           <CardContent>
-            <div className="nx-table-wrap">
-              <table className="nx-table">
-                <thead className="nx-table__header">
-                  <tr>
-                    <th className="nx-table__head-cell">Case Title</th>
-                    <th className="nx-table__head-cell">Severity</th>
-                    <th className="nx-table__head-cell">Status</th>
-                    <th className="nx-table__head-cell">Entity ID</th>
-                    <th className="nx-table__head-cell">Exposure</th>
-                    <th className="nx-table__head-cell">Assignee</th>
-                    <th className="nx-table__head-cell">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="nx-table__body">
-                  {cases.map((cs) => (
-                    <tr key={cs.id} className="nx-table__row">
-                      <td className="nx-table__cell">
-                        <strong>{cs.title}</strong>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--nx-neutral-400)' }}>{cs.notes}</div>
-                      </td>
-                      <td className="nx-table__cell">
-                        <Badge
-                          variant={
-                            cs.severity === 'critical'
-                              ? 'error'
-                              : cs.severity === 'high'
-                              ? 'warning'
-                              : 'default'
-                          }
-                          size="sm"
-                        >
-                          {cs.severity.toUpperCase()}
-                        </Badge>
-                      </td>
-                      <td className="nx-table__cell">
-                        <Badge
-                          variant={
-                            cs.status === 'open'
-                              ? 'warning'
-                              : cs.status === 'under_investigation'
-                              ? 'info'
-                              : cs.status === 'resolved_fraud'
-                              ? 'error'
-                              : 'success'
-                          }
-                          size="sm"
-                        >
-                          {cs.status.replace('_', ' ').toUpperCase()}
-                        </Badge>
-                      </td>
-                      <td className="nx-table__cell">
-                        <code>{cs.entityId}</code>
-                      </td>
-                      <td className="nx-table__cell">
-                        {cs.amount > 0 ? (
-                          <strong style={{ color: 'var(--nx-error-500)' }}>${cs.amount.toLocaleString()}</strong>
-                        ) : (
-                          <span style={{ color: 'var(--nx-neutral-500)' }}>N/A</span>
-                        )}
-                      </td>
-                      <td className="nx-table__cell">{cs.assigneeName}</td>
-                      <td className="nx-table__cell">
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedCase(cs);
-                            setResolutionNotes(cs.notes);
-                          }}
-                        >
-                          Triage & Verdict →
-                        </Button>
-                      </td>
+            {cases.length === 0 ? (
+              <div style={{ padding: '3.5rem 1rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>✅</div>
+                <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', marginBottom: '0.5rem' }}>Zero Fraud Cases in Queue</h3>
+                <p style={{ maxWidth: '440px', margin: '0 auto 1.5rem', color: '#94a3b8', fontSize: '0.875rem' }}>
+                  All transaction streams and authentication events have satisfied automated risk rules. No investigations pending.
+                </p>
+              </div>
+            ) : (
+              <div className="nx-table-wrap">
+                <table className="nx-table">
+                  <thead className="nx-table__header">
+                    <tr>
+                      <th className="nx-table__head-cell">Case Title</th>
+                      <th className="nx-table__head-cell">Severity</th>
+                      <th className="nx-table__head-cell">Status</th>
+                      <th className="nx-table__head-cell">Entity ID</th>
+                      <th className="nx-table__head-cell">Exposure</th>
+                      <th className="nx-table__head-cell">Assignee</th>
+                      <th className="nx-table__head-cell">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="nx-table__body">
+                    {cases.map((cs) => (
+                      <tr key={cs.id} className="nx-table__row">
+                        <td className="nx-table__cell">
+                          <strong>{cs.title}</strong>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--nx-neutral-400)' }}>{cs.notes}</div>
+                        </td>
+                        <td className="nx-table__cell">
+                          <Badge
+                            variant={
+                              cs.severity === 'critical'
+                                ? 'error'
+                                : cs.severity === 'high'
+                                ? 'warning'
+                                : 'default'
+                            }
+                            size="sm"
+                          >
+                            {cs.severity.toUpperCase()}
+                          </Badge>
+                        </td>
+                        <td className="nx-table__cell">
+                          <Badge
+                            variant={
+                              cs.status === 'open'
+                                ? 'warning'
+                                : cs.status === 'under_investigation'
+                                ? 'info'
+                                : cs.status === 'resolved_fraud'
+                                ? 'error'
+                                : 'success'
+                            }
+                            size="sm"
+                          >
+                            {cs.status.replace('_', ' ').toUpperCase()}
+                          </Badge>
+                        </td>
+                        <td className="nx-table__cell">
+                          <code>{cs.entityId}</code>
+                        </td>
+                        <td className="nx-table__cell">
+                          {cs.amount > 0 ? (
+                            <strong style={{ color: 'var(--nx-error-500)' }}>${cs.amount.toLocaleString()}</strong>
+                          ) : (
+                            <span style={{ color: 'var(--nx-neutral-500)' }}>N/A</span>
+                          )}
+                        </td>
+                        <td className="nx-table__cell">{cs.assigneeName}</td>
+                        <td className="nx-table__cell">
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedCase(cs);
+                              setResolutionNotes(cs.notes);
+                            }}
+                          >
+                            Triage & Verdict →
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

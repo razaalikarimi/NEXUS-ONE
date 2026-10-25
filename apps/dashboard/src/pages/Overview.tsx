@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Card, CardHeader, CardTitle, CardContent, Badge, Button } from '@nexus-one/ui';
+import { api } from '../services/api';
 import {
   WorkflowIcon,
   ActivityPulseIcon,
@@ -11,95 +13,113 @@ import {
   CloudServerIcon,
 } from '../components/Icons';
 
-const PRODUCT_CARDS = [
-  {
-    id: 'agentforge',
-    name: 'AgentForge',
-    tagline: 'Workflow & Process Orchestration',
-    Icon: WorkflowIcon,
-    color: '#4f46e5',
-    metric: '12 Active Workflows',
-    submetric: '99.8% step completion',
-    badge: 'Healthy',
-    badgeVariant: 'success' as const,
-    link: '/agentforge',
-  },
-  {
-    id: 'pulseops',
-    name: 'PulseOps',
-    tagline: 'Telemetry & Incident SRE',
-    Icon: ActivityPulseIcon,
-    color: '#2563eb',
-    metric: '0 Critical Incidents',
-    submetric: 'MTTR: 4.2 minutes',
-    badge: 'Optimal',
-    badgeVariant: 'success' as const,
-    link: '/pulseops',
-  },
-  {
-    id: 'gateflow',
-    name: 'GateFlow',
-    tagline: 'API Gateway & Traffic Control',
-    Icon: GatewayIcon,
-    color: '#0891b2',
-    metric: '1.42M Ingested Req/24h',
-    submetric: 'p99 latency: 3.8ms',
-    badge: 'Active',
-    badgeVariant: 'info' as const,
-    link: '/gateflow',
-  },
-  {
-    id: 'cortexrag',
-    name: 'CortexRAG',
-    tagline: 'Knowledge Index & Hybrid Search',
-    Icon: KnowledgeDatabaseIcon,
-    color: '#4338ca',
-    metric: '142,500 Vectors Indexed',
-    submetric: '8 collections active',
-    badge: 'Synced',
-    badgeVariant: 'warning' as const,
-    link: '/cortexrag',
-  },
-  {
-    id: 'syncspace',
-    name: 'SyncSpace',
-    tagline: 'Real-Time Multiplayer Workspace',
-    Icon: CollabDocIcon,
-    color: '#059669',
-    metric: '24 Collaborative Docs',
-    submetric: 'CRDT sync latency: <12ms',
-    badge: 'Active',
-    badgeVariant: 'success' as const,
-    link: '/syncspace',
-  },
-  {
-    id: 'sentinelx',
-    name: 'SentinelX',
-    tagline: 'Risk Engine & Access Compliance',
-    Icon: ShieldSecurityIcon,
-    color: '#d97706',
-    metric: '0 High-Risk Cases',
-    submetric: 'Evaluated 45,210 tx/hr',
-    badge: 'Secured',
-    badgeVariant: 'success' as const,
-    link: '/sentinelx',
-  },
-  {
-    id: 'cloudpilot',
-    name: 'CloudPilot',
-    tagline: 'Cloud Infrastructure Analytics',
-    Icon: CloudServerIcon,
-    color: '#2563eb',
-    metric: '$12,480 / mo Tracked',
-    submetric: '+$1,820 savings identified',
-    badge: 'Optimizing',
-    badgeVariant: 'info' as const,
-    link: '/cloudpilot',
-  },
-];
-
 export function OverviewPage() {
   const { user, activeOrg, activeWorkspace } = useAuth();
+  const [stats, setStats] = useState({
+    activeWorkflows: 0,
+    openIncidents: 0,
+    activeRoutes: 0,
+    systemHealth: 'operational',
+  });
+
+  useEffect(() => {
+    if (activeOrg?.id) {
+      api.getDashboardStats(activeOrg.id)
+        .then((res: { activeWorkflows: number; openIncidents: number; activeRoutes: number; systemHealth: string }) => {
+          if (res) {
+            setStats(res);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [activeOrg]);
+
+  const productCards = [
+    {
+      id: 'agentforge',
+      name: 'AgentForge',
+      tagline: 'Workflow & Process Orchestration',
+      Icon: WorkflowIcon,
+      color: '#4f46e5',
+      metric: `${stats.activeWorkflows} Active Workflows`,
+      submetric: stats.activeWorkflows === 0 ? 'No workflows configured' : 'Automated execution active',
+      badge: stats.activeWorkflows === 0 ? 'Ready' : 'Healthy',
+      badgeVariant: (stats.activeWorkflows === 0 ? 'default' : 'success') as 'default' | 'success',
+      link: '/agentforge',
+    },
+    {
+      id: 'pulseops',
+      name: 'PulseOps',
+      tagline: 'Telemetry & Incident SRE',
+      Icon: ActivityPulseIcon,
+      color: '#2563eb',
+      metric: `${stats.openIncidents} Critical Incidents`,
+      submetric: stats.openIncidents === 0 ? 'All services nominal' : 'Action required',
+      badge: stats.openIncidents === 0 ? 'Optimal' : 'Warning',
+      badgeVariant: (stats.openIncidents === 0 ? 'success' : 'warning') as 'success' | 'warning',
+      link: '/pulseops',
+    },
+    {
+      id: 'gateflow',
+      name: 'GateFlow',
+      tagline: 'API Gateway & Traffic Control',
+      Icon: GatewayIcon,
+      color: '#0891b2',
+      metric: `${stats.activeRoutes} Active Routes`,
+      submetric: stats.activeRoutes === 0 ? 'No endpoints routed' : 'Routing traffic',
+      badge: stats.activeRoutes === 0 ? 'Standby' : 'Active',
+      badgeVariant: (stats.activeRoutes === 0 ? 'default' : 'info') as 'default' | 'info',
+      link: '/gateflow',
+    },
+    {
+      id: 'cortexrag',
+      name: 'CortexRAG',
+      tagline: 'Knowledge Index & Hybrid Search',
+      Icon: KnowledgeDatabaseIcon,
+      color: '#4338ca',
+      metric: '0 Vectors Indexed',
+      submetric: 'Ready for document upload',
+      badge: 'Standby',
+      badgeVariant: 'default' as const,
+      link: '/cortexrag',
+    },
+    {
+      id: 'syncspace',
+      name: 'SyncSpace',
+      tagline: 'Real-Time Multiplayer Workspace',
+      Icon: CollabDocIcon,
+      color: '#059669',
+      metric: '0 Collaborative Docs',
+      submetric: 'No active sessions',
+      badge: 'Ready',
+      badgeVariant: 'default' as const,
+      link: '/syncspace',
+    },
+    {
+      id: 'sentinelx',
+      name: 'SentinelX',
+      tagline: 'Risk Engine & Access Compliance',
+      Icon: ShieldSecurityIcon,
+      color: '#d97706',
+      metric: '0 Flagged Cases',
+      submetric: 'Risk rules active',
+      badge: 'Secured',
+      badgeVariant: 'success' as const,
+      link: '/sentinelx',
+    },
+    {
+      id: 'cloudpilot',
+      name: 'CloudPilot',
+      tagline: 'Cloud Infrastructure Analytics',
+      Icon: CloudServerIcon,
+      color: '#2563eb',
+      metric: '$0.00 Tracked',
+      submetric: 'Connect cloud provider to start',
+      badge: 'Standby',
+      badgeVariant: 'default' as const,
+      link: '/cloudpilot',
+    },
+  ];
 
   return (
     <div className="nx-overview-page">
@@ -132,11 +152,11 @@ export function OverviewPage() {
       {/* Cross-Product Status Grid */}
       <div className="nx-section-subhead">
         <h2>Core Platform Services</h2>
-        <span className="nx-subhead-status">All 7 Services Connected & Isolated by Tenant</span>
+        <span className="nx-subhead-status">All 7 Services Connected &amp; Isolated by Tenant</span>
       </div>
 
       <div className="nx-pillar-grid">
-        {PRODUCT_CARDS.map((item) => {
+        {productCards.map((item) => {
           const IconComponent = item.Icon;
           return (
             <Link key={item.id} to={item.link} className="nx-pillar-card-link">
@@ -177,29 +197,14 @@ export function OverviewPage() {
           <CardContent>
             <div className="nx-audit-stream">
               <div className="nx-audit-row">
-                <span className="nx-audit-badge">auth.login</span>
+                <span className="nx-audit-badge">auth.session</span>
                 <span className="nx-audit-user">{user?.email}</span>
-                <span className="nx-audit-desc">Established interactive session</span>
+                <span className="nx-audit-desc">Interactive session active in {activeOrg?.name}</span>
                 <span className="nx-audit-time">Just now</span>
               </div>
-              <div className="nx-audit-row">
-                <span className="nx-audit-badge">agent.run</span>
-                <span className="nx-audit-user">AgentForge Runner</span>
-                <span className="nx-audit-desc">Executed daily triage workflow</span>
-                <span className="nx-audit-time">12m ago</span>
-              </div>
-              <div className="nx-audit-row">
-                <span className="nx-audit-badge">rag.index</span>
-                <span className="nx-audit-user">Cortex Ingestion Worker</span>
-                <span className="nx-audit-desc">Indexed 12 documents in API reference</span>
-                <span className="nx-audit-time">48m ago</span>
-              </div>
-              <div className="nx-audit-row">
-                <span className="nx-audit-badge">finops.audit</span>
-                <span className="nx-audit-user">CloudPilot Engine</span>
-                <span className="nx-audit-desc">AWS billing anomaly scan completed</span>
-                <span className="nx-audit-time">2h ago</span>
-              </div>
+            </div>
+            <div style={{ marginTop: '1rem', padding: '0.75rem', borderRadius: '6px', background: 'rgba(255, 255, 255, 0.02)', border: '1px dashed #334155', textAlign: 'center', fontSize: '0.8rem', color: '#94a3b8' }}>
+              No automated background jobs triggered yet. Events will record here as workflows and pipelines execute.
             </div>
           </CardContent>
         </Card>
@@ -211,20 +216,20 @@ export function OverviewPage() {
           <CardContent>
             <div className="nx-telemetry-list">
               <div className="nx-telemetry-item">
-                <span className="nx-telemetry-label">PostgreSQL 16 Connection</span>
+                <span className="nx-telemetry-label">PostgreSQL Database</span>
                 <Badge variant="success" size="sm">Connected</Badge>
               </div>
               <div className="nx-telemetry-item">
-                <span className="nx-telemetry-label">Redis 7 State Cache</span>
-                <Badge variant="success" size="sm">Connected</Badge>
+                <span className="nx-telemetry-label">Multi-Tenant Isolation</span>
+                <Badge variant="success" size="sm">Enforced</Badge>
               </div>
               <div className="nx-telemetry-item">
-                <span className="nx-telemetry-label">BullMQ Worker Processors</span>
-                <Badge variant="success" size="sm">6 Queues Active</Badge>
+                <span className="nx-telemetry-label">Session Protection</span>
+                <Badge variant="success" size="sm">Active (HTTP-Only)</Badge>
               </div>
               <div className="nx-telemetry-item">
-                <span className="nx-telemetry-label">Rate Limiter</span>
-                <Badge variant="info" size="sm">Enforced (200 req/m)</Badge>
+                <span className="nx-telemetry-label">API Rate Limiter</span>
+                <Badge variant="info" size="sm">Enforced</Badge>
               </div>
             </div>
           </CardContent>

@@ -53,7 +53,7 @@ export function RegisterPage() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Alex Rivera"
+                  placeholder="e.g. Full Name"
                   required
                 />
               </FormField>

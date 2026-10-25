@@ -124,6 +124,31 @@ export async function buildApp() {
     reply.header('X-Request-Id', requestId);
   });
 
+  // ---- Standardized Global Error Handler ----
+  app.setErrorHandler((error, request, reply) => {
+    request.log.error(error);
+    const statusCode = error.statusCode || 500;
+    if (statusCode >= 500) {
+      return reply.status(statusCode).send({
+        success: false,
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message:
+            process.env['NODE_ENV'] === 'development'
+              ? error.message
+              : 'An unexpected server error occurred. Please try again later.',
+        },
+      });
+    }
+    return reply.status(statusCode).send({
+      success: false,
+      error: {
+        code: error.code || 'BAD_REQUEST',
+        message: error.message,
+      },
+    });
+  });
+
   // ---- Core Auth & Tenant Plugins ----
   await app.register(authPlugin);
   await app.register(tenantPlugin);

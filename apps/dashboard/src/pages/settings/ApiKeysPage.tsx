@@ -11,24 +11,7 @@ interface ApiKeyItem {
 }
 
 export function ApiKeysPage() {
-  const [keys, setKeys] = useState<ApiKeyItem[]>([
-    {
-      id: 'key-1',
-      name: 'Production CI/CD Deployment Key',
-      prefix: 'nx_live_8f9c',
-      scopes: ['*'],
-      lastUsedAt: '12m ago',
-      createdAt: '3d ago',
-    },
-    {
-      id: 'key-2',
-      name: 'Staging Ingestion Ingest Key',
-      prefix: 'nx_stag_21a4',
-      scopes: ['pulseops:write', 'cortexrag:write'],
-      lastUsedAt: 'Never',
-      createdAt: '1d ago',
-    },
-  ]);
+  const [keys, setKeys] = useState<ApiKeyItem[]>([]);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [keyName, setKeyName] = useState('');
@@ -88,49 +71,62 @@ export function ApiKeysPage() {
           <CardTitle>Active API Keys ({keys.length})</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="nx-table-wrap">
-            <table className="nx-table">
-              <thead className="nx-table__header">
-                <tr>
-                  <th className="nx-table__head-cell">Key Name</th>
-                  <th className="nx-table__head-cell">Key Prefix</th>
-                  <th className="nx-table__head-cell">Scopes</th>
-                  <th className="nx-table__head-cell">Last Used</th>
-                  <th className="nx-table__head-cell">Created</th>
-                  <th className="nx-table__head-cell">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="nx-table__body">
-                {keys.map((k) => (
-                  <tr key={k.id} className="nx-table__row">
-                    <td className="nx-table__cell">
-                      <strong>{k.name}</strong>
-                    </td>
-                    <td className="nx-table__cell">
-                      <code>{k.prefix}••••••••</code>
-                    </td>
-                    <td className="nx-table__cell">
-                      <Badge variant="brand" size="sm">
-                        {k.scopes.join(', ')}
-                      </Badge>
-                    </td>
-                    <td className="nx-table__cell">{k.lastUsedAt}</td>
-                    <td className="nx-table__cell">{k.createdAt}</td>
-                    <td className="nx-table__cell">
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        loading={revokingId === k.id}
-                        onClick={() => handleRevokeKey(k.id, k.name)}
-                      >
-                        Revoke
-                      </Button>
-                    </td>
+          {keys.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#94a3b8' }}>
+              <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🔑</div>
+              <h3 style={{ fontSize: '1.1rem', color: '#f8fafc', marginBottom: '0.5rem' }}>No API keys generated yet</h3>
+              <p style={{ maxWidth: '400px', margin: '0 auto 1.5rem', fontSize: '0.875rem' }}>
+                Generate your first machine token to authenticate automated pipelines, CI/CD, or programmatic SDK access.
+              </p>
+              <Button variant="primary" onClick={() => { setGeneratedKey(null); setModalOpen(true); }}>
+                + Generate First API Key
+              </Button>
+            </div>
+          ) : (
+            <div className="nx-table-wrap">
+              <table className="nx-table">
+                <thead className="nx-table__header">
+                  <tr>
+                    <th className="nx-table__head-cell">Key Name</th>
+                    <th className="nx-table__head-cell">Key Prefix</th>
+                    <th className="nx-table__head-cell">Scopes</th>
+                    <th className="nx-table__head-cell">Last Used</th>
+                    <th className="nx-table__head-cell">Created</th>
+                    <th className="nx-table__head-cell">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="nx-table__body">
+                  {keys.map((k) => (
+                    <tr key={k.id} className="nx-table__row">
+                      <td className="nx-table__cell">
+                        <strong>{k.name}</strong>
+                      </td>
+                      <td className="nx-table__cell">
+                        <code>{k.prefix}••••••••</code>
+                      </td>
+                      <td className="nx-table__cell">
+                        <Badge variant="brand" size="sm">
+                          {k.scopes.join(', ')}
+                        </Badge>
+                      </td>
+                      <td className="nx-table__cell">{k.lastUsedAt}</td>
+                      <td className="nx-table__cell">{k.createdAt}</td>
+                      <td className="nx-table__cell">
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          loading={revokingId === k.id}
+                          onClick={() => handleRevokeKey(k.id, k.name)}
+                        >
+                          Revoke
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </CardContent>
       </Card>
 

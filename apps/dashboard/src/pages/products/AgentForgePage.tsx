@@ -34,41 +34,9 @@ interface StepExecution {
 }
 
 export function AgentForgePage() {
-  const [workflows, setWorkflows] = useState<Workflow[]>([
-    {
-      id: 'wf-1',
-      name: 'Autonomous Incident Triage Agent',
-      description: 'Ingests production alerts, queries runbooks, and proposes mitigation steps with human review.',
-      status: 'published',
-      lastRun: '12m ago',
-      successRate: '99.4%',
-      nodes: [
-        { id: 'n1', type: 'input', label: 'Alert Payload', config: {} },
-        { id: 'n2', type: 'prompt', label: 'Triage System Prompt', config: { promptTemplate: 'Triage the following error: {{alert}}' } },
-        { id: 'n3', type: 'tool', label: 'Vector Runbook Query', config: { toolName: 'web_search' } },
-        { id: 'n4', type: 'model', label: 'Claude 3.5 Sonnet', config: { model: 'claude-3-5-sonnet' } },
-        { id: 'n5', type: 'approval', label: 'SRE Lead Approval', config: { approvalRole: 'admin' } },
-        { id: 'n6', type: 'output', label: 'Remediation Action', config: {} },
-      ],
-    },
-    {
-      id: 'wf-2',
-      name: 'Automated PR Security & AST Linter',
-      description: 'Scans pull request diffs for SQL injections, secrets, and architectural violations.',
-      status: 'published',
-      lastRun: '1h ago',
-      successRate: '100%',
-      nodes: [
-        { id: 'n1', type: 'input', label: 'PR Diff', config: {} },
-        { id: 'n2', type: 'tool', label: 'AST Static Scanner', config: { toolName: 'calculator' } },
-        { id: 'n3', type: 'model', label: 'GPT-4o Deep Analysis', config: { model: 'gpt-4o' } },
-        { id: 'n4', type: 'output', label: 'GitHub Review Comment', config: {} },
-      ],
-    },
-  ]);
-
-  const [activeWf, setActiveWf] = useState<Workflow>(workflows[0]!);
-  const [selectedNode, setSelectedNode] = useState<WorkflowNode | null>(workflows[0]?.nodes[1] || null);
+  const [workflows, setWorkflows] = useState<Workflow[]>([]);
+  const [activeWf, setActiveWf] = useState<Workflow | null>(null);
+  const [selectedNode, setSelectedNode] = useState<WorkflowNode | null>(null);
 
   // New Workflow modal
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -110,6 +78,7 @@ export function AgentForgePage() {
   }
 
   async function handleSimulateRun() {
+    if (!activeWf) return;
     setIsExecuting(true);
     setApprovalPending(false);
 
@@ -197,7 +166,7 @@ export function AgentForgePage() {
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <Button variant="secondary" onClick={() => setRunModalOpen(true)}>
+          <Button variant="secondary" disabled={!activeWf} onClick={() => setRunModalOpen(true)}>
             ▶ Test Run Simulator
           </Button>
           <Button variant="primary" onClick={() => setCreateModalOpen(true)}>
@@ -206,8 +175,21 @@ export function AgentForgePage() {
         </div>
       </div>
 
-      {/* Workflow Selector & Metadata */}
-      <div className="nx-wf-selector-bar">
+      {!activeWf ? (
+        <Card style={{ padding: '4rem 2rem', textAlign: 'center', marginTop: '1.5rem' }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>⚡</div>
+          <h3 style={{ fontSize: '1.25rem', color: '#f8fafc', marginBottom: '0.5rem' }}>No Workflows Configured</h3>
+          <p style={{ maxWidth: '460px', margin: '0 auto 1.5rem', color: '#94a3b8', fontSize: '0.9rem' }}>
+            AgentForge orchestrates multi-agent pipelines with model fallback and tool executions. Create your first autonomous workflow pipeline to get started.
+          </p>
+          <Button variant="primary" onClick={() => setCreateModalOpen(true)}>
+            + Create Your First Workflow
+          </Button>
+        </Card>
+      ) : (
+        <>
+          {/* Workflow Selector & Metadata */}
+          <div className="nx-wf-selector-bar">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Active Workflow:</span>
           <Select
@@ -378,6 +360,8 @@ export function AgentForgePage() {
           </CardContent>
         </Card>
       </div>
+      </>
+      )}
 
       {/* Modal: New Workflow */}
       <Modal
@@ -421,7 +405,7 @@ export function AgentForgePage() {
       <Modal
         isOpen={runModalOpen}
         onClose={() => setRunModalOpen(false)}
-        title={`Execute Pipeline: ${activeWf.name}`}
+        title={`Execute Pipeline: ${activeWf?.name || 'Workflow'}`}
         description="Trigger a step-by-step test run through the DAG execution engine."
       >
         <div>

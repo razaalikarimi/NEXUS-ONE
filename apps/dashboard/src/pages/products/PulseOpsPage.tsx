@@ -73,187 +73,20 @@ export function PulseOpsPage() {
   const [activeTab, setActiveTab] = useState('incidents');
 
   // Services State
-  const [services] = useState<ServiceItem[]>([
-    {
-      id: 'srv-1',
-      name: 'Auth & Session Broker',
-      slug: 'auth-broker',
-      environment: 'production',
-      status: 'healthy',
-      uptime: '99.98%',
-      errorCount: 2,
-    },
-    {
-      id: 'srv-2',
-      name: 'PostgreSQL Primary & Read-Replicas',
-      slug: 'postgres-cluster',
-      environment: 'production',
-      status: 'degraded',
-      uptime: '99.72%',
-      errorCount: 142,
-    },
-    {
-      id: 'srv-3',
-      name: 'Stripe Payment Webhook Gateway',
-      slug: 'payment-gateway',
-      environment: 'production',
-      status: 'healthy',
-      uptime: '99.95%',
-      errorCount: 14,
-    },
-    {
-      id: 'srv-4',
-      name: 'AgentForge LLM Inference Pipeline',
-      slug: 'inference-pipeline',
-      environment: 'production',
-      status: 'healthy',
-      uptime: '99.91%',
-      errorCount: 8,
-    },
-  ]);
+  const [services] = useState<ServiceItem[]>([]);
 
   // Incidents State
-  const [incidents, setIncidents] = useState<IncidentItem[]>([
-    {
-      id: 'inc-104',
-      title: 'Database connection pool saturation on replica-02',
-      service: 'PostgreSQL Primary & Read-Replicas',
-      severity: 'critical',
-      status: 'investigating',
-      summary: 'Connections to replica-02 peaked at 100% capacity causing query timeouts for read workloads.',
-      createdAt: '18m ago',
-      rootCause: 'Connection pool starvation due to unindexed wildcard search queries on audit_events table.',
-      aiConfidence: 0.94,
-      aiRemediation: [
-        'Terminate runaway queries exceeding 30s threshold on replica-02.',
-        'Increase PgBouncer max_client_conn from 500 to 1200.',
-        'Apply composite index (orgId, timestamp) to audit_events.',
-      ],
-      timeline: [
-        {
-          id: 'tl-1',
-          eventType: 'state_change',
-          message: 'Incident triggered automatically by PulseOps Telemetry Watcher.',
-          timestamp: '18m ago',
-          author: 'PulseOps System',
-        },
-        {
-          id: 'tl-2',
-          eventType: 'ai_diagnosis',
-          message: 'AI Root Cause Analysis (Network/Database): Connection pool exhaustion detected across 142 failed handshakes.',
-          timestamp: '17m ago',
-          author: 'PulseOps AI Engine',
-        },
-        {
-          id: 'tl-3',
-          eventType: 'comment',
-          message: 'SRE on-call (Sarah K.) joined the war room. Investigating pg_stat_activity.',
-          timestamp: '12m ago',
-          author: 'Sarah K. (SRE)',
-        },
-      ],
-    },
-    {
-      id: 'inc-103',
-      title: 'Stripe webhook 504 gateway timeout spike',
-      service: 'Stripe Payment Webhook Gateway',
-      severity: 'high',
-      status: 'resolved',
-      summary: 'Downstream payment reconciliation worker queue lagged during peak billing cycle.',
-      createdAt: '3h ago',
-      rootCause: 'Redis queue backpressure during 10x traffic spike.',
-      aiConfidence: 0.91,
-      aiRemediation: [
-        'Scaled worker pod replicas from 2 to 8 in CloudPilot.',
-        'Replayed 24 failed idempotent webhook events.',
-      ],
-      timeline: [
-        {
-          id: 'tl-4',
-          eventType: 'state_change',
-          message: 'Incident opened by SRE on-call.',
-          timestamp: '3h ago',
-          author: 'Alex M.',
-        },
-        {
-          id: 'tl-5',
-          eventType: 'state_change',
-          message: 'Incident marked as RESOLVED after queue drain.',
-          timestamp: '2h 15m ago',
-          author: 'Alex M.',
-        },
-      ],
-    },
-  ]);
+  const [incidents, setIncidents] = useState<IncidentItem[]>([]);
 
   // Selected incident for War Room Drawer
-  const [selectedIncidentId, setSelectedIncidentId] = useState<string>('inc-104');
+  const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
   const selectedIncident = incidents.find((i) => i.id === selectedIncidentId);
 
   // Error Groups State
-  const [errorGroups, setErrorGroups] = useState<ErrorGroupItem[]>([
-    {
-      id: 'eg-1',
-      service: 'PostgreSQL Primary & Read-Replicas',
-      fingerprint: 'a7f9c2e14b30',
-      title: 'ConnectionResetError: Connection pool connection timed out after 5000ms',
-      count: 142,
-      firstSeen: '25m ago',
-      lastSeen: '1m ago',
-      status: 'active',
-    },
-    {
-      id: 'eg-2',
-      service: 'Stripe Payment Webhook Gateway',
-      fingerprint: 'd48e02bb68a1',
-      title: 'HTTP 504 GatewayTimeout: upstream request timed out on /webhooks/stripe',
-      count: 24,
-      firstSeen: '3h ago',
-      lastSeen: '2h 15m ago',
-      status: 'resolved',
-    },
-    {
-      id: 'eg-3',
-      service: 'AgentForge LLM Inference Pipeline',
-      fingerprint: '9c1a5b88f342',
-      title: 'RateLimitError: 429 Too Many Requests from Anthropic Claude API',
-      count: 8,
-      firstSeen: '5h ago',
-      lastSeen: '4h 10m ago',
-      status: 'active',
-    },
-  ]);
+  const [errorGroups, setErrorGroups] = useState<ErrorGroupItem[]>([]);
 
   // Alert Rules State
-  const [alertRules, setAlertRules] = useState<AlertRuleItem[]>([
-    {
-      id: 'ar-1',
-      name: 'High Error Rate Spike',
-      service: 'All Production Services',
-      condition: 'Error Rate > 5% over 5m window',
-      threshold: '> 5%',
-      severity: 'critical',
-      enabled: true,
-    },
-    {
-      id: 'ar-2',
-      name: 'P99 Latency Degradation',
-      service: 'PostgreSQL Primary & Read-Replicas',
-      condition: 'P99 query latency > 1200ms',
-      threshold: '> 1200ms',
-      severity: 'high',
-      enabled: true,
-    },
-    {
-      id: 'ar-3',
-      name: 'Service Heartbeat Liveness Failure',
-      service: 'Auth & Session Broker',
-      condition: 'Missing ping for > 60s',
-      threshold: '60s',
-      severity: 'critical',
-      enabled: true,
-    },
-  ]);
+  const [alertRules, setAlertRules] = useState<AlertRuleItem[]>([]);
 
   // Modals
   const [isDeclareModalOpen, setIsDeclareModalOpen] = useState(false);
@@ -426,44 +259,56 @@ export function PulseOpsPage() {
           <div className="nx-stat-value" style={{ color: incidents.filter((i) => i.status !== 'resolved' && i.status !== 'closed').length > 0 ? 'var(--nx-warning-500)' : 'var(--nx-success-500)' }}>
             {incidents.filter((i) => i.status !== 'resolved' && i.status !== 'closed').length}
           </div>
-          <div className="nx-stat-sub">1 under active war room triage</div>
+          <div className="nx-stat-sub">{incidents.length === 0 ? 'All services nominal' : 'Active triage in progress'}</div>
         </Card>
         <Card>
           <div className="nx-stat-title">Mean Time to Resolution (MTTR)</div>
-          <div className="nx-stat-value" style={{ color: 'var(--nx-brand-400)' }}>3.8m</div>
-          <div className="nx-stat-sub">-46% vs 30-day baseline</div>
+          <div className="nx-stat-value" style={{ color: 'var(--nx-brand-400)' }}>—</div>
+          <div className="nx-stat-sub">No recorded incident outages</div>
         </Card>
         <Card>
           <div className="nx-stat-title">Telemetry Events / sec</div>
-          <div className="nx-stat-value">12.4k</div>
-          <div className="nx-stat-sub">Zero event ingestion loss</div>
+          <div className="nx-stat-value">0</div>
+          <div className="nx-stat-sub">Awaiting stream ingestion</div>
         </Card>
         <Card>
           <div className="nx-stat-title">Monitored Services</div>
           <div className="nx-stat-value">{services.length}</div>
-          <div className="nx-stat-sub">1 degraded, 3 healthy</div>
+          <div className="nx-stat-sub">{services.length} active microservices</div>
         </Card>
       </div>
 
       {/* Main Tabs */}
       <Tabs defaultTab="incidents" activeTab={activeTab} onChange={setActiveTab}>
         <TabList>
-          <Tab id="incidents">War Room & Incidents ({incidents.length})</Tab>
+          <Tab id="incidents">War Room &amp; Incidents ({incidents.length})</Tab>
           <Tab id="services">Service Health ({services.length})</Tab>
-          <Tab id="errors">Error Groups & Fingerprints ({errorGroups.length})</Tab>
+          <Tab id="errors">Error Groups &amp; Fingerprints ({errorGroups.length})</Tab>
           <Tab id="alerts">Alert Rules ({alertRules.length})</Tab>
         </TabList>
 
         {/* Tab 1: War Room & Incidents */}
         <TabPanel id="incidents">
-          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.8fr', gap: '1.5rem', marginTop: '1.5rem' }}>
-            {/* Incident List */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Active & Historical Incidents</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          {incidents.length === 0 ? (
+            <Card style={{ padding: '3.5rem 1rem', textAlign: 'center', marginTop: '1.5rem' }}>
+              <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🚨</div>
+              <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', marginBottom: '0.5rem' }}>All Systems Nominal</h3>
+              <p style={{ maxWidth: '440px', margin: '0 auto 1.5rem', color: '#94a3b8', fontSize: '0.875rem' }}>
+                No active or historical incidents detected. PulseOps is actively listening for error anomalies and telemetry health signals.
+              </p>
+              <Button variant="danger" onClick={() => setIsDeclareModalOpen(true)}>
+                + Declare Incident
+              </Button>
+            </Card>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.8fr', gap: '1.5rem', marginTop: '1.5rem' }}>
+              {/* Incident List */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Active &amp; Historical Incidents</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   {incidents.map((inc) => {
                     const isSelected = inc.id === selectedIncidentId;
                     return (
@@ -625,161 +470,192 @@ export function PulseOpsPage() {
               </Card>
             ) : null}
           </div>
+          )}
         </TabPanel>
 
         {/* Tab 2: Service Health Catalog */}
         <TabPanel id="services">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
-            {services.map((srv) => (
-              <Card key={srv.id}>
-                <CardHeader>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                    <Badge variant={srv.status === 'healthy' ? 'success' : srv.status === 'degraded' ? 'warning' : 'error'}>
-                      {srv.status.toUpperCase()}
-                    </Badge>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--nx-text-muted)' }}>{srv.environment}</span>
-                  </div>
-                  <CardTitle style={{ marginTop: '0.5rem', fontSize: '1.1rem' }}>{srv.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.85rem' }}>
-                    <span style={{ color: 'var(--nx-text-muted)' }}>Uptime SLA</span>
-                    <span style={{ fontWeight: 600, color: 'var(--nx-text-primary)' }}>{srv.uptime}</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
-                    <span style={{ color: 'var(--nx-text-muted)' }}>24h Errors</span>
-                    <span style={{ fontWeight: 600, color: srv.errorCount > 0 ? 'var(--nx-warning-500)' : 'var(--nx-text-primary)' }}>
-                      {srv.errorCount}
-                    </span>
-                  </div>
-                  <Button variant="secondary" size="sm" style={{ width: '100%' }}>
-                    Inspect Traces →
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {services.length === 0 ? (
+            <Card style={{ padding: '3.5rem 1rem', textAlign: 'center', marginTop: '1.5rem' }}>
+              <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>📡</div>
+              <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', marginBottom: '0.5rem' }}>No Monitored Services</h3>
+              <p style={{ maxWidth: '440px', margin: '0 auto 1.5rem', color: '#94a3b8', fontSize: '0.875rem' }}>
+                Connect your microservices, Kubernetes clusters, or serverless functions to track uptime SLAs and telemetry in real time.
+              </p>
+            </Card>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
+              {services.map((srv) => (
+                <Card key={srv.id}>
+                  <CardHeader>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                      <Badge variant={srv.status === 'healthy' ? 'success' : srv.status === 'degraded' ? 'warning' : 'error'}>
+                        {srv.status.toUpperCase()}
+                      </Badge>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--nx-text-muted)' }}>{srv.environment}</span>
+                    </div>
+                    <CardTitle style={{ marginTop: '0.5rem', fontSize: '1.1rem' }}>{srv.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.85rem' }}>
+                      <span style={{ color: 'var(--nx-text-muted)' }}>Uptime SLA</span>
+                      <span style={{ fontWeight: 600, color: 'var(--nx-text-primary)' }}>{srv.uptime}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.85rem' }}>
+                      <span style={{ color: 'var(--nx-text-muted)' }}>24h Errors</span>
+                      <span style={{ fontWeight: 600, color: srv.errorCount > 0 ? 'var(--nx-warning-500)' : 'var(--nx-text-primary)' }}>
+                        {srv.errorCount}
+                      </span>
+                    </div>
+                    <Button variant="secondary" size="sm" style={{ width: '100%' }}>
+                      Inspect Traces →
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </TabPanel>
 
         {/* Tab 3: Error Groups & Fingerprints */}
         <TabPanel id="errors">
-          <Card style={{ marginTop: '1.5rem' }}>
-            <CardHeader>
-              <CardTitle>Fingerprinted Error Groups</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="nx-table-wrap">
-                <table className="nx-table">
-                  <thead className="nx-table__header">
-                    <tr>
-                      <th className="nx-table__head-cell">Fingerprint</th>
-                      <th className="nx-table__head-cell">Exception Title</th>
-                      <th className="nx-table__head-cell">Service</th>
-                      <th className="nx-table__head-cell">Events</th>
-                      <th className="nx-table__head-cell">Last Seen</th>
-                      <th className="nx-table__head-cell">Status</th>
-                      <th className="nx-table__head-cell">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="nx-table__body">
-                    {errorGroups.map((eg) => (
-                      <tr key={eg.id} className="nx-table__row">
-                        <td className="nx-table__cell">
-                          <code style={{ fontSize: '0.75rem', color: 'var(--nx-brand-400)', background: 'var(--nx-bg-surface-elevated)', padding: '2px 6px', borderRadius: '4px' }}>
-                            {eg.fingerprint}
-                          </code>
-                        </td>
-                        <td className="nx-table__cell" style={{ maxWidth: '300px' }}>
-                          <span style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--nx-text-primary)' }}>
-                            {eg.title}
-                          </span>
-                        </td>
-                        <td className="nx-table__cell">{eg.service}</td>
-                        <td className="nx-table__cell">
-                          <Badge variant="default" size="sm">{eg.count}</Badge>
-                        </td>
-                        <td className="nx-table__cell">{eg.lastSeen}</td>
-                        <td className="nx-table__cell">
-                          <Badge variant={eg.status === 'resolved' ? 'success' : 'error'} size="sm">
-                            {eg.status}
-                          </Badge>
-                        </td>
-                        <td className="nx-table__cell">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() =>
-                              setErrorGroups((prev) =>
-                                prev.map((g) => (g.id === eg.id ? { ...g, status: g.status === 'resolved' ? 'active' : 'resolved' } : g))
-                              )
-                            }
-                          >
-                            {eg.status === 'resolved' ? 'Reopen' : 'Resolve'}
-                          </Button>
-                        </td>
+          {errorGroups.length === 0 ? (
+            <Card style={{ padding: '3.5rem 1rem', textAlign: 'center', marginTop: '1.5rem' }}>
+              <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🔍</div>
+              <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', marginBottom: '0.5rem' }}>Zero Error Fingerprints</h3>
+              <p style={{ maxWidth: '440px', margin: '0 auto 1.5rem', color: '#94a3b8', fontSize: '0.875rem' }}>
+                PulseOps has not detected any exception stack traces or recurring error groups across your infrastructure.
+              </p>
+            </Card>
+          ) : (
+            <Card style={{ marginTop: '1.5rem' }}>
+              <CardHeader>
+                <CardTitle>Fingerprinted Error Groups</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="nx-table-wrap">
+                  <table className="nx-table">
+                    <thead className="nx-table__header">
+                      <tr>
+                        <th className="nx-table__head-cell">Fingerprint</th>
+                        <th className="nx-table__head-cell">Exception Title</th>
+                        <th className="nx-table__head-cell">Service</th>
+                        <th className="nx-table__head-cell">Events</th>
+                        <th className="nx-table__head-cell">Last Seen</th>
+                        <th className="nx-table__head-cell">Status</th>
+                        <th className="nx-table__head-cell">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
+                    </thead>
+                    <tbody className="nx-table__body">
+                      {errorGroups.map((eg) => (
+                        <tr key={eg.id} className="nx-table__row">
+                          <td className="nx-table__cell">
+                            <code style={{ fontSize: '0.75rem', color: 'var(--nx-brand-400)', background: 'var(--nx-bg-surface-elevated)', padding: '2px 6px', borderRadius: '4px' }}>
+                              {eg.fingerprint}
+                            </code>
+                          </td>
+                          <td className="nx-table__cell" style={{ maxWidth: '300px' }}>
+                            <span style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--nx-text-primary)' }}>
+                              {eg.title}
+                            </span>
+                          </td>
+                          <td className="nx-table__cell">{eg.service}</td>
+                          <td className="nx-table__cell">
+                            <Badge variant="default" size="sm">{eg.count}</Badge>
+                          </td>
+                          <td className="nx-table__cell">{eg.lastSeen}</td>
+                          <td className="nx-table__cell">
+                            <Badge variant={eg.status === 'resolved' ? 'success' : 'error'} size="sm">
+                              {eg.status}
+                            </Badge>
+                          </td>
+                          <td className="nx-table__cell">
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={() =>
+                                setErrorGroups((prev) =>
+                                  prev.map((g) => (g.id === eg.id ? { ...g, status: g.status === 'resolved' ? 'active' : 'resolved' } : g))
+                                )
+                              }
+                            >
+                              {eg.status === 'resolved' ? 'Reopen' : 'Resolve'}
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabPanel>
 
         {/* Tab 4: Alert Rules */}
         <TabPanel id="alerts">
-          <Card style={{ marginTop: '1.5rem' }}>
-            <CardHeader>
-              <CardTitle>Autonomous Alert Rules & Thresholds</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {alertRules.map((ar) => (
-                  <div
-                    key={ar.id}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      padding: '1rem',
-                      borderRadius: '8px',
-                      background: 'var(--nx-bg-surface-elevated)',
-                      border: '1px solid var(--nx-border-subtle)',
-                    }}
-                  >
-                    <div>
-                      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.25rem' }}>
-                        <span style={{ fontWeight: 600, color: 'var(--nx-text-primary)' }}>{ar.name}</span>
-                        <Badge variant={ar.severity === 'critical' ? 'error' : 'warning'} size="sm">
-                          {ar.severity}
-                        </Badge>
+          {alertRules.length === 0 ? (
+            <Card style={{ padding: '3.5rem 1rem', textAlign: 'center', marginTop: '1.5rem' }}>
+              <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🔔</div>
+              <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', marginBottom: '0.5rem' }}>No Alert Rules Configured</h3>
+              <p style={{ maxWidth: '440px', margin: '0 auto 1.5rem', color: '#94a3b8', fontSize: '0.875rem' }}>
+                Configure threshold alert rules for latency spikes, error rate breaches, or infrastructure degradation.
+              </p>
+            </Card>
+          ) : (
+            <Card style={{ marginTop: '1.5rem' }}>
+              <CardHeader>
+                <CardTitle>Autonomous Alert Rules & Thresholds</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {alertRules.map((ar) => (
+                    <div
+                      key={ar.id}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '1rem',
+                        borderRadius: '8px',
+                        background: 'var(--nx-bg-surface-elevated)',
+                        border: '1px solid var(--nx-border-subtle)',
+                      }}
+                    >
+                      <div>
+                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.25rem' }}>
+                          <span style={{ fontWeight: 600, color: 'var(--nx-text-primary)' }}>{ar.name}</span>
+                          <Badge variant={ar.severity === 'critical' ? 'error' : 'warning'} size="sm">
+                            {ar.severity}
+                          </Badge>
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--nx-text-muted)' }}>
+                          Scope: {ar.service} • Condition: <code>{ar.condition}</code>
+                        </div>
                       </div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--nx-text-muted)' }}>
-                        Scope: {ar.service} • Condition: <code>{ar.condition}</code>
-                      </div>
-                    </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <Badge variant={ar.enabled ? 'success' : 'default'} size="sm">
-                        {ar.enabled ? 'ACTIVE' : 'MUTED'}
-                      </Badge>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() =>
-                          setAlertRules((prev) =>
-                            prev.map((r) => (r.id === ar.id ? { ...r, enabled: !r.enabled } : r))
-                          )
-                        }
-                      >
-                        {ar.enabled ? 'Mute' : 'Enable'}
-                      </Button>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <Badge variant={ar.enabled ? 'success' : 'default'} size="sm">
+                          {ar.enabled ? 'ACTIVE' : 'MUTED'}
+                        </Badge>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() =>
+                            setAlertRules((prev) =>
+                              prev.map((r) => (r.id === ar.id ? { ...r, enabled: !r.enabled } : r))
+                            )
+                          }
+                        >
+                          {ar.enabled ? 'Mute' : 'Enable'}
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabPanel>
       </Tabs>
 
@@ -800,11 +676,15 @@ export function PulseOpsPage() {
               value={newIncidentService}
               onChange={(e) => setNewIncidentService(e.target.value)}
             >
-              {services.map((s) => (
-                <option key={s.id} value={s.name}>
-                  {s.name} ({s.environment})
-                </option>
-              ))}
+              {services.length === 0 ? (
+                <option value="Production Cluster">Production Cluster</option>
+              ) : (
+                services.map((s) => (
+                  <option key={s.id} value={s.name}>
+                    {s.name} ({s.environment})
+                  </option>
+                ))
+              )}
             </Select>
           </FormField>
 

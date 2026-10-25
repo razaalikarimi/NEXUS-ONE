@@ -11,7 +11,7 @@ interface MemberItem {
 }
 
 export function MembersSettingsPage() {
-  const { activeOrg } = useAuth();
+  const { user, activeOrg } = useAuth();
   const [members, setMembers] = useState<MemberItem[]>([]);
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
@@ -25,38 +25,26 @@ export function MembersSettingsPage() {
       api.getMembers(activeOrg.id)
         .then(setMembers)
         .catch(() => {
-          // Fallback initial member if offline
-          setMembers([
-            {
-              id: 'm-1',
-              userId: 'u-1',
-              role: 'owner',
-              user: {
-                id: 'u-1',
-                name: 'System Admin',
-                email: 'admin@nexusone.dev',
-                avatar: null,
-                emailVerified: true,
-                createdAt: new Date().toISOString(),
+          if (user) {
+            setMembers([
+              {
+                id: `m-${user.id}`,
+                userId: user.id,
+                role: 'owner',
+                user: {
+                  id: user.id,
+                  name: user.name,
+                  email: user.email,
+                  avatar: user.avatar,
+                  emailVerified: user.emailVerified,
+                  createdAt: user.createdAt,
+                },
               },
-            },
-            {
-              id: 'm-2',
-              userId: 'u-2',
-              role: 'admin',
-              user: {
-                id: 'u-2',
-                name: 'Sarah Chen',
-                email: 'developer@nexusone.dev',
-                avatar: null,
-                emailVerified: true,
-                createdAt: new Date().toISOString(),
-              },
-            },
-          ]);
+            ]);
+          }
         });
     }
-  }, [activeOrg]);
+  }, [activeOrg, user]);
 
   async function handleSendInvite(e: React.FormEvent) {
     e.preventDefault();

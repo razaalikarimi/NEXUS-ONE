@@ -56,99 +56,10 @@ export function GateFlowPage() {
   const [activeTab, setActiveTab] = useState('routes');
 
   // Routes State
-  const [routes, setRoutes] = useState<GatewayRouteItem[]>([
-    {
-      id: 'rt-1',
-      name: 'Authentication & Session Service',
-      pathPattern: '/api/v1/auth/*',
-      upstreamUrl: 'https://auth.internal.nexusone.dev:8443',
-      methods: ['POST', 'GET'],
-      stripPath: false,
-      rateLimitRps: 50,
-      rateLimitBurst: 100,
-      corsEnabled: true,
-      authRequired: false,
-      status: 'active',
-      latencyP99: '12ms',
-      requestsToday: 42100,
-    },
-    {
-      id: 'rt-2',
-      name: 'AgentForge DAG Orchestrations',
-      pathPattern: '/api/v1/agentforge/*',
-      upstreamUrl: 'https://agentforge.internal.nexusone.dev:8443',
-      methods: ['GET', 'POST', 'PATCH'],
-      stripPath: true,
-      rateLimitRps: 200,
-      rateLimitBurst: 400,
-      corsEnabled: true,
-      authRequired: true,
-      status: 'active',
-      latencyP99: '6.4ms',
-      requestsToday: 89400,
-    },
-    {
-      id: 'rt-3',
-      name: 'PulseOps Telemetry Ingestion Ingress',
-      pathPattern: '/api/v1/pulseops/events',
-      upstreamUrl: 'https://pulseops-ingest.internal.nexusone.dev:9092',
-      methods: ['POST'],
-      stripPath: false,
-      rateLimitRps: 1000,
-      rateLimitBurst: 2500,
-      corsEnabled: true,
-      authRequired: true,
-      status: 'active',
-      latencyP99: '1.8ms',
-      requestsToday: 320400,
-    },
-    {
-      id: 'rt-4',
-      name: 'Stripe Payment Webhook Ingress',
-      pathPattern: '/webhooks/stripe',
-      upstreamUrl: 'https://billing.internal.nexusone.dev:8443',
-      methods: ['POST'],
-      stripPath: false,
-      rateLimitRps: 100,
-      rateLimitBurst: 200,
-      corsEnabled: false,
-      authRequired: false,
-      status: 'active',
-      latencyP99: '4.2ms',
-      requestsToday: 1420,
-    },
-  ]);
+  const [routes, setRoutes] = useState<GatewayRouteItem[]>([]);
 
   // Consumers State
-  const [consumers, setConsumers] = useState<ConsumerItem[]>([
-    {
-      id: 'con-1',
-      name: 'Acme Global Mobile App',
-      tier: 'enterprise',
-      quota: '10,000 req/min',
-      apiKeysCount: 3,
-      status: 'active',
-      lastActive: '1m ago',
-    },
-    {
-      id: 'con-2',
-      name: 'FinTech Cloud Analytics Webhooks',
-      tier: 'pro',
-      quota: '1,000 req/min',
-      apiKeysCount: 2,
-      status: 'active',
-      lastActive: '4m ago',
-    },
-    {
-      id: 'con-3',
-      name: 'Community Open Source SDK',
-      tier: 'free',
-      quota: '100 req/min',
-      apiKeysCount: 1,
-      status: 'active',
-      lastActive: '2h ago',
-    },
-  ]);
+  const [consumers, setConsumers] = useState<ConsumerItem[]>([]);
 
   // Modal State for New Route
   const [isNewRouteModalOpen, setIsNewRouteModalOpen] = useState(false);
@@ -298,13 +209,13 @@ export function GateFlowPage() {
       <div className="nx-product-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
         <Card>
           <div className="nx-stat-title">Ingested Throughput</div>
-          <div className="nx-stat-value" style={{ color: 'var(--nx-gateflow)' }}>1,650 req/s</div>
-          <div className="nx-stat-sub">453,920 requests today</div>
+          <div className="nx-stat-value" style={{ color: 'var(--nx-gateflow)' }}>0 req/s</div>
+          <div className="nx-stat-sub">0 requests recorded</div>
         </Card>
         <Card>
           <div className="nx-stat-title">Gateway Overhead (p99)</div>
-          <div className="nx-stat-value" style={{ color: 'var(--nx-success-500)' }}>1.2ms</div>
-          <div className="nx-stat-sub">Zero proxy latency penalty</div>
+          <div className="nx-stat-value" style={{ color: 'var(--nx-text-muted)' }}>—</div>
+          <div className="nx-stat-sub">Awaiting traffic ingestion</div>
         </Card>
         <Card>
           <div className="nx-stat-title">Active Gateway Routes</div>
@@ -314,7 +225,7 @@ export function GateFlowPage() {
         <Card>
           <div className="nx-stat-title">Registered Consumers</div>
           <div className="nx-stat-value">{consumers.length}</div>
-          <div className="nx-stat-sub">6 active cryptokeys issued</div>
+          <div className="nx-stat-sub">0 active cryptokeys issued</div>
         </Card>
       </div>
 
@@ -334,72 +245,85 @@ export function GateFlowPage() {
               <CardTitle>Configured Ingress & Reverse Proxy Routes</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="nx-table-wrap">
-                <table className="nx-table">
-                  <thead className="nx-table__header">
-                    <tr>
-                      <th className="nx-table__head-cell">Route Name</th>
-                      <th className="nx-table__head-cell">Methods</th>
-                      <th className="nx-table__head-cell">Path Pattern</th>
-                      <th className="nx-table__head-cell">Upstream Target</th>
-                      <th className="nx-table__head-cell">Rate Limit</th>
-                      <th className="nx-table__head-cell">p99 Latency</th>
-                      <th className="nx-table__head-cell">Status</th>
-                      <th className="nx-table__head-cell">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="nx-table__body">
-                    {routes.map((rt) => (
-                      <tr key={rt.id} className="nx-table__row">
-                        <td className="nx-table__cell">
-                          <strong>{rt.name}</strong>
-                        </td>
-                        <td className="nx-table__cell">
-                          <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
-                            {rt.methods.map((m) => (
-                              <span
-                                key={m}
-                                className={`nx-method-badge nx-method--${m.toLowerCase()}`}
-                                style={{ fontSize: '0.7rem', padding: '2px 6px', borderRadius: '3px' }}
-                              >
-                                {m}
-                              </span>
-                            ))}
-                          </div>
-                        </td>
-                        <td className="nx-table__cell">
-                          <code style={{ fontSize: '0.8rem', color: 'var(--nx-brand-400)', background: 'var(--nx-bg-surface-elevated)', padding: '2px 6px', borderRadius: '4px' }}>
-                            {rt.pathPattern}
-                          </code>
-                        </td>
-                        <td className="nx-table__cell" style={{ maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          <span style={{ fontSize: '0.8rem', color: 'var(--nx-text-muted)' }}>{rt.upstreamUrl}</span>
-                        </td>
-                        <td className="nx-table__cell">
-                          <Badge variant="default" size="sm">
-                            {rt.rateLimitRps} RPS ({rt.rateLimitBurst} burst)
-                          </Badge>
-                        </td>
-                        <td className="nx-table__cell">{rt.latencyP99}</td>
-                        <td className="nx-table__cell">
-                          <Badge variant={rt.status === 'active' ? 'success' : 'default'} size="sm">
-                            {rt.status.toUpperCase()}
-                          </Badge>
-                        </td>
-                        <td className="nx-table__cell">
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => handleToggleRoute(rt.id)}
-                          >
-                            {rt.status === 'active' ? 'Pause' : 'Activate'}
-                          </Button>
-                        </td>
+              {routes.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '3.5rem 1rem', color: '#94a3b8' }}>
+                  <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🚪</div>
+                  <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', marginBottom: '0.5rem' }}>No Gateway Routes Configured</h3>
+                  <p style={{ maxWidth: '420px', margin: '0 auto 1.5rem', fontSize: '0.875rem' }}>
+                    GateFlow proxies incoming HTTP requests with rate limiting and policy enforcement. Register your first route to start routing API traffic.
+                  </p>
+                  <Button variant="primary" onClick={() => setIsNewRouteModalOpen(true)}>
+                    + Register First Route
+                  </Button>
+                </div>
+              ) : (
+                <div className="nx-table-wrap">
+                  <table className="nx-table">
+                    <thead className="nx-table__header">
+                      <tr>
+                        <th className="nx-table__head-cell">Route Name</th>
+                        <th className="nx-table__head-cell">Methods</th>
+                        <th className="nx-table__head-cell">Path Pattern</th>
+                        <th className="nx-table__head-cell">Upstream Target</th>
+                        <th className="nx-table__head-cell">Rate Limit</th>
+                        <th className="nx-table__head-cell">p99 Latency</th>
+                        <th className="nx-table__head-cell">Status</th>
+                        <th className="nx-table__head-cell">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody className="nx-table__body">
+                      {routes.map((rt) => (
+                        <tr key={rt.id} className="nx-table__row">
+                          <td className="nx-table__cell">
+                            <strong>{rt.name}</strong>
+                          </td>
+                          <td className="nx-table__cell">
+                            <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
+                              {rt.methods.map((m) => (
+                                <span
+                                  key={m}
+                                  className={`nx-method-badge nx-method--${m.toLowerCase()}`}
+                                  style={{ fontSize: '0.7rem', padding: '2px 6px', borderRadius: '3px' }}
+                                >
+                                  {m}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td className="nx-table__cell">
+                            <code style={{ fontSize: '0.8rem', color: 'var(--nx-brand-400)', background: 'var(--nx-bg-surface-elevated)', padding: '2px 6px', borderRadius: '4px' }}>
+                              {rt.pathPattern}
+                            </code>
+                          </td>
+                          <td className="nx-table__cell" style={{ maxWidth: '220px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--nx-text-muted)' }}>{rt.upstreamUrl}</span>
+                          </td>
+                          <td className="nx-table__cell">
+                            <Badge variant="default" size="sm">
+                              {rt.rateLimitRps} RPS ({rt.rateLimitBurst} burst)
+                            </Badge>
+                          </td>
+                          <td className="nx-table__cell">{rt.latencyP99}</td>
+                          <td className="nx-table__cell">
+                            <Badge variant={rt.status === 'active' ? 'success' : 'default'} size="sm">
+                              {rt.status.toUpperCase()}
+                            </Badge>
+                          </td>
+                          <td className="nx-table__cell">
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => handleToggleRoute(rt.id)}
+                            >
+                              {rt.status === 'active' ? 'Pause' : 'Activate'}
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabPanel>

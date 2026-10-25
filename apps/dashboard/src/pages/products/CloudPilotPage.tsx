@@ -56,152 +56,11 @@ interface PlacementComparison {
   efficiencyScore: number;
 }
 
-const INITIAL_ACCOUNTS: CloudAccountItem[] = [
-  {
-    id: 'acc-aws-1',
-    provider: 'aws',
-    accountName: 'Production AWS (us-east-1)',
-    accountId: '891048291044',
-    status: 'connected',
-    monthlySpend: 14850.0,
-    workloadCount: 24,
-    regionPrimary: 'us-east-1 (N. Virginia)',
-  },
-  {
-    id: 'acc-gcp-2',
-    provider: 'gcp',
-    accountName: 'Nexus GCP Analytics Core',
-    accountId: 'nexus-analytics-prod',
-    status: 'connected',
-    monthlySpend: 8420.0,
-    workloadCount: 16,
-    regionPrimary: 'us-central1 (Iowa)',
-  },
-  {
-    id: 'acc-az-3',
-    provider: 'azure',
-    accountName: 'Azure Disaster Recovery Primary',
-    accountId: 'sub-7819-azure-dr',
-    status: 'connected',
-    monthlySpend: 4950.0,
-    workloadCount: 8,
-    regionPrimary: 'eastus2 (Virginia)',
-  },
-];
+const INITIAL_ACCOUNTS: CloudAccountItem[] = [];
 
-const INITIAL_RECOMMENDATIONS: CostRecommendationItem[] = [
-  {
-    id: 'rec-1',
-    workloadName: 'agentforge-worker-fleet',
-    provider: 'aws',
-    recommendationType: 'rightsizing',
-    title: 'Downsize Overprovisioned SKU (c6i.4xlarge -> c6i.2xlarge)',
-    description: 'Workload runs stably at 22% CPU utilization over past 14 days. Downsize to 8 vCPU instance.',
-    currentSku: 'c6i.4xlarge (16 vCPU, 32GB)',
-    recommendedSku: 'c6i.2xlarge (8 vCPU, 16GB)',
-    currentMonthlyCost: 1420.0,
-    projectedMonthlyCost: 738.4,
-    savingsMonthly: 681.6,
-    savingsPct: 48,
-    status: 'pending',
-  },
-  {
-    id: 'rec-2',
-    workloadName: 'staging-sandbox-cluster',
-    provider: 'aws',
-    recommendationType: 'idle_shutdown',
-    title: 'Decommission Zombie Staging Cluster',
-    description: 'Average CPU utilization is 3.1% with zero external ingress traffic for 21 days.',
-    currentSku: 'm5.2xlarge (8 vCPU, 32GB)',
-    recommendedSku: 'Decommission / Auto-Sleep',
-    currentMonthlyCost: 380.0,
-    projectedMonthlyCost: 0.0,
-    savingsMonthly: 380.0,
-    savingsPct: 100,
-    status: 'pending',
-  },
-  {
-    id: 'rec-3',
-    workloadName: 'cortexrag-vector-embedder',
-    provider: 'gcp',
-    recommendationType: 'reservation',
-    title: 'Lock In 1-Year Compute Savings Plan for Continuous Ingestion',
-    description: 'Steady 24/7 vector ingestion cluster running at 68% CPU. 1-Year commit delivers 36% discount.',
-    currentSku: 'n2-standard-16 (16 vCPU, 64GB)',
-    recommendedSku: 'n2-standard-16 (1-Yr RI)',
-    currentMonthlyCost: 980.0,
-    projectedMonthlyCost: 627.2,
-    savingsMonthly: 352.8,
-    savingsPct: 36,
-    status: 'pending',
-  },
-  {
-    id: 'rec-4',
-    workloadName: 'gateflow-proxy-stateless',
-    provider: 'aws',
-    recommendationType: 'spot_migration',
-    title: 'Migrate Stateless Proxy Replicas to Spot Fleet',
-    description: 'Fault-tolerant multi-AZ proxy cluster with active health checks. Spot instances yield 65% reduction.',
-    currentSku: 'c6i.xlarge (On-Demand)',
-    recommendedSku: 'c6i.xlarge (Spot Fleet)',
-    currentMonthlyCost: 640.0,
-    projectedMonthlyCost: 224.0,
-    savingsMonthly: 416.0,
-    savingsPct: 65,
-    status: 'pending',
-  },
-];
+const INITIAL_RECOMMENDATIONS: CostRecommendationItem[] = [];
 
-const INITIAL_WORKLOADS: WorkloadInventoryItem[] = [
-  {
-    id: 'wl-1',
-    name: 'agentforge-worker-fleet',
-    provider: 'aws',
-    serviceType: 'compute',
-    region: 'us-east-1',
-    currentSku: 'c6i.4xlarge',
-    monthlyCost: 1420.0,
-    cpuUtilizationPct: 22.4,
-    memoryUtilizationPct: 35.1,
-    status: 'running',
-  },
-  {
-    id: 'wl-2',
-    name: 'cortexrag-vector-embedder',
-    provider: 'gcp',
-    serviceType: 'kubernetes',
-    region: 'us-central1',
-    currentSku: 'n2-standard-16',
-    monthlyCost: 980.0,
-    cpuUtilizationPct: 68.2,
-    memoryUtilizationPct: 74.0,
-    status: 'running',
-  },
-  {
-    id: 'wl-3',
-    name: 'staging-sandbox-cluster',
-    provider: 'aws',
-    serviceType: 'compute',
-    region: 'us-west-2',
-    currentSku: 'm5.2xlarge',
-    monthlyCost: 380.0,
-    cpuUtilizationPct: 3.1,
-    memoryUtilizationPct: 11.2,
-    status: 'idle',
-  },
-  {
-    id: 'wl-4',
-    name: 'postgres-primary-cluster',
-    provider: 'azure',
-    serviceType: 'database',
-    region: 'eastus2',
-    currentSku: 'Standard_E8s_v5',
-    monthlyCost: 890.0,
-    cpuUtilizationPct: 54.8,
-    memoryUtilizationPct: 81.3,
-    status: 'running',
-  },
-];
+const INITIAL_WORKLOADS: WorkloadInventoryItem[] = [];
 
 export function CloudPilotPage() {
   const [activeTab, setActiveTab] = useState<'spend' | 'calculator' | 'advisor' | 'inventory'>('spend');
@@ -337,9 +196,9 @@ export function CloudPilotPage() {
           </span>
         </div>
         <div style={{ display: 'flex', gap: '1rem', color: 'var(--nx-neutral-400)', fontSize: '0.8rem' }}>
-          <span>AWS: <strong>$14,850</strong></span>
-          <span>GCP: <strong>$8,420</strong></span>
-          <span>Azure: <strong>$4,950</strong></span>
+          <span>AWS: <strong>${accounts.filter(a => a.provider === 'aws').reduce((s, a) => s + a.monthlySpend, 0).toLocaleString()}</strong></span>
+          <span>GCP: <strong>${accounts.filter(a => a.provider === 'gcp').reduce((s, a) => s + a.monthlySpend, 0).toLocaleString()}</strong></span>
+          <span>Azure: <strong>${accounts.filter(a => a.provider === 'azure').reduce((s, a) => s + a.monthlySpend, 0).toLocaleString()}</strong></span>
         </div>
       </div>
 
@@ -435,178 +294,201 @@ export function CloudPilotPage() {
 
       {/* TAB 1: MULTI-CLOUD SPEND & ACCOUNTS */}
       {activeTab === 'spend' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          {/* Multi-Cloud Spend Share Visual Bar */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Multi-Cloud Cost Attribution Breakdown</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div style={{ marginBottom: '1rem' }}>
-                <div style={{ display: 'flex', height: '14px', borderRadius: '7px', overflow: 'hidden', marginBottom: '0.5rem' }}>
-                  <div style={{ width: '53%', backgroundColor: '#f59e0b' }} title="AWS: $14,850 (53%)" />
-                  <div style={{ width: '30%', backgroundColor: '#3b82f6' }} title="GCP: $8,420 (30%)" />
-                  <div style={{ width: '17%', backgroundColor: '#06b6d4' }} title="Azure: $4,950 (17%)" />
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--nx-neutral-400)' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <span style={{ width: '8px', height: '8px', backgroundColor: '#f59e0b', borderRadius: '50%' }} /> AWS: $14,850.00 (52.6%)
-                  </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <span style={{ width: '8px', height: '8px', backgroundColor: '#3b82f6', borderRadius: '50%' }} /> GCP: $8,420.00 (29.8%)
-                  </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <span style={{ width: '8px', height: '8px', backgroundColor: '#06b6d4', borderRadius: '50%' }} /> Azure: $4,950.00 (17.5%)
-                  </span>
-                </div>
-              </div>
-
-              {/* Connected Accounts Table */}
-              <div className="nx-table-wrap">
-                <table className="nx-table">
-                  <thead className="nx-table__header">
-                    <tr>
-                      <th className="nx-table__head-cell">Provider</th>
-                      <th className="nx-table__head-cell">Account Name</th>
-                      <th className="nx-table__head-cell">Account ID</th>
-                      <th className="nx-table__head-cell">Primary Region</th>
-                      <th className="nx-table__head-cell">Active Workloads</th>
-                      <th className="nx-table__head-cell">Monthly Spend</th>
-                      <th className="nx-table__head-cell">Sync Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="nx-table__body">
-                    {accounts.map((acc) => (
-                      <tr key={acc.id} className="nx-table__row">
-                        <td className="nx-table__cell">
-                          <Badge
-                            variant={
-                              acc.provider === 'aws'
-                                ? 'warning'
-                                : acc.provider === 'gcp'
-                                ? 'brand'
-                                : 'gateflow'
-                            }
-                            size="sm"
-                          >
-                            {acc.provider.toUpperCase()}
-                          </Badge>
-                        </td>
-                        <td className="nx-table__cell">
-                          <strong>{acc.accountName}</strong>
-                        </td>
-                        <td className="nx-table__cell">
-                          <code>{acc.accountId}</code>
-                        </td>
-                        <td className="nx-table__cell">{acc.regionPrimary}</td>
-                        <td className="nx-table__cell">{acc.workloadCount} resources</td>
-                        <td className="nx-table__cell">
-                          <strong style={{ color: 'var(--nx-neutral-100)' }}>
-                            ${acc.monthlySpend.toLocaleString()}.00
-                          </strong>
-                        </td>
-                        <td className="nx-table__cell">
-                          <Badge variant="success" size="sm">
-                            ● CONNECTED
-                          </Badge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
+        accounts.length === 0 ? (
+          <Card style={{ padding: '3.5rem 1rem', textAlign: 'center', marginTop: '1.5rem' }}>
+            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>☁️</div>
+            <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', marginBottom: '0.5rem' }}>No Connected Cloud Accounts</h3>
+            <p style={{ maxWidth: '440px', margin: '0 auto 1.5rem', color: '#94a3b8', fontSize: '0.875rem' }}>
+              Connect AWS, Google Cloud Platform, or Microsoft Azure with read-only IAM credentials to begin automated FinOps burn tracking.
+            </p>
+            <Button variant="primary" onClick={() => setIsConnectModalOpen(true)}>
+              + Connect Cloud Provider
+            </Button>
           </Card>
-        </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {/* Multi-Cloud Spend Share Visual Bar */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Multi-Cloud Cost Attribution Breakdown</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div style={{ marginBottom: '1rem' }}>
+                  <div style={{ display: 'flex', height: '14px', borderRadius: '7px', overflow: 'hidden', marginBottom: '0.5rem' }}>
+                    <div style={{ width: '53%', backgroundColor: '#f59e0b' }} title="AWS" />
+                    <div style={{ width: '30%', backgroundColor: '#3b82f6' }} title="GCP" />
+                    <div style={{ width: '17%', backgroundColor: '#06b6d4' }} title="Azure" />
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--nx-neutral-400)' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <span style={{ width: '8px', height: '8px', backgroundColor: '#f59e0b', borderRadius: '50%' }} /> AWS: ${accounts.filter(a => a.provider === 'aws').reduce((s, a) => s + a.monthlySpend, 0).toLocaleString()}
+                    </span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <span style={{ width: '8px', height: '8px', backgroundColor: '#3b82f6', borderRadius: '50%' }} /> GCP: ${accounts.filter(a => a.provider === 'gcp').reduce((s, a) => s + a.monthlySpend, 0).toLocaleString()}
+                    </span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <span style={{ width: '8px', height: '8px', backgroundColor: '#06b6d4', borderRadius: '50%' }} /> Azure: ${accounts.filter(a => a.provider === 'azure').reduce((s, a) => s + a.monthlySpend, 0).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Connected Accounts Table */}
+                <div className="nx-table-wrap">
+                  <table className="nx-table">
+                    <thead className="nx-table__header">
+                      <tr>
+                        <th className="nx-table__head-cell">Provider</th>
+                        <th className="nx-table__head-cell">Account Name</th>
+                        <th className="nx-table__head-cell">Account ID</th>
+                        <th className="nx-table__head-cell">Primary Region</th>
+                        <th className="nx-table__head-cell">Active Workloads</th>
+                        <th className="nx-table__head-cell">Monthly Spend</th>
+                        <th className="nx-table__head-cell">Sync Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="nx-table__body">
+                      {accounts.map((acc) => (
+                        <tr key={acc.id} className="nx-table__row">
+                          <td className="nx-table__cell">
+                            <Badge
+                              variant={
+                                acc.provider === 'aws'
+                                  ? 'warning'
+                                  : acc.provider === 'gcp'
+                                  ? 'brand'
+                                  : 'gateflow'
+                              }
+                              size="sm"
+                            >
+                              {acc.provider.toUpperCase()}
+                            </Badge>
+                          </td>
+                          <td className="nx-table__cell">
+                            <strong>{acc.accountName}</strong>
+                          </td>
+                          <td className="nx-table__cell">
+                            <code>{acc.accountId}</code>
+                          </td>
+                          <td className="nx-table__cell">{acc.regionPrimary}</td>
+                          <td className="nx-table__cell">{acc.workloadCount} resources</td>
+                          <td className="nx-table__cell">
+                            <strong style={{ color: 'var(--nx-neutral-100)' }}>
+                              ${acc.monthlySpend.toLocaleString()}.00
+                            </strong>
+                          </td>
+                          <td className="nx-table__cell">
+                            <Badge variant="success" size="sm">
+                              ● CONNECTED
+                            </Badge>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )
       )}
 
       {/* TAB 2: RIGHTSITING & SAVINGS ADVISOR */}
       {activeTab === 'advisor' && (
-        <Card>
-          <CardHeader>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <CardTitle>Autonomous Cost Reduction Recommendations</CardTitle>
-                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: 'var(--nx-neutral-400)' }}>
-                  Continuous rightsizing, spot fleet migration, and zombie instance reclamation analyzed across your workloads.
-                </p>
-              </div>
-              <Badge variant="success" size="sm">
-                Potential Savings: ${totalIdentifiedSavings.toLocaleString()}/mo
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {recommendations.map((rec) => (
-                <div
-                  key={rec.id}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '1.25rem',
-                    backgroundColor: 'var(--nx-neutral-900)',
-                    border: '1px solid var(--nx-neutral-800)',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <div style={{ maxWidth: '65%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.35rem' }}>
-                      <Badge
-                        variant={
-                          rec.provider === 'aws'
-                            ? 'warning'
-                            : rec.provider === 'gcp'
-                            ? 'brand'
-                            : 'gateflow'
-                        }
-                        size="sm"
-                      >
-                        {rec.provider.toUpperCase()}
-                      </Badge>
-                      <strong style={{ fontSize: '1rem', color: 'var(--nx-neutral-100)' }}>{rec.title}</strong>
-                      <Badge variant="default" size="sm">{rec.recommendationType.toUpperCase()}</Badge>
-                    </div>
-
-                    <p style={{ fontSize: '0.85rem', color: 'var(--nx-neutral-300)', margin: '0 0 0.5rem 0' }}>
-                      {rec.description}
-                    </p>
-
-                    <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.8rem', color: 'var(--nx-neutral-400)' }}>
-                      <span>Current: <code>{rec.currentSku}</code> (${rec.currentMonthlyCost}/mo)</span>
-                      <span>Target: <strong style={{ color: 'var(--nx-brand-300)' }}>{rec.recommendedSku}</strong></span>
-                      <span>Projected: <strong>${rec.projectedMonthlyCost.toFixed(1)}/mo</strong></span>
-                    </div>
-                  </div>
-
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--nx-success-500)', marginBottom: '0.25rem' }}>
-                      +${rec.savingsMonthly.toFixed(2)}/mo
-                    </div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--nx-neutral-400)', marginBottom: '0.75rem' }}>
-                      {rec.savingsPct}% Cost Reduction
-                    </div>
-
-                    {rec.status === 'applied' ? (
-                      <Badge variant="success" size="md">
-                        ✓ OPTIMIZATION APPLIED
-                      </Badge>
-                    ) : (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={() => handleApplyRecommendation(rec.id)}
-                      >
-                        Apply Optimization →
-                      </Button>
-                    )}
-                  </div>
+        recommendations.length === 0 ? (
+          <Card style={{ padding: '3.5rem 1rem', textAlign: 'center', marginTop: '1.5rem' }}>
+            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>💡</div>
+            <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', marginBottom: '0.5rem' }}>No Active Rightsizing Recommendations</h3>
+            <p style={{ maxWidth: '440px', margin: '0 auto 1.5rem', color: '#94a3b8', fontSize: '0.875rem' }}>
+              CloudPilot will analyze resource utilization across your connected cloud workloads and surface SKU rightsizing and spot recommendations.
+            </p>
+          </Card>
+        ) : (
+          <Card>
+            <CardHeader>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <CardTitle>Autonomous Cost Reduction Recommendations</CardTitle>
+                  <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: 'var(--nx-neutral-400)' }}>
+                    Continuous rightsizing, spot fleet migration, and zombie instance reclamation analyzed across your workloads.
+                  </p>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                <Badge variant="success" size="sm">
+                  Potential Savings: ${totalIdentifiedSavings.toLocaleString()}/mo
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {recommendations.map((rec) => (
+                  <div
+                    key={rec.id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '1.25rem',
+                      backgroundColor: 'var(--nx-neutral-900)',
+                      border: '1px solid var(--nx-neutral-800)',
+                      borderRadius: '8px',
+                    }}
+                  >
+                    <div style={{ maxWidth: '65%' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.35rem' }}>
+                        <Badge
+                          variant={
+                            rec.provider === 'aws'
+                              ? 'warning'
+                              : rec.provider === 'gcp'
+                              ? 'brand'
+                              : 'gateflow'
+                          }
+                          size="sm"
+                        >
+                          {rec.provider.toUpperCase()}
+                        </Badge>
+                        <strong style={{ fontSize: '1rem', color: 'var(--nx-neutral-100)' }}>{rec.title}</strong>
+                        <Badge variant="default" size="sm">{rec.recommendationType.toUpperCase()}</Badge>
+                      </div>
+
+                      <p style={{ fontSize: '0.85rem', color: 'var(--nx-neutral-300)', margin: '0 0 0.5rem 0' }}>
+                        {rec.description}
+                      </p>
+
+                      <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.8rem', color: 'var(--nx-neutral-400)' }}>
+                        <span>Current: <code>{rec.currentSku}</code> (${rec.currentMonthlyCost}/mo)</span>
+                        <span>Target: <strong style={{ color: 'var(--nx-brand-300)' }}>{rec.recommendedSku}</strong></span>
+                        <span>Projected: <strong>${rec.projectedMonthlyCost.toFixed(1)}/mo</strong></span>
+                      </div>
+                    </div>
+
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--nx-success-500)', marginBottom: '0.25rem' }}>
+                        +${rec.savingsMonthly.toFixed(2)}/mo
+                      </div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--nx-neutral-400)', marginBottom: '0.75rem' }}>
+                        {rec.savingsPct}% Cost Reduction
+                      </div>
+
+                      {rec.status === 'applied' ? (
+                        <Badge variant="success" size="md">
+                          ✓ OPTIMIZATION APPLIED
+                        </Badge>
+                      ) : (
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={() => handleApplyRecommendation(rec.id)}
+                        >
+                          Apply Optimization →
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )
       )}
 
       {/* TAB 3: WORKLOAD PLACEMENT ARBITRAGE */}
@@ -768,89 +650,102 @@ export function CloudPilotPage() {
             </p>
           </CardHeader>
           <CardContent>
-            <div className="nx-table-wrap">
-              <table className="nx-table">
-                <thead className="nx-table__header">
-                  <tr>
-                    <th className="nx-table__head-cell">Workload Name</th>
-                    <th className="nx-table__head-cell">Provider</th>
-                    <th className="nx-table__head-cell">Type</th>
-                    <th className="nx-table__head-cell">Region & SKU</th>
-                    <th className="nx-table__head-cell">CPU Utilization</th>
-                    <th className="nx-table__head-cell">Memory Utilization</th>
-                    <th className="nx-table__head-cell">Monthly Cost</th>
-                    <th className="nx-table__head-cell">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="nx-table__body">
-                  {workloads.map((wl) => (
-                    <tr key={wl.id} className="nx-table__row">
-                      <td className="nx-table__cell">
-                        <strong>{wl.name}</strong>
-                      </td>
-                      <td className="nx-table__cell">
-                        <Badge
-                          variant={
-                            wl.provider === 'aws'
-                              ? 'warning'
-                              : wl.provider === 'gcp'
-                              ? 'brand'
-                              : 'gateflow'
-                          }
-                          size="sm"
-                        >
-                          {wl.provider.toUpperCase()}
-                        </Badge>
-                      </td>
-                      <td className="nx-table__cell">
-                        <Badge variant="default" size="sm">{wl.serviceType.toUpperCase()}</Badge>
-                      </td>
-                      <td className="nx-table__cell">
-                        <div>{wl.region}</div>
-                        <code>{wl.currentSku}</code>
-                      </td>
-                      <td className="nx-table__cell">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <span style={{ fontWeight: 600 }}>{wl.cpuUtilizationPct}%</span>
-                          <span
-                            style={{
-                              width: '40px',
-                              height: '4px',
-                              backgroundColor: 'var(--nx-neutral-800)',
-                              borderRadius: '2px',
-                              overflow: 'hidden',
-                              display: 'inline-block',
-                            }}
+            {workloads.length === 0 ? (
+              <div style={{ padding: '3.5rem 1rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🖥️</div>
+                <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', marginBottom: '0.5rem' }}>No Workloads Discovered</h3>
+                <p style={{ maxWidth: '440px', margin: '0 auto 1.5rem', color: '#94a3b8', fontSize: '0.875rem' }}>
+                  Once you connect cloud provider credentials, CloudPilot will automatically discover compute instances, Kubernetes clusters, and databases.
+                </p>
+                <Button variant="primary" onClick={() => setIsConnectModalOpen(true)}>
+                  + Connect Cloud Provider
+                </Button>
+              </div>
+            ) : (
+              <div className="nx-table-wrap">
+                <table className="nx-table">
+                  <thead className="nx-table__header">
+                    <tr>
+                      <th className="nx-table__head-cell">Workload Name</th>
+                      <th className="nx-table__head-cell">Provider</th>
+                      <th className="nx-table__head-cell">Type</th>
+                      <th className="nx-table__head-cell">Region & SKU</th>
+                      <th className="nx-table__head-cell">CPU Utilization</th>
+                      <th className="nx-table__head-cell">Memory Utilization</th>
+                      <th className="nx-table__head-cell">Monthly Cost</th>
+                      <th className="nx-table__head-cell">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="nx-table__body">
+                    {workloads.map((wl) => (
+                      <tr key={wl.id} className="nx-table__row">
+                        <td className="nx-table__cell">
+                          <strong>{wl.name}</strong>
+                        </td>
+                        <td className="nx-table__cell">
+                          <Badge
+                            variant={
+                              wl.provider === 'aws'
+                                ? 'warning'
+                                : wl.provider === 'gcp'
+                                ? 'brand'
+                                : 'gateflow'
+                            }
+                            size="sm"
                           >
+                            {wl.provider.toUpperCase()}
+                          </Badge>
+                        </td>
+                        <td className="nx-table__cell">
+                          <Badge variant="default" size="sm">{wl.serviceType.toUpperCase()}</Badge>
+                        </td>
+                        <td className="nx-table__cell">
+                          <div>{wl.region}</div>
+                          <code>{wl.currentSku}</code>
+                        </td>
+                        <td className="nx-table__cell">
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span style={{ fontWeight: 600 }}>{wl.cpuUtilizationPct}%</span>
                             <span
                               style={{
-                                display: 'block',
-                                width: `${wl.cpuUtilizationPct}%`,
-                                height: '100%',
-                                backgroundColor: wl.cpuUtilizationPct > 70 ? 'var(--nx-warning-500)' : 'var(--nx-success-500)',
+                                width: '40px',
+                                height: '4px',
+                                backgroundColor: 'var(--nx-neutral-800)',
+                                borderRadius: '2px',
+                                overflow: 'hidden',
+                                display: 'inline-block',
                               }}
-                            />
-                          </span>
-                        </div>
-                      </td>
-                      <td className="nx-table__cell">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <span style={{ fontWeight: 600 }}>{wl.memoryUtilizationPct}%</span>
-                        </div>
-                      </td>
-                      <td className="nx-table__cell">
-                        <strong>${wl.monthlyCost.toFixed(2)}</strong>
-                      </td>
-                      <td className="nx-table__cell">
-                        <Badge variant={wl.status === 'running' ? 'success' : 'default'} size="sm">
-                          {wl.status.toUpperCase()}
-                        </Badge>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                            >
+                              <span
+                                style={{
+                                  display: 'block',
+                                  width: `${wl.cpuUtilizationPct}%`,
+                                  height: '100%',
+                                  backgroundColor: wl.cpuUtilizationPct > 70 ? 'var(--nx-warning-500)' : 'var(--nx-success-500)',
+                                }}
+                              />
+                            </span>
+                          </div>
+                        </td>
+                        <td className="nx-table__cell">
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <span style={{ fontWeight: 600 }}>{wl.memoryUtilizationPct}%</span>
+                          </div>
+                        </td>
+                        <td className="nx-table__cell">
+                          <strong>${wl.monthlyCost.toFixed(2)}</strong>
+                        </td>
+                        <td className="nx-table__cell">
+                          <Badge variant={wl.status === 'running' ? 'success' : 'default'} size="sm">
+                            {wl.status.toUpperCase()}
+                          </Badge>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

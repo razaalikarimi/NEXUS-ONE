@@ -37,6 +37,24 @@ async function start() {
     connectionOptions = { host: 'localhost', port: 6379, maxRetriesPerRequest: null };
   }
 
+  // Test Redis connectivity before registering workers
+  try {
+    const { default: Redis } = await import('ioredis');
+    const testClient = new Redis(redisUrl, {
+      maxRetriesPerRequest: 1,
+      connectTimeout: 1200,
+      retryStrategy: () => null,
+      lazyConnect: true,
+    });
+    await testClient.connect();
+    await testClient.ping();
+    await testClient.quit();
+  } catch {
+    logger.warn('Redis is offline. Background workers will run in standby mode until Redis is started.');
+    await new Promise(() => {});
+    return;
+  }
+
   // Register BullMQ workers
   try {
     createAgentForgeWorker(connectionOptions);

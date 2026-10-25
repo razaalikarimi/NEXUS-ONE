@@ -178,6 +178,15 @@ class ApiService {
     });
   }
 
+  async getDashboardStats(_orgId?: string): Promise<{ activeWorkflows: number; openIncidents: number; activeRoutes: number; systemHealth: string }> {
+    return this.request<{ activeWorkflows: number; openIncidents: number; activeRoutes: number; systemHealth: string }>('/api/v1/dashboard/stats').catch(() => ({
+      activeWorkflows: 0,
+      openIncidents: 0,
+      activeRoutes: 0,
+      systemHealth: 'operational',
+    }));
+  }
+
   // ---- Health check ----
   async checkHealth(): Promise<{ status: string; uptime: number }> {
     const res = await fetch(`${API_BASE_URL}/health`);

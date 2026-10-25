@@ -50,180 +50,29 @@ interface CollabDocument {
   content: string;
 }
 
-const INITIAL_DOCS: CollabDocument[] = [
-  {
-    id: 'doc-sync-1',
-    title: 'Nexus One Distributed Consensus Architecture',
-    slug: 'nexus-one-distributed-consensus',
-    type: 'spec',
-    version: 14,
-    activeUsers: 3,
-    lastEditedBy: 'Marcus Vance',
-    updatedAt: 'Just now',
-    content: `# Nexus One Distributed Consensus Architecture
-
-## 1. Executive Architecture Overview
-Nexus One coordinates high-throughput distributed state machines across multi-cloud regions utilizing an optimized Raft consensus log with pipelined append entries.
-
-\`\`\`mermaid
-graph TD
-  Leader[Nexus-Leader: us-east-1] -->|Heartbeat (50ms)| FollowerA[Peer-Node: eu-west-1]
-  Leader -->|Heartbeat (50ms)| FollowerB[Peer-Node: ap-southeast-1]
-  Client[Fastify Gateway] -->|Propose Transition| Leader
-\`\`\`
-
-## 2. Quorum Rules & Election Configuration
-- Strict majority quorum: $Q = \\lfloor N / 2 \\rfloor + 1$
-- Randomized election timeout window: 150ms to 320ms to avert split-brain vote contention
-- Heartbeat cadence: 45ms continuous stream
-- Lease read optimization: Local state reads served without cross-region roundtrip when leader lease is active
-
-## 3. Storage Layer & Write-Ahead Log (WAL) Guarantees
-All state transitions are committed to local disk via synchronous WAL flushing with O_DIRECT flags prior to responding to client RPCs. In-memory ring buffers allow zero-copy serialization for subscribers.
-
-## 4. Disaster Recovery & Snapshot Serialization
-Every 5,000 log entries, background compaction generates a zstandard-compressed checkpoint snapshot. Rejoining nodes stream full snapshots via HTTP/3 multi-stream chunks.`,
-  },
-  {
-    id: 'doc-sync-2',
-    title: 'Q4 Cross-Pillar Roadmap & Platform Milestones',
-    slug: 'q4-cross-pillar-roadmap',
-    type: 'markdown',
-    version: 8,
-    activeUsers: 2,
-    lastEditedBy: 'Elena Chen',
-    updatedAt: '12m ago',
-    content: `# Q4 Cross-Pillar Product Roadmap
-
-### Milestones & Deliverables
-- [x] AgentForge: DAG Visual Orchestration & Approval Gating
-- [x] PulseOps: SHA-256 Telemetry Fingerprinting & Live War Room
-- [x] GateFlow: Sub-millisecond Proxy & Token-Bucket Rate Limiter
-- [x] CortexRAG: Hybrid BM25 & Vector Reciprocal Rank Fusion
-- [ ] SyncSpace: Multiplayer CRDT Real-Time Collaborative Canvas
-- [ ] SentinelX: Autonomous Risk Scoring & Anomaly Detection
-- [ ] CloudPilot: Multi-Cloud Workload Placement Optimizer`,
-  },
-  {
-    id: 'doc-sync-3',
-    title: 'Zero-Trust Telemetry Pipeline Technical Spec',
-    slug: 'zero-trust-telemetry-spec',
-    type: 'spec',
-    version: 5,
-    activeUsers: 1,
-    lastEditedBy: 'Sarah Chen',
-    updatedAt: '1h ago',
-    content: `# Zero-Trust Telemetry Pipeline Technical Spec\n\nAll OpenTelemetry traces and Prometheus metric frames must be signed at the ingress sidecar using Ed25519 asymmetric keys before ingestion by the PulseOps pipeline.`,
-  },
-];
-
-const INITIAL_COLLABORATORS: Collaborator[] = [
-  {
-    id: 'usr-1',
-    name: 'You (Alex Rivera)',
-    role: 'Editor',
-    color: '#6366f1',
-    line: 3,
-    activeBlock: 'Overview',
-    status: 'active',
-  },
-  {
-    id: 'usr-2',
-    name: 'Elena Chen',
-    role: 'Editor',
-    color: '#ec4899',
-    line: 14,
-    activeBlock: 'Quorum Rules',
-    status: 'typing',
-  },
-  {
-    id: 'usr-3',
-    name: 'Marcus Vance',
-    role: 'Reviewer',
-    color: '#10b981',
-    line: 22,
-    activeBlock: 'WAL Guarantees',
-    status: 'active',
-  },
-];
-
-const INITIAL_COMMENTS: DocumentComment[] = [
-  {
-    id: 'cmt-1',
-    author: 'Elena Chen',
-    avatar: 'EC',
-    blockId: 'quorum-rules',
-    blockLabel: 'Section 2: Quorum Rules',
-    content: 'Should we lower heartbeat cadence from 45ms to 30ms to accelerate cross-region failover detection?',
-    resolved: false,
-    timestamp: '15m ago',
-  },
-  {
-    id: 'cmt-2',
-    author: 'Marcus Vance',
-    avatar: 'MV',
-    blockId: 'wal-guarantees',
-    blockLabel: 'Section 3: WAL Guarantees',
-    content: 'Verified that O_DIRECT on NVMe array maintains p99 write latency under 1.2ms under 50k IOPS stress.',
-    resolved: true,
-    timestamp: '1h ago',
-  },
-];
-
-const INITIAL_SNAPSHOTS: DocumentSnapshot[] = [
-  {
-    id: 'snp-14',
-    version: 14,
-    title: 'Disaster Recovery & Snapshots Section',
-    summary: '+8 lines added, -1 line removed',
-    linesAdded: 8,
-    linesRemoved: 1,
-    createdById: 'usr-3',
-    authorName: 'Marcus Vance',
-    timestamp: '10m ago',
-  },
-  {
-    id: 'snp-13',
-    version: 13,
-    title: 'Formalized Lease Read Optimization',
-    summary: '+4 lines added',
-    linesAdded: 4,
-    linesRemoved: 0,
-    createdById: 'usr-2',
-    authorName: 'Elena Chen',
-    timestamp: '45m ago',
-  },
-  {
-    id: 'snp-12',
-    version: 12,
-    title: 'Initial Raft Quorum Spec & Architecture Graph',
-    summary: '+22 lines added',
-    linesAdded: 22,
-    linesRemoved: 0,
-    createdById: 'usr-1',
-    authorName: 'Alex Rivera',
-    timestamp: '2h ago',
-  },
-];
+const INITIAL_DOCS: CollabDocument[] = [];
+const INITIAL_COLLABORATORS: Collaborator[] = [];
+const INITIAL_COMMENTS: DocumentComment[] = [];
+const INITIAL_SNAPSHOTS: DocumentSnapshot[] = [];
 
 export function SyncSpacePage() {
   const [activeTab, setActiveTab] = useState<'editor' | 'documents' | 'snapshots' | 'metrics'>('editor');
   const [documents, setDocuments] = useState<CollabDocument[]>(INITIAL_DOCS);
-  const [activeDocId, setActiveDocId] = useState<string>('doc-sync-1');
+  const [activeDocId, setActiveDocId] = useState<string>('');
   const [collaborators, setCollaborators] = useState<Collaborator[]>(INITIAL_COLLABORATORS);
   const [comments, setComments] = useState<DocumentComment[]>(INITIAL_COMMENTS);
   const [snapshots, setSnapshots] = useState<DocumentSnapshot[]>(INITIAL_SNAPSHOTS);
 
   // Editor states
-  const activeDoc = documents.find((d) => d.id === activeDocId) || documents[0]!;
-  const [editorText, setEditorText] = useState<string>(activeDoc.content);
+  const activeDoc = documents.find((d) => d.id === activeDocId) || documents[0] || null;
+  const [editorText, setEditorText] = useState<string>(activeDoc ? activeDoc.content : '');
   const [isSaved, setIsSaved] = useState<boolean>(true);
-  const [isMultiplayerSimActive, setIsMultiplayerSimActive] = useState<boolean>(true);
-  const [activeBlockFocus, setActiveBlockFocus] = useState<string>('Section 2: Quorum Rules');
+  const [isMultiplayerSimActive, setIsMultiplayerSimActive] = useState<boolean>(false);
+  const [activeBlockFocus, setActiveBlockFocus] = useState<string>('Overview');
 
   // Comment input
   const [newCommentText, setNewCommentText] = useState<string>('');
-  const [selectedAnchor, setSelectedAnchor] = useState<string>('Section 2: Quorum Rules');
+  const [selectedAnchor, setSelectedAnchor] = useState<string>('Overview');
 
   // Create Document Modal
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
@@ -271,6 +120,7 @@ export function SyncSpacePage() {
   };
 
   const handleSaveDocument = () => {
+    if (!activeDoc) return;
     setDocuments((prev) =>
       prev.map((d) => {
         if (d.id === activeDocId) {
@@ -294,8 +144,8 @@ export function SyncSpacePage() {
       summary: '+2 lines modified',
       linesAdded: 2,
       linesRemoved: 0,
-      createdById: 'usr-1',
-      authorName: 'Alex Rivera',
+      createdById: 'usr-current',
+      authorName: 'You',
       timestamp: 'Just now',
     };
     setSnapshots([newSnap, ...snapshots]);
@@ -311,8 +161,8 @@ export function SyncSpacePage() {
     if (!newCommentText.trim()) return;
     const comment: DocumentComment = {
       id: `cmt-${Date.now()}`,
-      author: 'Alex Rivera',
-      avatar: 'AR',
+      author: 'You',
+      avatar: 'U',
       blockId: selectedAnchor.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       blockLabel: selectedAnchor,
       content: newCommentText.trim(),
@@ -338,7 +188,7 @@ export function SyncSpacePage() {
       type: newDocType,
       version: 1,
       activeUsers: 1,
-      lastEditedBy: 'Alex Rivera',
+      lastEditedBy: 'You',
       updatedAt: 'Just now',
       content: `# ${newDocTitle.trim()}\n\nInitial draft created in SyncSpace. Invite team members to collaborate in real-time.`,
     };
@@ -417,7 +267,7 @@ export function SyncSpacePage() {
           </span>
         </div>
         <div style={{ display: 'flex', gap: '1rem', color: 'var(--nx-neutral-400)', fontSize: '0.8rem' }}>
-          <span>Active Peers: <strong>3 online</strong></span>
+          <span>Active Peers: <strong>{collaborators.length} online</strong></span>
           <span>Buffer: <strong>0 uncommitted ops</strong></span>
         </div>
       </div>
@@ -442,19 +292,19 @@ export function SyncSpacePage() {
       <div className="nx-product-grid-4">
         <Card>
           <div className="nx-stat-title">Active Multiplayer Rooms</div>
-          <div className="nx-stat-value">4</div>
+          <div className="nx-stat-value">{documents.length}</div>
           <div className="nx-stat-sub">Live WebSocket channels</div>
         </Card>
         <Card>
           <div className="nx-stat-title">Convergence Latency</div>
-          <div className="nx-stat-value" style={{ color: 'var(--nx-success-500)' }}>
-            7ms
+          <div className="nx-stat-value" style={{ color: documents.length > 0 ? 'var(--nx-success-500)' : 'var(--nx-text-muted)' }}>
+            {documents.length > 0 ? '7ms' : '—'}
           </div>
           <div className="nx-stat-sub">Zero-conflict merge guarantee</div>
         </Card>
         <Card>
           <div className="nx-stat-title">Point-in-Time Snapshots</div>
-          <div className="nx-stat-value">1,482</div>
+          <div className="nx-stat-value">{snapshots.length}</div>
           <div className="nx-stat-sub">Immutable revision log</div>
         </Card>
         <Card>
@@ -480,7 +330,7 @@ export function SyncSpacePage() {
             cursor: 'pointer',
           }}
         >
-          Live Document Studio ({activeDoc.title.slice(0, 24)}...)
+          Live Document Studio {activeDoc ? `(${activeDoc.title.slice(0, 24)}...)` : ''}
         </button>
         <button
           onClick={() => setActiveTab('documents')}
@@ -528,43 +378,55 @@ export function SyncSpacePage() {
 
       {/* TAB 1: LIVE DOCUMENT STUDIO */}
       {activeTab === 'editor' && (
-        <div>
-          {/* Document Top Bar */}
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              backgroundColor: 'var(--nx-neutral-900)',
-              border: '1px solid var(--nx-neutral-800)',
-              padding: '0.75rem 1.25rem',
-              borderRadius: '8px 8px 0 0',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <select
-                value={activeDocId}
-                onChange={(e) => setActiveDocId(e.target.value)}
-                style={{
-                  backgroundColor: 'var(--nx-neutral-800)',
-                  color: 'var(--nx-neutral-100)',
-                  border: '1px solid var(--nx-neutral-700)',
-                  padding: '0.4rem 0.8rem',
-                  borderRadius: '6px',
-                  fontWeight: 600,
-                  fontSize: '0.9rem',
-                }}
-              >
-                {documents.map((d) => (
-                  <option key={d.id} value={d.id}>
-                    {d.title} ({d.type.toUpperCase()} v{d.version})
-                  </option>
-                ))}
-              </select>
+        !activeDoc ? (
+          <Card style={{ padding: '3.5rem 1rem', textAlign: 'center', marginTop: '1.5rem' }}>
+            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>✨</div>
+            <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', marginBottom: '0.5rem' }}>No Active Document</h3>
+            <p style={{ maxWidth: '440px', margin: '0 auto 1.5rem', color: '#94a3b8', fontSize: '0.875rem' }}>
+              Create your first multiplayer document or architectural spec to start collaborative drafting with real-time presence.
+            </p>
+            <Button variant="primary" onClick={() => setIsCreateModalOpen(true)}>
+              + Create First Document
+            </Button>
+          </Card>
+        ) : (
+          <div>
+            {/* Document Top Bar */}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                backgroundColor: 'var(--nx-neutral-900)',
+                border: '1px solid var(--nx-neutral-800)',
+                padding: '0.75rem 1.25rem',
+                borderRadius: '8px 8px 0 0',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <select
+                  value={activeDocId}
+                  onChange={(e) => setActiveDocId(e.target.value)}
+                  style={{
+                    backgroundColor: 'var(--nx-neutral-800)',
+                    color: 'var(--nx-neutral-100)',
+                    border: '1px solid var(--nx-neutral-700)',
+                    padding: '0.4rem 0.8rem',
+                    borderRadius: '6px',
+                    fontWeight: 600,
+                    fontSize: '0.9rem',
+                  }}
+                >
+                  {documents.map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.title} ({d.type.toUpperCase()} v{d.version})
+                    </option>
+                  ))}
+                </select>
 
-              <Badge variant="default" size="sm">
-                v{activeDoc.version}
-              </Badge>
+                <Badge variant="default" size="sm">
+                  v{activeDoc.version}
+                </Badge>
 
               <span
                 style={{
@@ -974,7 +836,8 @@ export function SyncSpacePage() {
             </div>
           </div>
         </div>
-      )}
+      )
+    )}
 
       {/* TAB 2: ALL DOCUMENTS */}
       {activeTab === 'documents' && (
@@ -993,60 +856,73 @@ export function SyncSpacePage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="nx-table-wrap">
-              <table className="nx-table">
-                <thead className="nx-table__header">
-                  <tr>
-                    <th className="nx-table__head-cell">Document Title</th>
-                    <th className="nx-table__head-cell">Type</th>
-                    <th className="nx-table__head-cell">Version</th>
-                    <th className="nx-table__head-cell">Active Editors</th>
-                    <th className="nx-table__head-cell">Last Edited By</th>
-                    <th className="nx-table__head-cell">Updated</th>
-                    <th className="nx-table__head-cell">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="nx-table__body">
-                  {documents.map((doc) => (
-                    <tr key={doc.id} className="nx-table__row">
-                      <td className="nx-table__cell">
-                        <strong>{doc.title}</strong>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--nx-neutral-500)' }}>/{doc.slug}</div>
-                      </td>
-                      <td className="nx-table__cell">
-                        <Badge variant="default" size="sm">{doc.type.toUpperCase()}</Badge>
-                      </td>
-                      <td className="nx-table__cell">
-                        <code>v{doc.version}</code>
-                      </td>
-                      <td className="nx-table__cell">
-                        {doc.activeUsers > 0 ? (
-                          <span style={{ color: 'var(--nx-success-500)', fontWeight: 600, fontSize: '0.85rem' }}>
-                            ● {doc.activeUsers} online
-                          </span>
-                        ) : (
-                          <span style={{ color: 'var(--nx-neutral-500)' }}>Idle</span>
-                        )}
-                      </td>
-                      <td className="nx-table__cell">{doc.lastEditedBy}</td>
-                      <td className="nx-table__cell">{doc.updatedAt}</td>
-                      <td className="nx-table__cell">
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => {
-                            setActiveDocId(doc.id);
-                            setActiveTab('editor');
-                          }}
-                        >
-                          Open Studio →
-                        </Button>
-                      </td>
+            {documents.length === 0 ? (
+              <div style={{ padding: '3.5rem 1rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>📑</div>
+                <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', marginBottom: '0.5rem' }}>No Documents in Workspace</h3>
+                <p style={{ maxWidth: '440px', margin: '0 auto 1.5rem', color: '#94a3b8', fontSize: '0.875rem' }}>
+                  Create your first collaborative document or architectural spec to start drafting with real-time CRDT sync.
+                </p>
+                <Button variant="primary" onClick={() => setIsCreateModalOpen(true)}>
+                  + New Document
+                </Button>
+              </div>
+            ) : (
+              <div className="nx-table-wrap">
+                <table className="nx-table">
+                  <thead className="nx-table__header">
+                    <tr>
+                      <th className="nx-table__head-cell">Document Title</th>
+                      <th className="nx-table__head-cell">Type</th>
+                      <th className="nx-table__head-cell">Version</th>
+                      <th className="nx-table__head-cell">Active Editors</th>
+                      <th className="nx-table__head-cell">Last Edited By</th>
+                      <th className="nx-table__head-cell">Updated</th>
+                      <th className="nx-table__head-cell">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="nx-table__body">
+                    {documents.map((doc) => (
+                      <tr key={doc.id} className="nx-table__row">
+                        <td className="nx-table__cell">
+                          <strong>{doc.title}</strong>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--nx-neutral-500)' }}>/{doc.slug}</div>
+                        </td>
+                        <td className="nx-table__cell">
+                          <Badge variant="default" size="sm">{doc.type.toUpperCase()}</Badge>
+                        </td>
+                        <td className="nx-table__cell">
+                          <code>v{doc.version}</code>
+                        </td>
+                        <td className="nx-table__cell">
+                          {doc.activeUsers > 0 ? (
+                            <span style={{ color: 'var(--nx-success-500)', fontWeight: 600, fontSize: '0.85rem' }}>
+                              ● {doc.activeUsers} online
+                            </span>
+                          ) : (
+                            <span style={{ color: 'var(--nx-neutral-500)' }}>Idle</span>
+                          )}
+                        </td>
+                        <td className="nx-table__cell">{doc.lastEditedBy}</td>
+                        <td className="nx-table__cell">{doc.updatedAt}</td>
+                        <td className="nx-table__cell">
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => {
+                              setActiveDocId(doc.id);
+                              setActiveTab('editor');
+                            }}
+                          >
+                            Open Studio →
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
@@ -1055,46 +931,56 @@ export function SyncSpacePage() {
       {activeTab === 'snapshots' && (
         <Card>
           <CardHeader>
-            <CardTitle>Point-in-Time Revision History — {activeDoc.title}</CardTitle>
+            <CardTitle>Point-in-Time Revision History — {activeDoc?.title || 'Workspace'}</CardTitle>
             <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: 'var(--nx-neutral-400)' }}>
               Every major milestone automatically generates an immutable snapshot. You can roll back the live state at any time.
             </p>
           </CardHeader>
           <CardContent>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {snapshots.map((snap) => (
-                <div
-                  key={snap.id}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '1rem 1.25rem',
-                    backgroundColor: 'var(--nx-neutral-900)',
-                    border: '1px solid var(--nx-neutral-800)',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
-                      <Badge variant="brand" size="sm">Revision v{snap.version}</Badge>
-                      <strong style={{ fontSize: '0.95rem', color: 'var(--nx-neutral-100)' }}>{snap.title}</strong>
+            {snapshots.length === 0 ? (
+              <div style={{ padding: '3.5rem 1rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>⏱️</div>
+                <h3 style={{ fontSize: '1.2rem', color: '#f8fafc', marginBottom: '0.5rem' }}>No Revision Snapshots Recorded</h3>
+                <p style={{ maxWidth: '440px', margin: '0 auto 1.5rem', color: '#94a3b8', fontSize: '0.875rem' }}>
+                  Manual saves and milestone versions will automatically generate immutable point-in-time snapshots with instant rollback.
+                </p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {snapshots.map((snap) => (
+                  <div
+                    key={snap.id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '1rem 1.25rem',
+                      backgroundColor: 'var(--nx-neutral-900)',
+                      border: '1px solid var(--nx-neutral-800)',
+                      borderRadius: '8px',
+                    }}
+                  >
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+                        <Badge variant="brand" size="sm">Revision v{snap.version}</Badge>
+                        <strong style={{ fontSize: '0.95rem', color: 'var(--nx-neutral-100)' }}>{snap.title}</strong>
+                      </div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--nx-neutral-400)', display: 'flex', gap: '1rem' }}>
+                        <span>Author: <strong>{snap.authorName}</strong></span>
+                        <span>Diff: <strong style={{ color: 'var(--nx-success-500)' }}>{snap.summary}</strong></span>
+                        <span>Recorded: {snap.timestamp}</span>
+                      </div>
                     </div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--nx-neutral-400)', display: 'flex', gap: '1rem' }}>
-                      <span>Author: <strong>{snap.authorName}</strong></span>
-                      <span>Diff: <strong style={{ color: 'var(--nx-success-500)' }}>{snap.summary}</strong></span>
-                      <span>Recorded: {snap.timestamp}</span>
-                    </div>
-                  </div>
 
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <Button variant="secondary" size="sm" onClick={() => handleRollbackSnapshot(snap)}>
-                      Rollback to v{snap.version}
-                    </Button>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <Button variant="secondary" size="sm" onClick={() => handleRollbackSnapshot(snap)}>
+                        Rollback to v{snap.version}
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
